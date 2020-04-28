@@ -52,6 +52,7 @@ Partial Class ViewSQL
         Me.txtSQLQuery.Location = New System.Drawing.Point(12, 27)
         Me.txtSQLQuery.Multiline = True
         Me.txtSQLQuery.Name = "txtSQLQuery"
+        Me.txtSQLQuery.ReadOnly = True
         Me.txtSQLQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtSQLQuery.Size = New System.Drawing.Size(994, 115)
         Me.txtSQLQuery.TabIndex = 10

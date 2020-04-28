@@ -431,12 +431,15 @@
         FieldText = RemoveBrackets(FieldText, "MIN(")
         FieldText = RemoveBrackets(FieldText, "MAX(")
         FieldText = RemoveBrackets(FieldText, "COUNT(")
+        FieldText = RemoveBrackets(FieldText, "Distinct")
+        FieldText = RemoveBrackets(FieldText, " ")
 
         GetFieldNameFromFieldText = ""
         For Each key As String In Me.Dic_Attributes.keys
             tempAttribute = Me.Dic_Attributes(key)
             If Not IsNothing(tempAttribute) Then
-                If UCase(tempAttribute.SelectedFieldText) = UCase(FieldText) Then
+                If UCase(tempAttribute.SelectedFieldText) = UCase(FieldText) Or
+                    UCase(tempAttribute.SelectedFieldname) = UCase(FieldText) Then
                     FieldName = tempAttribute.SelectedFieldname
                 End If
             Else

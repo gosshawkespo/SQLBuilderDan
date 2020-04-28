@@ -135,7 +135,7 @@ Public Class ViewSQL
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
             ElseIf ColumnType = "L" Then
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            ElseIf ColumnType = "N" Then
+            ElseIf ColumnType = "N" Or ColumnText = "Count" Then
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 dgvOutput.Columns(i).DefaultCellStyle.Format = "N" & ColumnDecimals
             End If

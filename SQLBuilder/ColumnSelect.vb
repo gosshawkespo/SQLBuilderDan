@@ -132,7 +132,7 @@
                     dgvFieldSelection.Columns.Add(dgvCheckMAX)
                     dgvFieldSelection.Columns.Add(dgvCheckCOUNT)
 
-                    dgvFieldSelection.Columns("Column Name").Visible = False
+                    dgvFieldSelection.Columns("Column Name").Visible = True
                     dgvFieldSelection.Columns("Column Name").HeaderText = "Field"
                     dgvFieldSelection.Columns("Column Name").ReadOnly = True
                     'dgvFieldSelection.Columns("Column Name").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
@@ -997,7 +997,7 @@
                         NewColumnName += ","
                     End If
                     NewColumnName += " COUNT(Distinct " & ColumnName & ")"
-                    NewColumnName += " AS """ & "COUNT(" & ColumnText & ")" & """"
+                    NewColumnName += " AS """ & "COUNT(Distinct " & ColumnName & ")" & """"
                     IncludeGroupBy = True
                 End If
             End If
@@ -1014,10 +1014,10 @@
         If FieldAttributes.HasCount Then
             IncludeGroupBy = True
             If FieldsSelected = "" Then
-                FieldsSelected += "Count(*)"
+                FieldsSelected += "Count(*) AS " & """" & "Count" & """"
             Else
                 If InStr(FieldsSelected, "Count(*)") = 0 Then
-                    FieldsSelected += ",Count(*)"
+                    FieldsSelected += ",Count(*) AS " & """" & "Count" & """"
                 End If
 
             End If
@@ -1078,7 +1078,11 @@
         If IsNumeric(txtFirstRows.Text) Then
             FirstRows = CLng(txtFirstRows.Text)
             If FirstRows > 0 Then
-                SelectPart += " FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
+                If DataSetHeaderList.DBVersion = "IBM" Then
+                    SelectPart += " FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
+                Else
+                    SelectPart += " LIMIT " & CStr(FirstRows)
+                End If
             End If
         End If
         FinalQuery = SelectPart
@@ -1169,6 +1173,7 @@
 
     Private Sub btnShowQuery_Click(sender As Object, e As EventArgs) Handles btnShowQuery.Click
         Dim Answer As Integer
+        Dim Entry As Integer
         Dim recs As Long
 
         If lstFields.Items.Count = 0 Then
@@ -1177,8 +1182,11 @@
                 Exit Sub
             End If
         End If
-        If myWhereConditions.CountConditions = 0 Then
-            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
+        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
+            Entry = 0
+        End If
+        If Entry = 0 And myWhereConditions.CountConditions = 0 Then
+            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo) 
             If Answer = vbNo Then
                 Exit Sub
             End If
@@ -1355,7 +1363,7 @@
                 'FieldAttributes.GetSelectedFieldMAX(str) = False Then
                 chklstOrderBY.Items.Add(str)
                 If cbAudioClick.Checked = True Then
-                    My.Computer.Audio.Play("C:\Users\PC\Documents\ESPO stuff\SQLBuilder45Dan\SQLBuilder\Media\click.wav")
+                    My.Computer.Audio.Play("C:\Users\PC\Documents\ESPO stuff\SQLBuilder48Dan\SQLBuilder\Media\click.wav")
                 End If
 
             End If

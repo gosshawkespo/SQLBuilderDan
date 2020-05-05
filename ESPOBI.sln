@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29411.108
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "SQLBuilder", "SQLBuilder\SQLBuilder.vbproj", "{86D27397-DF7C-4631-B426-59B62C355F2A}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ESPOBI", "ESPOModel\ESPOBI.vbproj", "{83107B1E-5569-4D7C-9C6A-EFABE2B45611}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "RunQuery", "RunQuery\RunQuery.vbproj", "{7F5F6BEE-C404-4235-8817-DC7DC865F962}"
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ColumnAttributes", "ColumnAttributes\ColumnAttributes.vbproj", "{7B0FBB75-1DFD-48E0-B9E1-131413EE662D}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ESPOBI", "ESPOBIMDI\ESPOBI.vbproj", "{83107B1E-5569-4D7C-9C6A-EFABE2B45611}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{86D27397-DF7C-4631-B426-59B62C355F2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86D27397-DF7C-4631-B426-59B62C355F2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86D27397-DF7C-4631-B426-59B62C355F2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7F5F6BEE-C404-4235-8817-DC7DC865F962}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7F5F6BEE-C404-4235-8817-DC7DC865F962}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F5F6BEE-C404-4235-8817-DC7DC865F962}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{7B0FBB75-1DFD-48E0-B9E1-131413EE662D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B0FBB75-1DFD-48E0-B9E1-131413EE662D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B0FBB75-1DFD-48E0-B9E1-131413EE662D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83107B1E-5569-4D7C-9C6A-EFABE2B45611}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -578,10 +578,10 @@ Public Class ColumnSelect
                 'Check if any other conditions exist:
                 If ColumnSelect.FieldAttributes.CountConditions > 0 Then
                     If rbAND.Checked Then
-                        strJoin = " AND " & vbCrLf
+                        strJoin = " AND "
                     End If
                     If rbOR.Checked Then
-                        strJoin = " OR " & vbCrLf
+                        strJoin = " OR "
                     End If
                 End If
 
@@ -1068,7 +1068,7 @@ Public Class ColumnSelect
         Dim FirstRows As Long
 
         BuildQueryFromSelection = ""
-        SelectPart = "SELECT "
+        SelectPart = "SELECT " & vbCrLf & " "
         FieldsSelected = ""
         OrderByFields = ""
         TableName = txtTablename.Text
@@ -1091,31 +1091,31 @@ Public Class ColumnSelect
                 FieldAlias = " AS """ & ColumnText & """"
 
                 If tempAttribute.IsSUM Then
-                    NewColumnName += " SUM(" & ColumnName & ")"
+                    NewColumnName += "SUM(" & ColumnName & ")"
                     NewColumnName += " AS """ & ColumnText & " SUM" & """"
                     IncludeGroupBy = True
                 End If
                 If tempAttribute.IsMIN Then
                     If NewColumnName <> "" Then
-                        NewColumnName += ","
+                        NewColumnName += "," & vbCrLf
                     End If
-                    NewColumnName += vbCrLf & " MIN(" & ColumnName & ")"
+                    NewColumnName += " MIN(" & ColumnName & ")"
                     NewColumnName += " AS """ & ColumnText & " MIN" & """"
                     IncludeGroupBy = True
                 End If
                 If tempAttribute.IsMAX Then
                     If NewColumnName <> "" Then
-                        NewColumnName += ","
+                        NewColumnName += "," & vbCrLf
                     End If
-                    NewColumnName += vbCrLf & " MAX(" & ColumnName & ")"
+                    NewColumnName += " MAX(" & ColumnName & ")"
                     NewColumnName += " AS """ & ColumnText & " MAX" & """"
                     IncludeGroupBy = True
                 End If
                 If tempAttribute.IsCount Then
                     If NewColumnName <> "" Then
-                        NewColumnName += ","
+                        NewColumnName += "," & vbCrLf
                     End If
-                    NewColumnName += vbCrLf & " COUNT(Distinct " & ColumnName & ")"
+                    NewColumnName += "COUNT(Distinct " & ColumnName & ")"
                     NewColumnName += " AS """ & ColumnText & " Count" & """"
                     IncludeGroupBy = True
                 End If
@@ -1133,14 +1133,14 @@ Public Class ColumnSelect
         If FieldAttributes.HasCount Then
             IncludeGroupBy = True
             If FieldsSelected = "" Then
-                FieldsSelected += vbCrLf & "Count(*) AS " & """" & "Count" & """"
+                FieldsSelected += " Count(*) AS " & """" & "Count" & """"
             Else
                 If InStr(FieldsSelected, "Count(*)") = 0 Then
-                    FieldsSelected += "," & vbCrLf & "Count(*) AS " & """" & "Count" & """"
+                    FieldsSelected += "," & vbCrLf & " Count(*) AS " & """" & "Count" & """"
                 End If
 
             End If
-            FieldsSelected += vbCrLf
+            'FieldsSelected += vbCrLf
         Else
             If FieldsSelected = "" Then
                 MsgBox("No Fields or Count was selected")
@@ -1161,7 +1161,7 @@ Public Class ColumnSelect
                         If GroupByFields = "" Then
                             GroupByFields += ColumnName
                         Else
-                            GroupByFields += "," & vbCrLf & ColumnName
+                            GroupByFields += "," & ColumnName
                         End If
                     End If
                 End If
@@ -1175,7 +1175,7 @@ Public Class ColumnSelect
                 If OrderByFields = "" Then
                     OrderByFields += Trim(ColumnName)
                 Else
-                    OrderByFields += "," & vbCrLf & Trim(ColumnName)
+                    OrderByFields += "," & Trim(ColumnName)
                 End If
                 If IsChecked Then
                     OrderByFields += " DESC"
@@ -1183,7 +1183,7 @@ Public Class ColumnSelect
             Next
         End If
 
-        SelectPart += FieldsSelected & vbCrLf & " FROM " & TableName
+        SelectPart += FieldsSelected & vbCrLf & "FROM " & TableName
         If FieldAttributes.MyWhereCondtions <> "" Then
             SelectPart += vbCrLf & "WHERE " & FieldAttributes.MyWhereCondtions
         End If
@@ -1199,9 +1199,9 @@ Public Class ColumnSelect
             FirstRows = CLng(txtFirstRows.Text)
             If FirstRows > 0 Then
                 If DataSetHeaderList.DBVersion = "IBM" Then
-                    SelectPart += vbCrLf & " FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
+                    SelectPart += vbCrLf & "FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
                 Else
-                    SelectPart += vbCrLf & " LIMIT " & CStr(FirstRows)
+                    SelectPart += vbCrLf & "LIMIT " & CStr(FirstRows)
                 End If
             End If
         End If

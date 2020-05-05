@@ -40,7 +40,7 @@
         Dim dt As DataTable
         Dim Tablename As String
 
-        Me.Text = "SQL Builder Header List"
+        Me.Text = "Data Set List"
         Try
             dgvHeaderList.Columns.Clear()
             dgvHeaderList.DataSource = Nothing
@@ -103,10 +103,12 @@
 
         App.Visible = False
         App.GetParms(GlobalSession, GlobalParms)
-        App.PopulateForm(DataSetID)
+        App.PopulateForm(DataSetID, True)
+        App.TheDataSetID = DataSetID
         App.txtTablename.Text = Tablename
         App.txtDatasetName.Text = DataSetName
         App.Show()
+        App.btnRefresh.PerformClick()
         Cursor = Cursors.Default
     End Sub
 

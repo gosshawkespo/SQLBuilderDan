@@ -1,16 +1,16 @@
-﻿Public Class ColumnSelect
+﻿Imports System.Data
+
+Public Class ColumnSelect
     Private _DataSetID As Integer
     Private _WhereConditions As String
     Private _WhereField As String
     Dim GlobalParms As New ESPOParms.Framework
     Dim GlobalSession As New ESPOParms.Session
-    Public Shared myWhereConditions As New myGlobals
-    Public Shared FieldAttributes As New clsAttributes
+    'Public Shared myWhereConditions As New myGlobals
+    Public Shared FieldAttributes As New columnattributes.columnattributes
 
     'SQLBuilder_KeyDown KEYS: CTRL+S = Show Query, RETURN = ADD CONDITION, CTRL+SHIFT+C = CLOSE FORM
     '
-
-
     Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
         GlobalParms = Parms
         GlobalSession = Session
@@ -27,13 +27,11 @@
         dgvFieldSelection.AllowUserToDeleteRows = False
         dgvFieldSelection.MultiSelect = True
         dgvFieldSelection.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        myWhereConditions.DeleteConditions()
-        myWhereConditions.ClearConditionsList()
-        myWhereConditions.LastOperator = ""
-
+        FieldAttributes.DeleteConditions()
+        FieldAttributes.ClearConditionsList()
+        FieldAttributes.LastOperator = ""
 
         'FieldAttributes.ClearSelectedAttributesList()
-
 
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
@@ -77,7 +75,7 @@
         End Set
     End Property
 
-    Sub PopulateForm(DataSetID As Integer)
+    Sub PopulateForm(DataSetID As Integer, FirstTIme As Boolean)
         Cursor = Cursors.WaitCursor
         Dim myDAL As New SQLBuilderDAL
         Dim dt As DataTable
@@ -87,13 +85,32 @@
             Me.Text = "SQL Builder"
             Me.TheDataSetID = DataSetID
             dgvFieldSelection.Columns.Clear()
+            If lstFields.Items.Count > 0 Then
+                lstFields.Items.Clear()
+            End If
+            If chklstOrderBY.Items.Count > 0 Then
+                chklstOrderBY.Items.Clear()
+            End If
+            If lstConditions.Items.Count > 0 Then
+                lstConditions.Items.Clear()
+            End If
+            FieldAttributes.ClearAllDics()
+            FieldAttributes.DBType = DataSetHeaderList.DBVersion
+            txtValue.Text = ""
+            txtValue2.Text = ""
+            lblValue.Visible = True
+            txtValue.Visible = True
+            lblValue2.Visible = False
+            txtValue2.Visible = False
+            txtFirstRows.Text = ""
+            txtINvalues.Text = ""
             'Dim dgvCheck As New DataGridViewCheckBoxColumn()
             'dgvCheck.HeaderText = "Select Field"
             'dgvCheck.Name = "SelectField"
 
             Dim dgvCheckSUM As New DataGridViewCheckBoxColumn()
             dgvCheckSUM.HeaderText = "SUM()"
-            dgvCheckSum.Name = "SUM"
+            dgvCheckSUM.Name = "SUM"
             Dim dgvCheckMIN As New DataGridViewCheckBoxColumn()
             dgvCheckMIN.HeaderText = "MIN()"
             dgvCheckMIN.Name = "MIN"
@@ -103,6 +120,9 @@
             Dim dgvCheckCOUNT As New DataGridViewCheckBoxColumn()
             dgvCheckCOUNT.HeaderText = "COUNT()"
             dgvCheckCOUNT.Name = "COUNT"
+
+            'dgvCheckCOUNT.DisplayIndex = 4
+
             'IndexCol = dgvFieldSelection.Columns.Add
             'IndexCol.ColumnName = "#"
             'IndexCol.Namespace = "#"
@@ -119,20 +139,27 @@
                 If dt.Rows.Count > 0 Then
                     dgvFieldSelection.DataSource = dt
                     PopulateAttributes(dt)
-                    'Add fields to where combo here:
-                    cboWhereFields.ValueMember = "Column Name"
-                    cboWhereFields.DisplayMember = "Column Text"
                     cboWhereFields.DataSource = dt
                     cboWhereFields.Text = ""
-                    cboOperators.ValueMember = "="
-                    BuildOperatorCombo()
+                    cboOperators.SelectedValue = "="
+                    If FirstTIme Then
+                        cboWhereFields.ValueMember = "Column Name"
+                        cboWhereFields.DisplayMember = "Column Text"
+                        cboOperators.ValueMember = "="
+
+                        BuildOperatorCombo()
+                        'AdjustGridColumns()
+                    End If
+                    cboOperators.SelectedValue = "="
+                    dtp1.Value = Now()
+                    dtp2.Value = Now()
                     'dgvFieldSelection.Columns.Add(dgvCheck)
-                    dgvFieldSelection.Columns.Add(dgvCheckSum)
+                    dgvFieldSelection.Columns.Add(dgvCheckSUM)
                     dgvFieldSelection.Columns.Add(dgvCheckMIN)
                     dgvFieldSelection.Columns.Add(dgvCheckMAX)
                     dgvFieldSelection.Columns.Add(dgvCheckCOUNT)
-
-                    dgvFieldSelection.Columns("Column Name").Visible = True
+                    AdjustGridColumns()
+                    'dgvFieldSelection.Columns("Column Name").Visible = True
                     dgvFieldSelection.Columns("Column Name").HeaderText = "Field"
                     dgvFieldSelection.Columns("Column Name").ReadOnly = True
                     'dgvFieldSelection.Columns("Column Name").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
@@ -151,6 +178,7 @@
                 End If
             End If
 
+
         Catch ex As Exception
             Cursor = Cursors.Default
             MsgBox("Populate Error: " & ex.Message)
@@ -159,28 +187,55 @@
     End Sub
 
     Sub BuildOperatorCombo()
-        Dim lstOperators As New List(Of Operators)
+        Dim lstOperators As New List(Of ColumnAttributes.Operators2)
 
-        lstOperators.Add(New Operators With {.OperatorSymbol = "=", .OperatorFull = "Equals"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = ">", .OperatorFull = "Greater Than"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "<", .OperatorFull = "Less Than"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = ">=", .OperatorFull = "Greater Than or Equal to"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "<=", .OperatorFull = "Less Than or Equal to"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "<>", .OperatorFull = "Does Not Equal"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "BEGINS", .OperatorFull = "Begins With"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "NOT BEGINS", .OperatorFull = "Does Not Begin With"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "LIKE", .OperatorFull = "Contains"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "NOT LIKE", .OperatorFull = "Does Not Contain"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "BETWEEN", .OperatorFull = "BETWEEN"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "NOT BETWEEN", .OperatorFull = "Is Not Between"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "IN", .OperatorFull = "In"})
-        lstOperators.Add(New Operators With {.OperatorSymbol = "NOT IN", .OperatorFull = "Not In"})
-        'lstOperators.Add(New Operators With {.OperatorSymbol = "LIKE", .OperatorFull = "LIKE"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "=", .OperatorFull = "Equals"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = ">", .OperatorFull = "Greater Than"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "<", .OperatorFull = "Less Than"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = ">=", .OperatorFull = "Greater Than or Equal to"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "<=", .OperatorFull = "Less Than or Equal to"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "<>", .OperatorFull = "Does Not Equal"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "BEGINS", .OperatorFull = "Begins With"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "NOT BEGINS", .OperatorFull = "Does Not Begin With"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "LIKE", .OperatorFull = "Contains"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "NOT LIKE", .OperatorFull = "Does Not Contain"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "BETWEEN", .OperatorFull = "BETWEEN"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "NOT BETWEEN", .OperatorFull = "Is Not Between"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "IN", .OperatorFull = "In"})
+        lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "NOT IN", .OperatorFull = "Not In"})
+        'lstOperators.Add(New ColumnAttributes.Operators2 With {.OperatorSymbol = "LIKE", .OperatorFull = "LIKE"})
 
         cboOperators.DataSource = lstOperators
         cboOperators.ValueMember = "OperatorSymbol"
         cboOperators.DisplayMember = "OperatorFull"
 
+    End Sub
+
+    Sub AdjustGridColumns()
+        'SET Column read only on certain conditions:
+        'The following actually does work after the call to refresh():
+        For i As Integer = 0 To dgvFieldSelection.Rows.Count - 1
+            If dgvFieldSelection.Rows(i).Cells("Column Type").Value = "N" Then
+                dgvFieldSelection.Rows(i).Cells("SUM").ReadOnly = False
+            Else
+                dgvFieldSelection.Rows(i).Cells("SUM").ReadOnly = True
+            End If
+        Next
+        dgvFieldSelection.Columns("Column Text").DisplayIndex = 0
+        dgvFieldSelection.Columns("SUM").DisplayIndex = 1
+        dgvFieldSelection.Columns("MIN").DisplayIndex = 2
+        dgvFieldSelection.Columns("MAX").DisplayIndex = 3
+        dgvFieldSelection.Columns("COUNT").DisplayIndex = 4
+        dgvFieldSelection.Columns("Column Name").DisplayIndex = 6
+        dgvFieldSelection.Columns("Column Type").DisplayIndex = 6
+        dgvFieldSelection.Columns("Column Length").DisplayIndex = 7
+        dgvFieldSelection.Columns("Column Decimals").DisplayIndex = 8
+
+        dgvFieldSelection.Columns("Column Name").Visible = False
+        dgvFieldSelection.Columns("Column Type").Visible = False
+        dgvFieldSelection.Columns("Column Length").Visible = False
+        dgvFieldSelection.Columns("Column Decimals").Visible = False
+        dgvFieldSelection.Refresh()
     End Sub
 
     Function GetSelectedGridRows() As List(Of Integer)
@@ -215,7 +270,7 @@
         Dim intMIN As Integer
         Dim intMAX As Integer
         Dim intCOUNT As Integer
-        Dim tempAttribute As clsAttributeProperties
+        Dim tempAttribute As ColumnAttributes.ColumnAttributeProperties
 
         'Applies to ALL rows in the grid:
         For i As Integer = 0 To dt.Rows.Count - 1
@@ -237,7 +292,7 @@
             intMIN = 0
             intMAX = 0
             intCOUNT = 0
-            tempAttribute = New clsAttributeProperties
+            tempAttribute = New ColumnAttributes.ColumnAttributeProperties
             tempAttribute.FieldPos = i + 1
             tempAttribute.SelectedFieldPos = 0
             tempAttribute.SelectedFieldname = strFieldname
@@ -251,7 +306,7 @@
             tempAttribute.IsCount = False
             tempAttribute.IsSelected = False
             tempAttribute.Attributes = strFieldType & ";" & strFieldLength & ";" & strDecimals & ";"
-            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & CStr(intCount)
+            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & CStr(intCOUNT)
 
             'If Not FieldAttributes.FindAttributeFieldName(strFieldname) Then
             If Not FieldAttributes.Dic_Attributes.exists(strFieldname) Then
@@ -336,25 +391,13 @@
             'myDAL.GetMySQLFieldsAndTypes(DBTable, myTypes, dic_Types, myFieldnames)
         End If
         'if type = datetime then make the datepickers visible.
-        stsQueryBuilderLabel1.Text = "FIELD SELECTED: " & Fieldname & " TYPE: " & FieldAttributes.Dic_Types(Fieldname)
+        'stsQueryBuilderLabel1.Text = "FIELD SELECTED: " & Fieldname & " TYPE: " & FieldAttributes.Dic_Types(Fieldname)
         If UCase(PosType) = "SINGLE" Then
             lblValue.Visible = True
             txtValue.Visible = True
-            If FieldAttributes.Dic_Types(Fieldname) = "L" Then
-                dtp1.Visible = True
-                dtp2.Visible = False
-            Else
-                dtp1.Visible = False
-                dtp2.Visible = False
-            End If
-
             lblValue2.Visible = False
             txtValue2.Visible = False
             txtINvalues.Visible = False
-
-        ElseIf UCase(PosType) = "IN" Then
-            lblValue.Visible = True
-            txtValue.Visible = True
             If FieldAttributes.Dic_Types(Fieldname) = "L" Then
                 dtp1.Visible = True
                 dtp2.Visible = False
@@ -362,10 +405,19 @@
                 dtp1.Visible = False
                 dtp2.Visible = False
             End If
-
-            lblValue2.Visible = False
-            txtValue2.Visible = False
-            txtINvalues.Visible = True
+        ElseIf UCase(PosType) = "IN" Then
+            If FieldAttributes.Dic_Types(Fieldname) = "L" Then
+                'cboOperators.SelectedValue = "="
+                SetControls("SINGLE", Fieldname)
+            Else
+                lblValue.Visible = True
+                txtValue.Visible = True
+                txtINvalues.Visible = True
+                txtValue2.Visible = False
+                lblValue2.Visible = False
+                dtp1.Visible = False
+                dtp2.Visible = False
+            End If
 
         ElseIf UCase(PosType) = "BETWEEN" Then
             lblValue.Visible = True
@@ -448,13 +500,18 @@
         strJoin = ""
         If strWhereField1 <> "" Then
             FieldType = FieldAttributes.Dic_Types(strWhereField1)
-            If FieldType = "A" Or FieldType = "L" Then
+            If FieldType = "A" Then
                 Quote = "'"
-            Else
-                Quote = ""
-            End If
-            If FieldType = "N" Or FieldType = "L" Then
+            ElseIf FieldType = "L" Then
+                Quote = "'"
                 ExcludeUPPER = True
+                txtValue.Text = dtp1.Value.ToString("dd/MM/yyyy")
+                txtValue2.Text = dtp2.Value.ToString("dd/MM/yyyy")
+            ElseIf FieldType = "N" Then
+                ExcludeUPPER = True
+            Else
+                MsgBox("Field Type Not Recognised")
+                Exit Function
             End If
             If txtOperator.Text <> "" Then
                 strOperator = txtOperator.Text
@@ -462,6 +519,8 @@
                 If UCase(strOperator) = "BETWEEN" Or UCase(strOperator) = "NOT BETWEEN" Then
                     'two dates in both text boxes:
                     ExcludeUPPER = True
+                    txtValue.Text = dtp1.Value
+                    txtValue2.Text = dtp2.Value
                     If txtValue.Text <> "" And txtValue2.Text <> "" Then
                         If IsDate(txtValue.Text) Then
                             If IsDate(txtValue2.Text) Then
@@ -474,8 +533,13 @@
                         MsgBox("Please enter values in both boxes")
                         Exit Function
                     End If
-                End If
-                If UCase(strOperator) = "IN" Or UCase(strOperator) = "NOT IN" Then
+                    'End If
+                ElseIf UCase(strOperator) = "IN" Or UCase(strOperator) = "NOT IN" Then
+                    If FieldType = "L" Then
+                        MsgBox("Date fields cannot be used with IN operator.")
+                        cboOperators.SelectedValue = "="
+                        Exit Function
+                    End If
                     ExcludeUPPER = True
                     If txtINvalues.Text <> "" Then
                         strValue = "("
@@ -488,34 +552,36 @@
                         Next
                         strValue += ")"
                     End If
-                End If
-                If UCase(strOperator) = "BEGINS" Then
+                    'End If
+                ElseIf UCase(strOperator) = "BEGINS" Then
                     strOperator = "LIKE "
                     strValue = "'" & txtValue.Text & "%'"
-                    ColumnSelect.myWhereConditions.LastOperator = strOperator
-                End If
-                If UCase(strOperator) = "NOT BEGINS" Then
+                    ColumnSelect.FieldAttributes.LastOperator = strOperator
+                    'End If
+                ElseIf UCase(strOperator) = "NOT BEGINS" Then
                     strOperator = "NOT LIKE "
                     strValue = "'" & txtValue.Text & "%'"
-                    ColumnSelect.myWhereConditions.LastOperator = strOperator
-                End If
-                If UCase(strOperator) = "LIKE" Then
+                    ColumnSelect.FieldAttributes.LastOperator = strOperator
+                    'End If
+                ElseIf UCase(strOperator) = "LIKE" Then
                     strOperator = "LIKE "
                     strValue = "'%" & txtValue.Text & "%'"
-                    ColumnSelect.myWhereConditions.LastOperator = strOperator
-                End If
-                If UCase(strOperator) = "NOT LIKE" Then
+                    ColumnSelect.FieldAttributes.LastOperator = strOperator
+                    'End If
+                ElseIf UCase(strOperator) = "NOT LIKE" Then
                     strOperator = "NOT LIKE "
                     strValue = "'%" & txtValue.Text & "%'"
-                    ColumnSelect.myWhereConditions.LastOperator = strOperator
+                    ColumnSelect.FieldAttributes.LastOperator = strOperator
+                Else
+
                 End If
                 'Check if any other conditions exist:
-                If ColumnSelect.myWhereConditions.CountConditions > 0 Then
+                If ColumnSelect.FieldAttributes.CountConditions > 0 Then
                     If rbAND.Checked Then
-                        strJoin = " AND "
+                        strJoin = " AND " & vbCrLf
                     End If
                     If rbOR.Checked Then
-                        strJoin = " OR "
+                        strJoin = " OR " & vbCrLf
                     End If
                 End If
 
@@ -529,14 +595,14 @@
                     strCondition += strWhereField1 & " " & strOperator & " " & strValue
                 End If
 
-                If Not ColumnSelect.myWhereConditions.IsInList(strCondition) Then
-                    ColumnSelect.myWhereConditions.lbConditions.Add(strJoin & strCondition)
+                If Not ColumnSelect.FieldAttributes.IsInList(strCondition) Then
+                    ColumnSelect.FieldAttributes.lbConditions.Add(strJoin & strCondition)
                 Else
                     MsgBox("Condition Already in List")
                     Exit Function
                 End If
                 UpdateInternalConditionList()
-                WhereConditions += strJoin & strCondition & vbCrLf
+                'WhereConditions += strJoin & strCondition & vbCrLf
 
                 Return strCondition
             Else
@@ -552,42 +618,60 @@
         Dim OrPos As Integer
         Dim FirstPart As String
 
-        If ColumnSelect.myWhereConditions.CountConditions > 0 Then
-            ColumnSelect.myWhereConditions.DeleteConditions()
-            lstConditions.Items.Clear()
-            'what if the first condition is deleted - this leaves the others with AND in front.
-            For i As Integer = 0 To ColumnSelect.myWhereConditions.lbConditions.Count - 1
-                Condition = ColumnSelect.myWhereConditions.lbConditions.Item(i)
-                If Len(Condition) > 5 And i = 0 Then
-                    FirstPart = Mid(Condition, 1, 5)
-                    If InStr(UCase(FirstPart), "AND ") > 0 Then
-                        Condition = Replace(Condition, "AND", "", 1, 1, CompareMethod.Text)
-                    End If
-                    If InStr(UCase(FirstPart), "OR ") > 0 Then
-                        Condition = Replace(Condition, "OR", "", 1, 1, CompareMethod.Text)
-                    End If
-                    ColumnSelect.myWhereConditions.lbConditions.Item(i) = Condition
-                    'ColumnSelect.myWhereConditions.lbConditions.Item(i) = "WHERE " & Condition
+        'If ColumnSelect.FieldAttributes.CountConditions > 0 Then
+        ColumnSelect.FieldAttributes.DeleteConditions()
+        lstConditions.Items.Clear()
+        'what if the first condition is deleted - this leaves the others with AND in front.
+        For i As Integer = 0 To ColumnSelect.FieldAttributes.lbConditions.Count - 1
+            Condition = ColumnSelect.FieldAttributes.lbConditions.Item(i)
+            If Len(Condition) > 5 And i = 0 Then
+                FirstPart = Mid(Condition, 1, 5)
+                If InStr(UCase(FirstPart), "AND ") > 0 Then
+                    Condition = Replace(Condition, "AND", "", 1, 1, CompareMethod.Text)
                 End If
-                ColumnSelect.myWhereConditions.GetMyWhereCondtions += Condition
-                lstConditions.Items.Add(Condition)
-            Next
-        Else
-            'MsgBox("No conditions are entered")
-        End If
+                If InStr(UCase(FirstPart), "OR ") > 0 Then
+                    Condition = Replace(Condition, "OR", "", 1, 1, CompareMethod.Text)
+                End If
+                ColumnSelect.FieldAttributes.lbConditions.Item(i) = Condition
+                'ColumnSelect.FieldAttributes.lbConditions.Item(i) = "WHERE " & Condition
+            End If
+            ColumnSelect.FieldAttributes.MyWhereCondtions += Condition
+            lstConditions.Items.Add(Condition)
+        Next
+        'Else
+        'MsgBox("No conditions are entered")
+        'End If
     End Sub
 
-    Private Sub btnRemoveCondition_Click(sender As Object, e As EventArgs)
-        Dim lstIDX As Integer
+    Private Sub btnRemoveCondition_Click(sender As Object, e As EventArgs) Handles btnRemoveCondition.Click
+        Dim NextIDX As Integer
         Dim ItemName As String
 
-        lstIDX = lstConditions.SelectedIndex
-        If lstIDX > -1 Then
-            ItemName = lstConditions.Items(lstIDX)
-            lstConditions.Items.RemoveAt(lstIDX)
-            ColumnSelect.myWhereConditions.lbConditions.Remove(ItemName)
-            UpdateInternalConditionList()
+        If lstConditions.SelectedIndex = -1 Then
+            MsgBox("Please select a condition first")
+        Else
+            Dim SelectedConditions = (From i In lstConditions.SelectedItems).ToList
+            For Each SelectedCondition In SelectedConditions
+                lstConditions.Items.Remove(SelectedCondition)
+                ColumnSelect.FieldAttributes.lbConditions.Remove(SelectedCondition)
+                UpdateInternalConditionList()
+            Next
         End If
+        'Highlight NEXT item:
+        If lstConditions.Items.Count > 0 Then
+            NextIDX = 0
+            If (NextIDX > -1) And (NextIDX < lstConditions.Items.Count) Then
+                lstConditions.SetSelected(NextIDX, True)
+            End If
+        End If
+
+        'lstIDX = lstConditions.SelectedIndex
+        'If lstIDX > -1 Then
+        'ItemName = lstConditions.Items(lstIDX)
+        'lstConditions.Items.RemoveAt(lstIDX)
+        'ColumnSelect.FieldAttributes.lbConditions.Remove(ItemName)
+        'UpdateInternalConditionList()
+        'End If
     End Sub
 
     Private Sub UndockChild()
@@ -607,33 +691,56 @@
             UndockChild()
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
             btnAddCondition.PerformClick()
-        ElseIf (e.Control AndAlso (e.KeyCode = Keys.s)) Then
+        ElseIf (e.Control AndAlso (e.KeyCode = Keys.S)) Then
             btnShowQuery.PerformClick()
-        ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.c)) Then
+        ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
             btnClose.PerformClick()
         End If
     End Sub
 
-    Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+    Sub ClearTicks()
+        For i As Integer = 0 To dgvFieldSelection.Rows.Count - 1
+            dgvFieldSelection.Rows(i).Cells("SUM").Value = False
+            dgvFieldSelection.Rows(i).Cells("MIN").Value = False
+            dgvFieldSelection.Rows(i).Cells("MAX").Value = False
+            dgvFieldSelection.Rows(i).Cells("COUNT").Value = False
+        Next
 
+    End Sub
+
+    Sub ClearFields()
         'NEed to reset alll the fields in object FieldAttributes .Selected and .SUM back to false.
         lstFields.Items.Clear()
+        chklstOrderBY.Items.Clear()
+        lstConditions.Items.Clear()
+        ClearTicks()
         FieldAttributes.ClearSelectedAttributesList()
         FieldAttributes.ResetAllSelectedFields()
-        chklstOrderBY.Items.Clear()
-        myWhereConditions.DeleteConditions()
-        ColumnSelect.myWhereConditions.lbConditions.Clear()
+        ColumnSelect.FieldAttributes.DeleteConditions()
+        ColumnSelect.FieldAttributes.lbConditions.Clear()
         'cboWhereFields.Items.Clear()
         cboWhereFields.Text = ""
         txtValue.Text = ""
         txtValue2.Text = ""
         cboOperators.SelectedIndex = cboOperators.FindString("Equals")
-        lstConditions.Items.Clear()
+
         btnSelectAll.Text = "Select All"
         stsQueryBuilderLabel1.Text = ""
         stsQueryBuilderLabel2.Text = ""
         'Me.Height = 584
+    End Sub
 
+    Sub RefreshForm()
+        PopulateForm(Me.TheDataSetID, False)
+    End Sub
+
+    Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
+        ClearFields()
+    End Sub
+
+    Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+        RefreshForm()
+        btnHideColumns.Text = "+"
     End Sub
 
     Function IsInList(lstBox As ListBox, CheckItem As String, ByRef ReturnIDX As Integer) As Boolean
@@ -768,6 +875,10 @@
                 IsMIN = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("MIN").Value
                 IsMAX = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("MAX").Value
                 IsCOUNT = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("COUNT").Value
+                If (ColumnType <> "N" And IsSUM = True) Then
+                    MsgBox("Cannot include SUM on a non-numeric field")
+                    Exit Sub
+                End If
                 SumSelected = 0
                 MinSelected = 0
                 MaxSelected = 0
@@ -801,15 +912,7 @@
                     Case "GROUPBY FIELDS"
 
                     Case "ORDERBY FIELDS"
-                        ItemIDX = lstFields.SelectedIndex
-                        If ItemIDX > -1 Then
-                            lstItem = lstFields.Items(ItemIDX)
-                            If Not IsInCHKList(chklstOrderBY, lstItem, ItemIDX) Then
-                                chklstOrderBY.Items.Add(lstItem)
-                            End If
-                        Else
-                            MsgBox("Field must be in the Display List first")
-                        End If
+
 
                     Case Else
                         MsgBox("List not recognised")
@@ -828,7 +931,23 @@
     End Sub
 
     Private Sub btnSelectOrderBy_Click(sender As Object, e As EventArgs) Handles btnSelectOrderBy.Click
-        SelectFields2("ORDERBY FIELDS")
+        'User has also selected a row in the datagrid...
+        'But build a list of selected fields in the display box  first:
+        Dim ReturnIDX As Integer
+        Dim lstIDX As Integer
+        Dim SelectedFields = (From i In lstFields.SelectedItems).ToList
+
+        If lstFields.SelectedIndex > -1 Then
+            For Each Field In SelectedFields
+                If Not IsInCHKList(chklstOrderBY, Field, ReturnIDX) Then
+                    chklstOrderBY.Items.Add(Field)
+                End If
+                lstIDX = lstFields.SelectedIndex
+                lstFields.SetSelected(lstIDX, False)
+            Next
+        Else
+            MsgBox("Please select sort fields from the display list")
+        End If
     End Sub
 
     Sub MoveItemUp(ByRef lstBox As ListBox)
@@ -944,7 +1063,7 @@
         Dim IsChecked As Boolean
         Dim FinalQuery As String
         Dim IncludeGroupBy As Boolean = False
-        Dim tempAttribute As clsAttributeProperties
+        Dim tempAttribute As ColumnAttributes.ColumnAttributeProperties
         Dim lstSelected As New List(Of String)
         Dim FirstRows As Long
 
@@ -961,7 +1080,7 @@
 
         lstSelected = FieldAttributes.GetALLSelectedFields 'SORT THE FIELD IN POSITION ORDER
         For i As Integer = 0 To lstSelected.Count - 1
-            tempAttribute = New clsAttributeProperties 'THis is VERY important !
+            tempAttribute = New ColumnAttributes.ColumnAttributeProperties 'THis is VERY important !
             ColumnName = lstSelected.Item(i) 'THIS CHOOSES THE SELECTED FIELD IN THE LIST.
             NewColumnName = ""
             ColumnText = ""
@@ -973,31 +1092,31 @@
 
                 If tempAttribute.IsSUM Then
                     NewColumnName += " SUM(" & ColumnName & ")"
-                    NewColumnName += " AS """ & "SUM(" & ColumnText & ")" & """"
+                    NewColumnName += " AS """ & ColumnText & " SUM" & """"
                     IncludeGroupBy = True
                 End If
                 If tempAttribute.IsMIN Then
                     If NewColumnName <> "" Then
                         NewColumnName += ","
                     End If
-                    NewColumnName += " MIN(" & ColumnName & ")"
-                    NewColumnName += " AS """ & "MIN(" & ColumnText & ")" & """"
+                    NewColumnName += vbCrLf & " MIN(" & ColumnName & ")"
+                    NewColumnName += " AS """ & ColumnText & " MIN" & """"
                     IncludeGroupBy = True
                 End If
                 If tempAttribute.IsMAX Then
                     If NewColumnName <> "" Then
                         NewColumnName += ","
                     End If
-                    NewColumnName += " MAX(" & ColumnName & ")"
-                    NewColumnName += " AS """ & "MAX(" & ColumnText & ")" & """"
+                    NewColumnName += vbCrLf & " MAX(" & ColumnName & ")"
+                    NewColumnName += " AS """ & ColumnText & " MAX" & """"
                     IncludeGroupBy = True
                 End If
                 If tempAttribute.IsCount Then
                     If NewColumnName <> "" Then
                         NewColumnName += ","
                     End If
-                    NewColumnName += " COUNT(Distinct " & ColumnName & ")"
-                    NewColumnName += " AS """ & "COUNT(Distinct " & ColumnName & ")" & """"
+                    NewColumnName += vbCrLf & " COUNT(Distinct " & ColumnName & ")"
+                    NewColumnName += " AS """ & ColumnText & " Count" & """"
                     IncludeGroupBy = True
                 End If
             End If
@@ -1007,20 +1126,21 @@
             If FieldsSelected = "" Then
                 FieldsSelected += NewColumnName
             Else
-                FieldsSelected += "," & NewColumnName
+                FieldsSelected += "," & vbCrLf & " " & NewColumnName
             End If
 
         Next
         If FieldAttributes.HasCount Then
             IncludeGroupBy = True
             If FieldsSelected = "" Then
-                FieldsSelected += "Count(*) AS " & """" & "Count" & """"
+                FieldsSelected += vbCrLf & "Count(*) AS " & """" & "Count" & """"
             Else
                 If InStr(FieldsSelected, "Count(*)") = 0 Then
-                    FieldsSelected += ",Count(*) AS " & """" & "Count" & """"
+                    FieldsSelected += "," & vbCrLf & "Count(*) AS " & """" & "Count" & """"
                 End If
 
             End If
+            FieldsSelected += vbCrLf
         Else
             If FieldsSelected = "" Then
                 MsgBox("No Fields or Count was selected")
@@ -1041,7 +1161,7 @@
                         If GroupByFields = "" Then
                             GroupByFields += ColumnName
                         Else
-                            GroupByFields += "," & ColumnName
+                            GroupByFields += "," & vbCrLf & ColumnName
                         End If
                     End If
                 End If
@@ -1055,7 +1175,7 @@
                 If OrderByFields = "" Then
                     OrderByFields += Trim(ColumnName)
                 Else
-                    OrderByFields += "," & Trim(ColumnName)
+                    OrderByFields += "," & vbCrLf & Trim(ColumnName)
                 End If
                 If IsChecked Then
                     OrderByFields += " DESC"
@@ -1063,25 +1183,25 @@
             Next
         End If
 
-        SelectPart += FieldsSelected & " FROM " & TableName
-        If myWhereConditions.GetMyWhereCondtions <> "" Then
-            SelectPart += " WHERE " & myWhereConditions.GetMyWhereCondtions
+        SelectPart += FieldsSelected & vbCrLf & " FROM " & TableName
+        If FieldAttributes.MyWhereCondtions <> "" Then
+            SelectPart += vbCrLf & "WHERE " & FieldAttributes.MyWhereCondtions
         End If
         'GROUPBY:
         If GroupByFields <> "" Then
-            SelectPart += " GROUP BY " & GroupByFields
+            SelectPart += vbCrLf & "GROUP BY " & GroupByFields
         End If
         'ORDERBY:
         If OrderByFields <> "" Then
-            SelectPart += " ORDER BY " & OrderByFields
+            SelectPart += vbCrLf & "ORDER BY " & OrderByFields
         End If
         If IsNumeric(txtFirstRows.Text) Then
             FirstRows = CLng(txtFirstRows.Text)
             If FirstRows > 0 Then
                 If DataSetHeaderList.DBVersion = "IBM" Then
-                    SelectPart += " FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
+                    SelectPart += vbCrLf & " FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
                 Else
-                    SelectPart += " LIMIT " & CStr(FirstRows)
+                    SelectPart += vbCrLf & " LIMIT " & CStr(FirstRows)
                 End If
             End If
         End If
@@ -1164,9 +1284,7 @@
     End Sub
 
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
-        FieldAttributes.Dic_Attributes.removeall
-        FieldAttributes.Dic_FieldAlias.removeall
-        FieldAttributes.Dic_Types.removeall
+        FieldAttributes.ClearAllDics()
         Close()
 
     End Sub
@@ -1185,8 +1303,8 @@
         If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
             Entry = 0
         End If
-        If Entry = 0 And myWhereConditions.CountConditions = 0 Then
-            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo) 
+        If Entry = 0 And FieldAttributes.CountConditions = 0 Then
+            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
             If Answer = vbNo Then
                 Exit Sub
             End If
@@ -1236,18 +1354,32 @@
     Private Sub btnRemoveSelectedFields_Click(sender As Object, e As EventArgs) Handles btnRemoveSelectedFields.Click
         Dim IDX As Integer
         Dim ColumnName As String
+        Dim ReturnIDX As Integer
+        Dim LastItem As String
 
-        IDX = lstFields.SelectedIndex
-        If IDX > -1 Then
-            ColumnName = lstFields.Items(lstFields.SelectedIndex)
-            lstFields.Items.RemoveAt(IDX)
+        If lstFields.SelectedIndex = -1 Then
+            MsgBox("Please select a field first")
+        Else
+            Dim SelectedItems = (From i In lstFields.SelectedItems).ToList
+            For Each SelectedItem In SelectedItems
+                lstFields.Items.Remove(SelectedItem)
+                FieldAttributes.RemoveField(SelectedItem)
+                If IsInCHKList(chklstOrderBY, SelectedItem, ReturnIDX) Then
+                    chklstOrderBY.Items.Remove(SelectedItem)
+                End If
+                IDX = lstFields.Items.IndexOf(SelectedItem)
+            Next
             'Highlight NEXT item:
-            If (IDX) < lstFields.Items.Count Then
-                lstFields.SetSelected(IDX, True)
+
+            If lstFields.Items.Count > 0 Then
+                'IDX = 0
+                If (IDX > -1) And (IDX < lstFields.Items.Count) Then
+                    lstFields.SetSelected(IDX, True)
+                End If
             End If
-            FieldAttributes.RemoveField(ColumnName)
-            'FieldAttributes.SelectedFields.RemoveAt(IDX)
+
         End If
+
     End Sub
 
     Private Sub btnRemoveOrderByFields_Click(sender As Object, e As EventArgs) Handles btnRemoveOrderByFields.Click
@@ -1263,19 +1395,15 @@
         End If
     End Sub
 
-    Private Sub dgvFieldSelection_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvFieldSelection.CellClick
+    Private Sub dgvFieldSelection_CellClick(sender As Object, e As DataGridViewCellEventArgs)
 
     End Sub
 
-    Private Sub dgvFieldSelection_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvFieldSelection.CellContentClick
+    Private Sub dgvFieldSelection_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvFieldSelection.CellContentClick, dgvFieldSelection.CellClick
         Dim RowIDX As Integer = e.RowIndex
         Dim ColIDX As Integer = e.ColumnIndex
 
         'This event is not as responsive but e.columnindex does return a value !
-    End Sub
-
-    Private Sub btnClose_Click_1(sender As Object, e As EventArgs)
-
     End Sub
 
     Private Sub lbSelectedWHEREFields_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -1297,20 +1425,6 @@
         txtValue2.Text = dtp2.Text
     End Sub
 
-    Private Sub btnRemoveCondition_Click_1(sender As Object, e As EventArgs) Handles btnRemoveCondition.Click
-        Dim lstIDX As Integer
-        Dim ItemName As String
-
-        lstIDX = lstConditions.SelectedIndex
-        If lstIDX > -1 Then
-            ItemName = lstConditions.Items(lstIDX)
-            lstConditions.Items.RemoveAt(lstIDX)
-            ColumnSelect.myWhereConditions.lbConditions.Remove(ItemName)
-            UpdateInternalConditionList()
-        End If
-
-    End Sub
-
     Private Sub btnTestGetAttributes_Click(sender As Object, e As EventArgs) Handles btnTestGetAttributes.Click
         TestGetAttributes()
 
@@ -1325,6 +1439,20 @@
 
     Private Sub cboWhereFields_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cboWhereFields.SelectedIndexChanged
         If cboWhereFields.Text <> "" Then
+            If FieldAttributes.Dic_Types(cboWhereFields.Text) = "L" Then
+                dtp1.Visible = True
+                txtValue.Text = dtp1.Value
+                dtp2.Visible = False
+                lblValue2.Visible = False
+                txtValue2.Visible = False
+            Else
+                dtp1.Visible = False
+                txtValue.Text = ""
+                dtp2.Visible = False
+                txtValue2.Text = ""
+                lblValue2.Visible = False
+                txtValue2.Visible = False
+            End If
             If cboOperators.ValueMember = "=" Or
                 cboOperators.ValueMember = ">" Or
                 cboOperators.ValueMember = "<" Or
@@ -1353,17 +1481,26 @@
     Private Sub chklstOrderBY_DragDrop(sender As Object, e As DragEventArgs) Handles chklstOrderBY.DragDrop
         Dim str As String
         Dim ReturnIDX As Integer
+        Dim AppPath As String
 
         If Not IsNothing(e.Data.GetData(DataFormats.StringFormat)) Then
             str = CStr(e.Data.GetData(DataFormats.StringFormat)) 'defines type of data to get
+            'Now de-select the item just dragged from the Display List:
+            If IsInList(lstFields, str, ReturnIDX) Then
+                lstFields.SetSelected(ReturnIDX, False)
+            End If
             If Not IsInCHKList(chklstOrderBY, str, ReturnIDX) Then
+                chklstOrderBY.Items.Add(str)
                 'str <> "Count(*)" Then
                 'FieldAttributes.GetSelectedFieldSUM(str) = False And
                 'FieldAttributes.GetSelectedFieldMIN(str) = False And
                 'FieldAttributes.GetSelectedFieldMAX(str) = False Then
-                chklstOrderBY.Items.Add(str)
+
+                AppPath = System.IO.Path.GetDirectoryName(Application.ExecutablePath)
                 If cbAudioClick.Checked = True Then
-                    My.Computer.Audio.Play("C:\Users\PC\Documents\ESPO stuff\SQLBuilder48Dan\SQLBuilder\Media\click.wav")
+                    If System.IO.File.Exists(AppPath & "\CLICK.WAV") Then
+                        My.Computer.Audio.Play(AppPath & "\click.wav")
+                    End If
                 End If
 
             End If
@@ -1399,5 +1536,64 @@
             cbAudioClick.Visible = True
         End If
 
+    End Sub
+
+    Private Sub dgvFieldSelection_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvFieldSelection.RowEnter
+        stsQueryBuilderLabel1.Text = ""
+        stsQueryBuilderLabel2.Text = ""
+
+    End Sub
+
+    Private Sub btnHideColumns_Click(sender As Object, e As EventArgs) Handles btnHideColumns.Click
+        'Default is HIDE columns: FIELD,TYPE,LENGTH,DECIMALS
+        If btnHideColumns.Text = "+" Then
+            dgvFieldSelection.Columns("Column Name").Visible = True
+            dgvFieldSelection.Columns("Column Type").Visible = True
+            dgvFieldSelection.Columns("Column Length").Visible = True
+            dgvFieldSelection.Columns("Column Decimals").Visible = True
+            btnHideColumns.Text = "-"
+        Else
+            dgvFieldSelection.Columns("Column Name").Visible = False
+            dgvFieldSelection.Columns("Column Type").Visible = False
+            dgvFieldSelection.Columns("Column Length").Visible = False
+            dgvFieldSelection.Columns("Column Decimals").Visible = False
+            btnHideColumns.Text = "+"
+        End If
+
+    End Sub
+
+    Private Sub btnRunQuery_Click(sender As Object, e As EventArgs) Handles btnRunQuery.Click
+        Cursor = Cursors.WaitCursor
+        Refresh()
+        Dim Answer As Integer
+        Dim Entry As Integer
+        Dim FinalQuery As String
+
+        If lstFields.Items.Count = 0 Then
+            If FieldAttributes.HasCount = False Then
+                MsgBox("No Fields or Count Selected")
+                Exit Sub
+            End If
+        End If
+        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
+            Entry = 0
+        End If
+        If Entry = 0 And FieldAttributes.CountConditions = 0 Then
+            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
+            If Answer = vbNo Then
+                Exit Sub
+            End If
+        End If
+
+        FinalQuery = BuildQueryFromSelection()
+        If FinalQuery = "" Then
+            Exit Sub
+        End If
+
+        Dim RQ As New RunQuery.QueryResultsDGV
+        RQ.GetParms(GlobalSession, GlobalParms)
+        RQ.PopulateForm(FinalQuery, FieldAttributes)
+        RQ.Show()
+        Cursor = Cursors.Default
     End Sub
 End Class

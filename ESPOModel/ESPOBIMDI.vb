@@ -15,6 +15,7 @@
 
         Dim strStartupArguments() As String
         strStartupArguments = System.Environment.GetCommandLineArgs
+        Me.WindowState = FormWindowState.Maximized
         Try
             If strStartupArguments(1).ToString = "123456" Then
                 GlobalSession.CurrentMode = strStartupArguments(2).ToString

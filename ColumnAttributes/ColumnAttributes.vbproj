@@ -4,12 +4,12 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86D27397-DF7C-4631-B426-59B62C355F2A}</ProjectGuid>
+    <ProjectGuid>{7B0FBB75-1DFD-48E0-B9E1-131413EE662D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <RootNamespace>SQLBuilder</RootNamespace>
-    <AssemblyName>SQLBuilder</AssemblyName>
+    <RootNamespace>ColumnAttributes</RootNamespace>
+    <AssemblyName>ColumnAttributes</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -23,7 +23,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>SQLBuilder.xml</DocumentationFile>
+    <DocumentationFile>ColumnAttributes.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +33,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>SQLBuilder.xml</DocumentationFile>
+    <DocumentationFile>ColumnAttributes.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -49,30 +49,6 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ColumnAttributes">
-      <HintPath>..\ColumnAttributes\bin\Debug\ColumnAttributes.dll</HintPath>
-    </Reference>
-    <Reference Include="ESPOCommon1">
-      <HintPath>..\ESPOModel\bin\Debug\ESPOCommon1.dll</HintPath>
-    </Reference>
-    <Reference Include="ESPOParms">
-      <HintPath>..\ESPOModel\bin\Debug\ESPOParms.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data.Entity">
-      <HintPath>..\MySql.Data.Entity.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data.Entity.EF6">
-      <HintPath>..\MySql.Data.Entity.EF6.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Fabric.Plugin">
-      <HintPath>..\MySql.Fabric.Plugin.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Web">
-      <HintPath>..\MySql.Web.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -98,18 +74,10 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSetHeaderList.Designer.vb">
-      <DependentUpon>DataSetHeaderList.vb</DependentUpon>
-    </Compile>
-    <Compile Include="DataSetHeaderList.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImportfromCSV.Designer.vb">
-      <DependentUpon>ImportfromCSV.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ImportfromCSV.vb">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="clsAttributeProperties.vb" />
+    <Compile Include="clsAttributes.vb" />
+    <Compile Include="clsFieldPosition.vb" />
+    <Compile Include="clsOperators.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -125,39 +93,13 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ColumnSelect.Designer.vb">
-      <DependentUpon>ColumnSelect.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ColumnSelect.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SQLBuilderDAL.vb" />
-    <Compile Include="ViewSQL.Designer.vb">
-      <DependentUpon>ViewSQL.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ViewSQL.vb">
-      <SubType>Form</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DataSetHeaderList.resx">
-      <DependentUpon>DataSetHeaderList.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ImportfromCSV.resx">
-      <DependentUpon>ImportfromCSV.vb</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ColumnSelect.resx">
-      <DependentUpon>ColumnSelect.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewSQL.resx">
-      <DependentUpon>ViewSQL.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -171,15 +113,6 @@
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RunQuery\RunQuery.vbproj">
-      <Project>{7f5f6bee-c404-4235-8817-dc7dc865f962}</Project>
-      <Name>RunQuery</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CLICK.WAV" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

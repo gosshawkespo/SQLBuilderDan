@@ -1,20 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86D27397-DF7C-4631-B426-59B62C355F2A}</ProjectGuid>
+    <ProjectGuid>{7F5F6BEE-C404-4235-8817-DC7DC865F962}</ProjectGuid>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <RootNamespace>SQLBuilder</RootNamespace>
-    <AssemblyName>SQLBuilder</AssemblyName>
+    <RootNamespace>RunQuery</RootNamespace>
+    <AssemblyName>RunQuery</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,7 +23,7 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>SQLBuilder.xml</DocumentationFile>
+    <DocumentationFile>RunQuery.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -33,7 +33,7 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>SQLBuilder.xml</DocumentationFile>
+    <DocumentationFile>RunQuery.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
@@ -49,14 +49,15 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ColumnAttributes">
+    <Reference Include="ColumnAttributes, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ColumnAttributes\bin\Debug\ColumnAttributes.dll</HintPath>
     </Reference>
     <Reference Include="ESPOCommon1">
-      <HintPath>..\ESPOModel\bin\Debug\ESPOCommon1.dll</HintPath>
+      <HintPath>F:\Development\Dev\Common\ESPOCommon1\ESPOCommon\bin\Debug\ESPOCommon1.dll</HintPath>
     </Reference>
     <Reference Include="ESPOParms">
-      <HintPath>..\ESPOModel\bin\Debug\ESPOParms.dll</HintPath>
+      <HintPath>F:\Development\Dev\Common\ESPOParms\bin\Debug\ESPOParms.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\MySql.Data.dll</HintPath>
@@ -98,16 +99,10 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataSetHeaderList.Designer.vb">
-      <DependentUpon>DataSetHeaderList.vb</DependentUpon>
+    <Compile Include="QueryResultsDGV.Designer.vb">
+      <DependentUpon>QueryResultsDGV.vb</DependentUpon>
     </Compile>
-    <Compile Include="DataSetHeaderList.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ImportfromCSV.Designer.vb">
-      <DependentUpon>ImportfromCSV.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ImportfromCSV.vb">
+    <Compile Include="QueryResultsDGV.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -125,39 +120,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ColumnSelect.Designer.vb">
-      <DependentUpon>ColumnSelect.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ColumnSelect.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SQLBuilderDAL.vb" />
-    <Compile Include="ViewSQL.Designer.vb">
-      <DependentUpon>ViewSQL.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ViewSQL.vb">
-      <SubType>Form</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DataSetHeaderList.resx">
-      <DependentUpon>DataSetHeaderList.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ImportfromCSV.resx">
-      <DependentUpon>ImportfromCSV.vb</DependentUpon>
+    <EmbeddedResource Include="QueryResultsDGV.resx">
+      <DependentUpon>QueryResultsDGV.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ColumnSelect.resx">
-      <DependentUpon>ColumnSelect.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewSQL.resx">
-      <DependentUpon>ViewSQL.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -172,14 +144,12 @@
     </None>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RunQuery\RunQuery.vbproj">
-      <Project>{7f5f6bee-c404-4235-8817-dc7dc865f962}</Project>
-      <Name>RunQuery</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CLICK.WAV" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

@@ -49,6 +49,7 @@ Partial Class DataSetHeaderList
         Me.dgvHeaderList.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvHeaderList.Location = New System.Drawing.Point(3, 60)
         Me.dgvHeaderList.Name = "dgvHeaderList"
+        Me.dgvHeaderList.ReadOnly = True
         Me.dgvHeaderList.Size = New System.Drawing.Size(1112, 468)
         Me.dgvHeaderList.TabIndex = 12
         '
@@ -72,7 +73,7 @@ Partial Class DataSetHeaderList
         Me.Controls.Add(Me.dgvHeaderList)
         Me.Controls.Add(Me.gbTOP)
         Me.Name = "DataSetHeaderList"
-        Me.Text = "Header List"
+        Me.Text = "Data Set List"
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).EndInit()
         Me.HeaderListCRUD.ResumeLayout(False)
         Me.ResumeLayout(False)

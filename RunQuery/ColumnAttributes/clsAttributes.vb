@@ -1,4 +1,4 @@
-﻿Public Class clsAttributes
+﻿Public Class ColumnAttributes
     Private _Fieldname As String
     Private _FieldType As String
     Private _FieldLength As Integer
@@ -13,10 +13,12 @@
     Private _Dic_Types As Object
     Private _Dic_FieldAlias As Object
     Private _ErrMessage As String
+    Private _WhereConditions As String
+    Private _lstConditions As List(Of String)
+    Private _lastOperator As String
 
 
     Sub New()
-        _SelectedFields = New List(Of String)
         _SelectedAttributes = New List(Of clsAttributeProperties)
         _Dic_Attributes = CreateObject("Scripting.Dictionary")
         _Dic_Attributes.CompareMode = vbTextCompare
@@ -24,6 +26,8 @@
         _Dic_FieldAlias.CompareMode = vbTextCompare
         _Dic_Types = CreateObject("Scripting.Dictionary")
         _Dic_Types.CompareMode = vbTextCompare
+        _SelectedFields = New List(Of String)
+        _lstConditions = New List(Of String)
     End Sub
 
     Public Property Dic_Attributes As Object
@@ -152,12 +156,66 @@
         End Set
     End Property
 
+    Public Property MyWhereCondtions As String
+        Get
+            Return _WhereConditions
+        End Get
+        Set(value As String)
+            _WhereConditions = value
+        End Set
+    End Property
+
+    Public Property lbConditions As List(Of String)
+        Get
+            Return _lstConditions
+        End Get
+        Set(value As List(Of String))
+            _lstConditions = value
+        End Set
+    End Property
+
+    Public Property LastOperator As String
+        Get
+            Return _lastOperator
+        End Get
+        Set(value As String)
+            _lastOperator = value
+        End Set
+    End Property
+
+    Public Sub DeleteConditions()
+        _WhereConditions = ""
+    End Sub
+
+    Public Sub ClearConditionsList()
+        If lbConditions IsNot Nothing Then
+            lbConditions.Clear()
+        End If
+    End Sub
+
     Public Sub ClearSelectedAttributesList()
         If SelectedFields IsNot Nothing Then
             SelectedFields.Clear()
             'Me.Dic_Attributes.removeall
         End If
     End Sub
+
+    Public Function IsConditionInList(strItem As String) As Boolean
+        IsConditionInList = False
+        If lbConditions IsNot Nothing Then
+            If lbConditions.Contains(strItem) Then
+                Return True
+            End If
+        End If
+
+    End Function
+
+    Public Function CountConditions() As Integer
+        CountConditions = 0
+        If lbConditions IsNot Nothing Then
+            CountConditions = lbConditions.Count
+        End If
+    End Function
 
     Public Sub ResetAllSelectedFields()
         Dim tempattribute As clsAttributeProperties
@@ -216,6 +274,7 @@
         Me.Dic_Attributes.removeall
         Me.Dic_FieldAlias.removeall
         Me.Dic_Types.removeall
+        Me.MyWhereCondtions = ""
     End Sub
 
 
@@ -431,8 +490,8 @@
         FieldText = RemoveBrackets(FieldText, "MIN(")
         FieldText = RemoveBrackets(FieldText, "MAX(")
         FieldText = RemoveBrackets(FieldText, "COUNT(")
-        FieldText = RemoveBrackets(FieldText, "Distinct")
-        FieldText = RemoveBrackets(FieldText, " ")
+        FieldText = RemoveBrackets(FieldText, "Distinct ")
+        'FieldText = RemoveBrackets(FieldText, " ") 'NO ! if spaces are removed - may not reflect original fieldname.
 
         GetFieldNameFromFieldText = ""
         For Each key As String In Me.Dic_Attributes.keys
@@ -683,7 +742,7 @@
 
     Function GetALLSelectedFields() As List(Of String)
         Dim tempAttribute = New clsAttributeProperties
-        Dim lstSelected As New List(Of clsFieldPosition)
+        Dim lstSelected As New List(Of ColumnFieldPosition)
         Dim lstFinal As New List(Of String)
         Dim Pos As Integer
         Dim lstTemp As New List(Of String)
@@ -695,7 +754,7 @@
             If tempAttribute IsNot Nothing Then
                 Pos = tempAttribute.SelectedFieldPos
                 If tempAttribute.IsSelected Then
-                    lstSelected.Add(New clsFieldPosition(key, Pos))
+                    lstSelected.Add(New ColumnFieldPosition(key, Pos))
                 End If
             End If
         Next

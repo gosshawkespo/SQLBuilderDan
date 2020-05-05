@@ -2,7 +2,7 @@
     Private Sub btnBrowse_Click(sender As Object, e As EventArgs) Handles btnBrowse.Click
         'BROWSE for CSV file:
         Dim dlg As New OpenFileDialog
-        Dim Filename As String
+        Dim Filename As String = ""
         Dim REsult As DialogResult
 
         REsult = dlg.ShowDialog()
@@ -44,6 +44,10 @@
 
         myDAL.BulkLoaderMySQL(txtFilename.Text, txtDBTable.Text)
 
+
+    End Sub
+
+    Private Sub ImportfromCSV_Load(sender As Object, e As EventArgs) Handles MyBase.Load
 
     End Sub
 End Class

@@ -1,4 +1,4 @@
-﻿Public Class clsFieldPosition
+﻿Public Class ColumnFieldPosition
     Public Property Fieldname As String
     Public Property FieldPos As Integer
 

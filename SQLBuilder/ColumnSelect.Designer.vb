@@ -25,7 +25,7 @@ Partial Class ColumnSelect
         Me.Label3 = New System.Windows.Forms.Label()
         Me.txtTablename = New System.Windows.Forms.TextBox()
         Me.dgvFieldSelection = New System.Windows.Forms.DataGridView()
-        Me.btnRefresh = New System.Windows.Forms.Button()
+        Me.btnClear = New System.Windows.Forms.Button()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtDatasetName = New System.Windows.Forms.TextBox()
         Me.lstFields = New System.Windows.Forms.ListBox()
@@ -78,6 +78,9 @@ Partial Class ColumnSelect
         Me.btnTestGetAttributes = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.Label4 = New System.Windows.Forms.Label()
+        Me.btnRefresh = New System.Windows.Forms.Button()
+        Me.btnHideColumns = New System.Windows.Forms.Button()
+        Me.btnRunQuery = New System.Windows.Forms.Button()
         CType(Me.dgvFieldSelection, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsQueryBuilder.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -88,7 +91,7 @@ Partial Class ColumnSelect
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(203, 15)
+        Me.Label3.Location = New System.Drawing.Point(243, 15)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(63, 13)
         Me.Label3.TabIndex = 2
@@ -96,9 +99,10 @@ Partial Class ColumnSelect
         '
         'txtTablename
         '
-        Me.txtTablename.Location = New System.Drawing.Point(268, 12)
+        Me.txtTablename.Location = New System.Drawing.Point(308, 13)
         Me.txtTablename.Name = "txtTablename"
-        Me.txtTablename.Size = New System.Drawing.Size(100, 20)
+        Me.txtTablename.ReadOnly = True
+        Me.txtTablename.Size = New System.Drawing.Size(169, 20)
         Me.txtTablename.TabIndex = 2
         Me.txtTablename.Text = "ECM4120V20"
         '
@@ -112,25 +116,26 @@ Partial Class ColumnSelect
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvFieldSelection.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvFieldSelection.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter
-        Me.dgvFieldSelection.Location = New System.Drawing.Point(12, 47)
+        Me.dgvFieldSelection.Location = New System.Drawing.Point(6, 69)
         Me.dgvFieldSelection.MinimumSize = New System.Drawing.Size(0, 170)
         Me.dgvFieldSelection.Name = "dgvFieldSelection"
-        Me.dgvFieldSelection.Size = New System.Drawing.Size(662, 598)
+        Me.dgvFieldSelection.Size = New System.Drawing.Size(470, 578)
         Me.dgvFieldSelection.TabIndex = 7
         '
-        'btnRefresh
+        'btnClear
         '
-        Me.btnRefresh.Location = New System.Drawing.Point(397, 12)
-        Me.btnRefresh.Name = "btnRefresh"
-        Me.btnRefresh.Size = New System.Drawing.Size(80, 23)
-        Me.btnRefresh.TabIndex = 3
-        Me.btnRefresh.Text = "Clear"
-        Me.btnRefresh.UseVisualStyleBackColor = True
+        Me.btnClear.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnClear.Location = New System.Drawing.Point(6, 39)
+        Me.btnClear.Name = "btnClear"
+        Me.btnClear.Size = New System.Drawing.Size(80, 23)
+        Me.btnClear.TabIndex = 3
+        Me.btnClear.Text = "Clear"
+        Me.btnClear.UseVisualStyleBackColor = False
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(10, 15)
+        Me.Label1.Location = New System.Drawing.Point(6, 15)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(78, 13)
         Me.Label1.TabIndex = 0
@@ -138,9 +143,10 @@ Partial Class ColumnSelect
         '
         'txtDatasetName
         '
-        Me.txtDatasetName.Location = New System.Drawing.Point(88, 12)
+        Me.txtDatasetName.Location = New System.Drawing.Point(86, 13)
         Me.txtDatasetName.Name = "txtDatasetName"
-        Me.txtDatasetName.Size = New System.Drawing.Size(100, 20)
+        Me.txtDatasetName.ReadOnly = True
+        Me.txtDatasetName.Size = New System.Drawing.Size(148, 20)
         Me.txtDatasetName.TabIndex = 1
         '
         'lstFields
@@ -151,6 +157,7 @@ Partial Class ColumnSelect
         Me.lstFields.Location = New System.Drawing.Point(164, 34)
         Me.lstFields.MinimumSize = New System.Drawing.Size(165, 140)
         Me.lstFields.Name = "lstFields"
+        Me.lstFields.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
         Me.lstFields.Size = New System.Drawing.Size(169, 134)
         Me.lstFields.TabIndex = 8
         '
@@ -192,7 +199,7 @@ Partial Class ColumnSelect
         Me.stsQueryBuilder.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsQueryBuilderLabel1, Me.stsQueryBuilderLabel2})
         Me.stsQueryBuilder.Location = New System.Drawing.Point(0, 677)
         Me.stsQueryBuilder.Name = "stsQueryBuilder"
-        Me.stsQueryBuilder.Size = New System.Drawing.Size(1501, 22)
+        Me.stsQueryBuilder.Size = New System.Drawing.Size(1316, 22)
         Me.stsQueryBuilder.TabIndex = 22
         Me.stsQueryBuilder.Text = "StatusStrip1"
         '
@@ -219,7 +226,8 @@ Partial Class ColumnSelect
         '
         'btnSelectAll
         '
-        Me.btnSelectAll.Location = New System.Drawing.Point(505, 12)
+        Me.btnSelectAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnSelectAll.Location = New System.Drawing.Point(1102, 126)
         Me.btnSelectAll.Name = "btnSelectAll"
         Me.btnSelectAll.Size = New System.Drawing.Size(80, 23)
         Me.btnSelectAll.TabIndex = 4
@@ -235,7 +243,7 @@ Partial Class ColumnSelect
         Me.btnSelectOrderBy.Name = "btnSelectOrderBy"
         Me.btnSelectOrderBy.Size = New System.Drawing.Size(140, 23)
         Me.btnSelectOrderBy.TabIndex = 11
-        Me.btnSelectOrderBy.Text = "Add Sort Fields ->"
+        Me.btnSelectOrderBy.Text = "Add Sort Fields ↓"
         Me.btnSelectOrderBy.UseVisualStyleBackColor = True
         '
         'btnMoveOrderByFieldsDown
@@ -284,7 +292,7 @@ Partial Class ColumnSelect
         '
         'btnShowQuery
         '
-        Me.btnShowQuery.Location = New System.Drawing.Point(622, 53)
+        Me.btnShowQuery.Location = New System.Drawing.Point(622, 79)
         Me.btnShowQuery.MinimumSize = New System.Drawing.Size(100, 0)
         Me.btnShowQuery.Name = "btnShowQuery"
         Me.btnShowQuery.Size = New System.Drawing.Size(121, 23)
@@ -391,9 +399,9 @@ Partial Class ColumnSelect
         Me.lblColumn.AutoSize = True
         Me.lblColumn.Location = New System.Drawing.Point(14, 35)
         Me.lblColumn.Name = "lblColumn"
-        Me.lblColumn.Size = New System.Drawing.Size(42, 13)
+        Me.lblColumn.Size = New System.Drawing.Size(29, 13)
         Me.lblColumn.TabIndex = 1
-        Me.lblColumn.Text = "Column"
+        Me.lblColumn.Text = "Field"
         '
         'lblOperator
         '
@@ -425,6 +433,7 @@ Partial Class ColumnSelect
         'GroupBox3
         '
         Me.GroupBox3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox3.Controls.Add(Me.btnRunQuery)
         Me.GroupBox3.Controls.Add(Me.Label7)
         Me.GroupBox3.Controls.Add(Me.txtFirstRows)
         Me.GroupBox3.Controls.Add(Me.Label6)
@@ -449,7 +458,7 @@ Partial Class ColumnSelect
         Me.GroupBox3.Controls.Add(Me.btnShowQuery)
         Me.GroupBox3.Controls.Add(Me.txtValue)
         Me.GroupBox3.Controls.Add(Me.lblValue)
-        Me.GroupBox3.Location = New System.Drawing.Point(680, 383)
+        Me.GroupBox3.Location = New System.Drawing.Point(489, 383)
         Me.GroupBox3.Name = "GroupBox3"
         Me.GroupBox3.Size = New System.Drawing.Size(773, 267)
         Me.GroupBox3.TabIndex = 20
@@ -506,6 +515,7 @@ Partial Class ColumnSelect
         Me.lstConditions.FormattingEnabled = True
         Me.lstConditions.Location = New System.Drawing.Point(324, 166)
         Me.lstConditions.Name = "lstConditions"
+        Me.lstConditions.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
         Me.lstConditions.Size = New System.Drawing.Size(443, 95)
         Me.lstConditions.TabIndex = 26
         '
@@ -554,6 +564,7 @@ Partial Class ColumnSelect
         Me.lblValue2.Size = New System.Drawing.Size(43, 13)
         Me.lblValue2.TabIndex = 8
         Me.lblValue2.Text = "Value 2"
+        Me.lblValue2.Visible = False
         '
         'btnAddCondition
         '
@@ -601,7 +612,7 @@ Partial Class ColumnSelect
         Me.GroupBox4.Controls.Add(Me.btnSelectFields)
         Me.GroupBox4.Controls.Add(Me.Label2)
         Me.GroupBox4.Controls.Add(Me.btnRemoveSelectedFields)
-        Me.GroupBox4.Location = New System.Drawing.Point(680, 13)
+        Me.GroupBox4.Location = New System.Drawing.Point(489, 13)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(426, 180)
         Me.GroupBox4.TabIndex = 24
@@ -641,7 +652,8 @@ Partial Class ColumnSelect
         '
         'btnTestGetAttributes
         '
-        Me.btnTestGetAttributes.Location = New System.Drawing.Point(1176, 88)
+        Me.btnTestGetAttributes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnTestGetAttributes.Location = New System.Drawing.Point(1042, 88)
         Me.btnTestGetAttributes.Name = "btnTestGetAttributes"
         Me.btnTestGetAttributes.Size = New System.Drawing.Size(140, 23)
         Me.btnTestGetAttributes.TabIndex = 7
@@ -660,7 +672,7 @@ Partial Class ColumnSelect
         Me.GroupBox5.Controls.Add(Me.btnSelectOrderBy)
         Me.GroupBox5.Controls.Add(Me.Label5)
         Me.GroupBox5.Controls.Add(Me.btnRemoveOrderByFields)
-        Me.GroupBox5.Location = New System.Drawing.Point(680, 198)
+        Me.GroupBox5.Location = New System.Drawing.Point(489, 198)
         Me.GroupBox5.Name = "GroupBox5"
         Me.GroupBox5.Size = New System.Drawing.Size(426, 180)
         Me.GroupBox5.TabIndex = 25
@@ -676,11 +688,42 @@ Partial Class ColumnSelect
         Me.Label4.TabIndex = 28
         Me.Label4.Text = "Tick Item in list to indicate reversed sort."
         '
+        'btnRefresh
+        '
+        Me.btnRefresh.Location = New System.Drawing.Point(104, 39)
+        Me.btnRefresh.Name = "btnRefresh"
+        Me.btnRefresh.Size = New System.Drawing.Size(80, 23)
+        Me.btnRefresh.TabIndex = 26
+        Me.btnRefresh.Text = "Refresh"
+        Me.btnRefresh.UseVisualStyleBackColor = True
+        '
+        'btnHideColumns
+        '
+        Me.btnHideColumns.BackColor = System.Drawing.SystemColors.ButtonFace
+        Me.btnHideColumns.Location = New System.Drawing.Point(215, 39)
+        Me.btnHideColumns.Name = "btnHideColumns"
+        Me.btnHideColumns.Size = New System.Drawing.Size(19, 23)
+        Me.btnHideColumns.TabIndex = 27
+        Me.btnHideColumns.Text = "+"
+        Me.btnHideColumns.UseVisualStyleBackColor = False
+        '
+        'btnRunQuery
+        '
+        Me.btnRunQuery.Location = New System.Drawing.Point(623, 50)
+        Me.btnRunQuery.MinimumSize = New System.Drawing.Size(100, 0)
+        Me.btnRunQuery.Name = "btnRunQuery"
+        Me.btnRunQuery.Size = New System.Drawing.Size(121, 23)
+        Me.btnRunQuery.TabIndex = 31
+        Me.btnRunQuery.Text = "Run Query"
+        Me.btnRunQuery.UseVisualStyleBackColor = True
+        '
         'ColumnSelect
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1501, 699)
+        Me.ClientSize = New System.Drawing.Size(1316, 699)
+        Me.Controls.Add(Me.btnHideColumns)
+        Me.Controls.Add(Me.btnRefresh)
         Me.Controls.Add(Me.GroupBox5)
         Me.Controls.Add(Me.GroupBox4)
         Me.Controls.Add(Me.btnTestGetAttributes)
@@ -691,7 +734,7 @@ Partial Class ColumnSelect
         Me.Controls.Add(Me.stsQueryBuilder)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDatasetName)
-        Me.Controls.Add(Me.btnRefresh)
+        Me.Controls.Add(Me.btnClear)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.txtTablename)
         Me.Controls.Add(Me.dgvFieldSelection)
@@ -714,7 +757,7 @@ Partial Class ColumnSelect
     Friend WithEvents Label3 As Label
     Friend WithEvents txtTablename As TextBox
     Friend WithEvents dgvFieldSelection As DataGridView
-    Friend WithEvents btnRefresh As Button
+    Friend WithEvents btnClear As Button
     Friend WithEvents Label1 As Label
     Friend WithEvents txtDatasetName As TextBox
     Friend WithEvents lstFields As ListBox
@@ -767,4 +810,7 @@ Partial Class ColumnSelect
     Friend WithEvents Label7 As Label
     Friend WithEvents txtFirstRows As TextBox
     Friend WithEvents Label6 As Label
+    Friend WithEvents btnRefresh As Button
+    Friend WithEvents btnHideColumns As Button
+    Friend WithEvents btnRunQuery As Button
 End Class

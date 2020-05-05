@@ -1,6 +1,7 @@
 ﻿'Imports excel = Microsoft.Office.Interop.Excel
 Imports System.Data.Odbc
 Imports MySql.Data.MySqlClient
+Imports System.IO
 Public Class ViewSQL
 
     'ViewSQL_KeyDown KEYS: CTRL+R = RUN QUERY, CTRL+SHIFT+C = CLOSE FORM
@@ -211,4 +212,21 @@ Public Class ViewSQL
 
     End Sub
 
+    Private Sub btnSaveSQL_Click(sender As Object, e As EventArgs) Handles btnSaveSQL.Click
+        'SAVE SQL to text file:
+        Dim mySQLFile As System.IO.StreamWriter
+        Dim savedlg As New SaveFileDialog
+        'Dim myStream As IO.Stream
+
+        savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+        savedlg.FilterIndex = 1
+        savedlg.RestoreDirectory = True
+        savedlg.InitialDirectory = Application.StartupPath
+        If savedlg.ShowDialog() = DialogResult.OK Then
+            mySQLFile = File.CreateText(savedlg.FileName)
+            mySQLFile.WriteLine(txtSQLQuery.Text)
+            mySQLFile.Close()
+        End If
+
+    End Sub
 End Class

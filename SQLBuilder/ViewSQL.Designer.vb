@@ -31,6 +31,7 @@ Partial Class ViewSQL
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.tssLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.btnViewAttributes = New System.Windows.Forms.Button()
+        Me.btnSaveSQL = New System.Windows.Forms.Button()
         CType(Me.dgvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -39,7 +40,7 @@ Partial Class ViewSQL
         '
         Me.Label4.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(-91, 243)
+        Me.Label4.Location = New System.Drawing.Point(-91, 261)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(62, 13)
         Me.Label4.TabIndex = 11
@@ -47,14 +48,15 @@ Partial Class ViewSQL
         '
         'txtSQLQuery
         '
-        Me.txtSQLQuery.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.txtSQLQuery.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtSQLQuery.Location = New System.Drawing.Point(12, 27)
         Me.txtSQLQuery.Multiline = True
         Me.txtSQLQuery.Name = "txtSQLQuery"
         Me.txtSQLQuery.ReadOnly = True
         Me.txtSQLQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtSQLQuery.Size = New System.Drawing.Size(994, 115)
+        Me.txtSQLQuery.Size = New System.Drawing.Size(994, 436)
         Me.txtSQLQuery.TabIndex = 10
         '
         'Label1
@@ -68,7 +70,8 @@ Partial Class ViewSQL
         '
         'btnClose
         '
-        Me.btnClose.Location = New System.Drawing.Point(15, 152)
+        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnClose.Location = New System.Drawing.Point(15, 474)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(75, 23)
         Me.btnClose.TabIndex = 13
@@ -77,28 +80,29 @@ Partial Class ViewSQL
         '
         'dgvOutput
         '
-        Me.dgvOutput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left) _
-            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.dgvOutput.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.dgvOutput.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvOutput.Location = New System.Drawing.Point(12, 194)
+        Me.dgvOutput.Location = New System.Drawing.Point(15, 501)
         Me.dgvOutput.Name = "dgvOutput"
-        Me.dgvOutput.Size = New System.Drawing.Size(994, 292)
+        Me.dgvOutput.Size = New System.Drawing.Size(994, 13)
         Me.dgvOutput.TabIndex = 14
+        Me.dgvOutput.Visible = False
         '
         'btnRun
         '
-        Me.btnRun.Location = New System.Drawing.Point(114, 152)
+        Me.btnRun.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnRun.Location = New System.Drawing.Point(931, 474)
         Me.btnRun.Name = "btnRun"
         Me.btnRun.Size = New System.Drawing.Size(75, 23)
         Me.btnRun.TabIndex = 15
         Me.btnRun.Text = "Run"
         Me.btnRun.UseVisualStyleBackColor = True
+        Me.btnRun.Visible = False
         '
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tssLabel1})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 499)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 517)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(1021, 22)
         Me.StatusStrip1.TabIndex = 16
@@ -110,7 +114,8 @@ Partial Class ViewSQL
         '
         'btnViewAttributes
         '
-        Me.btnViewAttributes.Location = New System.Drawing.Point(211, 152)
+        Me.btnViewAttributes.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnViewAttributes.Location = New System.Drawing.Point(796, 474)
         Me.btnViewAttributes.Name = "btnViewAttributes"
         Me.btnViewAttributes.Size = New System.Drawing.Size(119, 23)
         Me.btnViewAttributes.TabIndex = 17
@@ -118,11 +123,22 @@ Partial Class ViewSQL
         Me.btnViewAttributes.UseVisualStyleBackColor = True
         Me.btnViewAttributes.Visible = False
         '
+        'btnSaveSQL
+        '
+        Me.btnSaveSQL.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnSaveSQL.Location = New System.Drawing.Point(111, 474)
+        Me.btnSaveSQL.Name = "btnSaveSQL"
+        Me.btnSaveSQL.Size = New System.Drawing.Size(75, 23)
+        Me.btnSaveSQL.TabIndex = 18
+        Me.btnSaveSQL.Text = "Save SQL"
+        Me.btnSaveSQL.UseVisualStyleBackColor = True
+        '
         'ViewSQL
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1021, 521)
+        Me.ClientSize = New System.Drawing.Size(1021, 539)
+        Me.Controls.Add(Me.btnSaveSQL)
         Me.Controls.Add(Me.btnViewAttributes)
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.btnRun)
@@ -150,4 +166,5 @@ Partial Class ViewSQL
     Friend WithEvents StatusStrip1 As StatusStrip
     Friend WithEvents tssLabel1 As ToolStripStatusLabel
     Friend WithEvents btnViewAttributes As Button
+    Friend WithEvents btnSaveSQL As Button
 End Class

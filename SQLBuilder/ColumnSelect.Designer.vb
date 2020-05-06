@@ -36,13 +36,11 @@ Partial Class ColumnSelect
         Me.stsQueryBuilderLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.stsQueryBuilderLabel2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.btnSelectAll = New System.Windows.Forms.Button()
         Me.btnSelectOrderBy = New System.Windows.Forms.Button()
         Me.btnMoveOrderByFieldsDown = New System.Windows.Forms.Button()
         Me.btnMoveOrderByFieldsUp = New System.Windows.Forms.Button()
         Me.chklstOrderBY = New System.Windows.Forms.CheckedListBox()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.btnShowQuery = New System.Windows.Forms.Button()
         Me.btnRemoveSelectedFields = New System.Windows.Forms.Button()
         Me.btnRemoveOrderByFields = New System.Windows.Forms.Button()
         Me.dtp2 = New System.Windows.Forms.DateTimePicker()
@@ -50,17 +48,12 @@ Partial Class ColumnSelect
         Me.txtValue2 = New System.Windows.Forms.TextBox()
         Me.lblMessage = New System.Windows.Forms.Label()
         Me.lblValue = New System.Windows.Forms.Label()
-        Me.cbIncludeSingleQuote = New System.Windows.Forms.CheckBox()
         Me.txtValue = New System.Windows.Forms.TextBox()
         Me.lblColumn = New System.Windows.Forms.Label()
         Me.lblOperator = New System.Windows.Forms.Label()
         Me.cboOperators = New System.Windows.Forms.ComboBox()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.btnRunQuery = New System.Windows.Forms.Button()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.txtFirstRows = New System.Windows.Forms.TextBox()
-        Me.Label6 = New System.Windows.Forms.Label()
         Me.txtINvalues = New System.Windows.Forms.TextBox()
         Me.rbOR = New System.Windows.Forms.RadioButton()
         Me.lstConditions = New System.Windows.Forms.ListBox()
@@ -72,21 +65,29 @@ Partial Class ColumnSelect
         Me.btnRemoveCondition = New System.Windows.Forms.Button()
         Me.cboWhereFields = New System.Windows.Forms.ComboBox()
         Me.txtOperator = New System.Windows.Forms.TextBox()
+        Me.Label7 = New System.Windows.Forms.Label()
+        Me.txtFirstRows = New System.Windows.Forms.TextBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.GroupBox4 = New System.Windows.Forms.GroupBox()
         Me.btnIncludeCount = New System.Windows.Forms.Button()
         Me.lblDataElementsLabel = New System.Windows.Forms.Label()
         Me.cbAudioClick = New System.Windows.Forms.CheckBox()
-        Me.btnTestGetAttributes = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.btnRefresh = New System.Windows.Forms.Button()
         Me.btnHideColumns = New System.Windows.Forms.Button()
-        Me.btnImportSQL = New System.Windows.Forms.Button()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.btnRunSQLQuery = New System.Windows.Forms.Button()
+        Me.btnSaveQuery = New System.Windows.Forms.Button()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.btnShowSQLQuery = New System.Windows.Forms.Button()
+        Me.btnLoadQuery = New System.Windows.Forms.Button()
         CType(Me.dgvFieldSelection, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsQueryBuilder.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.GroupBox4.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Label3
@@ -225,17 +226,6 @@ Partial Class ColumnSelect
         Me.Label2.TabIndex = 8
         Me.Label2.Text = "Data Elements to be displayed:"
         '
-        'btnSelectAll
-        '
-        Me.btnSelectAll.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSelectAll.Location = New System.Drawing.Point(1102, 126)
-        Me.btnSelectAll.Name = "btnSelectAll"
-        Me.btnSelectAll.Size = New System.Drawing.Size(80, 23)
-        Me.btnSelectAll.TabIndex = 4
-        Me.btnSelectAll.Text = "Select All"
-        Me.btnSelectAll.UseVisualStyleBackColor = True
-        Me.btnSelectAll.Visible = False
-        '
         'btnSelectOrderBy
         '
         Me.btnSelectOrderBy.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -291,20 +281,10 @@ Partial Class ColumnSelect
         Me.Label5.TabIndex = 14
         Me.Label5.Text = "Sort the results into the following sequence:"
         '
-        'btnShowQuery
-        '
-        Me.btnShowQuery.Location = New System.Drawing.Point(622, 79)
-        Me.btnShowQuery.MinimumSize = New System.Drawing.Size(100, 0)
-        Me.btnShowQuery.Name = "btnShowQuery"
-        Me.btnShowQuery.Size = New System.Drawing.Size(121, 23)
-        Me.btnShowQuery.TabIndex = 24
-        Me.btnShowQuery.Text = "Show Query"
-        Me.btnShowQuery.UseVisualStyleBackColor = True
-        '
         'btnRemoveSelectedFields
         '
         Me.btnRemoveSelectedFields.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnRemoveSelectedFields.Location = New System.Drawing.Point(14, 63)
+        Me.btnRemoveSelectedFields.Location = New System.Drawing.Point(14, 64)
         Me.btnRemoveSelectedFields.MinimumSize = New System.Drawing.Size(140, 0)
         Me.btnRemoveSelectedFields.Name = "btnRemoveSelectedFields"
         Me.btnRemoveSelectedFields.Size = New System.Drawing.Size(140, 23)
@@ -372,22 +352,6 @@ Partial Class ColumnSelect
         Me.lblValue.TabIndex = 6
         Me.lblValue.Text = "Value"
         '
-        'cbIncludeSingleQuote
-        '
-        Me.cbIncludeSingleQuote.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.cbIncludeSingleQuote.AutoSize = True
-        Me.cbIncludeSingleQuote.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.cbIncludeSingleQuote.Checked = True
-        Me.cbIncludeSingleQuote.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.cbIncludeSingleQuote.Location = New System.Drawing.Point(275, 58)
-        Me.cbIncludeSingleQuote.Name = "cbIncludeSingleQuote"
-        Me.cbIncludeSingleQuote.Size = New System.Drawing.Size(128, 17)
-        Me.cbIncludeSingleQuote.TabIndex = 27
-        Me.cbIncludeSingleQuote.Text = "Include Single Quote:"
-        Me.cbIncludeSingleQuote.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.cbIncludeSingleQuote.UseVisualStyleBackColor = True
-        Me.cbIncludeSingleQuote.Visible = False
-        '
         'txtValue
         '
         Me.txtValue.Location = New System.Drawing.Point(174, 112)
@@ -434,10 +398,6 @@ Partial Class ColumnSelect
         'GroupBox3
         '
         Me.GroupBox3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.GroupBox3.Controls.Add(Me.btnRunQuery)
-        Me.GroupBox3.Controls.Add(Me.Label7)
-        Me.GroupBox3.Controls.Add(Me.txtFirstRows)
-        Me.GroupBox3.Controls.Add(Me.Label6)
         Me.GroupBox3.Controls.Add(Me.txtINvalues)
         Me.GroupBox3.Controls.Add(Me.rbOR)
         Me.GroupBox3.Controls.Add(Me.lstConditions)
@@ -445,7 +405,6 @@ Partial Class ColumnSelect
         Me.GroupBox3.Controls.Add(Me.rbAND)
         Me.GroupBox3.Controls.Add(Me.dtp2)
         Me.GroupBox3.Controls.Add(Me.lblFilterRecords)
-        Me.GroupBox3.Controls.Add(Me.cbIncludeSingleQuote)
         Me.GroupBox3.Controls.Add(Me.lblValue2)
         Me.GroupBox3.Controls.Add(Me.btnAddCondition)
         Me.GroupBox3.Controls.Add(Me.btnRemoveCondition)
@@ -456,7 +415,6 @@ Partial Class ColumnSelect
         Me.GroupBox3.Controls.Add(Me.cboOperators)
         Me.GroupBox3.Controls.Add(Me.lblOperator)
         Me.GroupBox3.Controls.Add(Me.lblColumn)
-        Me.GroupBox3.Controls.Add(Me.btnShowQuery)
         Me.GroupBox3.Controls.Add(Me.txtValue)
         Me.GroupBox3.Controls.Add(Me.lblValue)
         Me.GroupBox3.Location = New System.Drawing.Point(489, 383)
@@ -464,43 +422,6 @@ Partial Class ColumnSelect
         Me.GroupBox3.Size = New System.Drawing.Size(773, 267)
         Me.GroupBox3.TabIndex = 20
         Me.GroupBox3.TabStop = False
-        '
-        'btnRunQuery
-        '
-        Me.btnRunQuery.Location = New System.Drawing.Point(623, 50)
-        Me.btnRunQuery.MinimumSize = New System.Drawing.Size(100, 0)
-        Me.btnRunQuery.Name = "btnRunQuery"
-        Me.btnRunQuery.Size = New System.Drawing.Size(121, 23)
-        Me.btnRunQuery.TabIndex = 31
-        Me.btnRunQuery.Text = "Run Query"
-        Me.btnRunQuery.UseVisualStyleBackColor = True
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(706, 25)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(34, 13)
-        Me.Label7.TabIndex = 30
-        Me.Label7.Text = "Rows"
-        '
-        'txtFirstRows
-        '
-        Me.txtFirstRows.Location = New System.Drawing.Point(623, 22)
-        Me.txtFirstRows.Name = "txtFirstRows"
-        Me.txtFirstRows.Size = New System.Drawing.Size(70, 20)
-        Me.txtFirstRows.TabIndex = 26
-        Me.txtFirstRows.Text = "0"
-        Me.txtFirstRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(542, 25)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(61, 13)
-        Me.Label6.TabIndex = 28
-        Me.Label6.Text = "Return First"
         '
         'txtINvalues
         '
@@ -524,7 +445,7 @@ Partial Class ColumnSelect
         'lstConditions
         '
         Me.lstConditions.FormattingEnabled = True
-        Me.lstConditions.Location = New System.Drawing.Point(324, 166)
+        Me.lstConditions.Location = New System.Drawing.Point(324, 144)
         Me.lstConditions.Name = "lstConditions"
         Me.lstConditions.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
         Me.lstConditions.Size = New System.Drawing.Size(443, 95)
@@ -537,7 +458,7 @@ Partial Class ColumnSelect
         Me.cbIgnoreCase.CheckAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.cbIgnoreCase.Checked = True
         Me.cbIgnoreCase.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.cbIgnoreCase.Location = New System.Drawing.Point(409, 58)
+        Me.cbIgnoreCase.Location = New System.Drawing.Point(324, 56)
         Me.cbIgnoreCase.Name = "cbIgnoreCase"
         Me.cbIgnoreCase.Size = New System.Drawing.Size(86, 17)
         Me.cbIgnoreCase.TabIndex = 25
@@ -612,6 +533,33 @@ Partial Class ColumnSelect
         Me.txtOperator.Text = "="
         Me.txtOperator.Visible = False
         '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(264, 133)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(34, 13)
+        Me.Label7.TabIndex = 30
+        Me.Label7.Text = "Rows"
+        '
+        'txtFirstRows
+        '
+        Me.txtFirstRows.Location = New System.Drawing.Point(181, 130)
+        Me.txtFirstRows.Name = "txtFirstRows"
+        Me.txtFirstRows.Size = New System.Drawing.Size(70, 20)
+        Me.txtFirstRows.TabIndex = 26
+        Me.txtFirstRows.Text = "0"
+        Me.txtFirstRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(100, 133)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(61, 13)
+        Me.Label6.TabIndex = 28
+        Me.Label6.Text = "Return First"
+        '
         'GroupBox4
         '
         Me.GroupBox4.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -661,17 +609,6 @@ Partial Class ColumnSelect
         Me.cbAudioClick.UseVisualStyleBackColor = True
         Me.cbAudioClick.Visible = False
         '
-        'btnTestGetAttributes
-        '
-        Me.btnTestGetAttributes.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnTestGetAttributes.Location = New System.Drawing.Point(1042, 88)
-        Me.btnTestGetAttributes.Name = "btnTestGetAttributes"
-        Me.btnTestGetAttributes.Size = New System.Drawing.Size(140, 23)
-        Me.btnTestGetAttributes.TabIndex = 7
-        Me.btnTestGetAttributes.Text = "TEST"
-        Me.btnTestGetAttributes.UseVisualStyleBackColor = True
-        Me.btnTestGetAttributes.Visible = False
-        '
         'GroupBox5
         '
         Me.GroupBox5.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -718,30 +655,91 @@ Partial Class ColumnSelect
         Me.btnHideColumns.Text = "+"
         Me.btnHideColumns.UseVisualStyleBackColor = False
         '
-        'btnImportSQL
+        'GroupBox1
         '
-        Me.btnImportSQL.Location = New System.Drawing.Point(307, 40)
-        Me.btnImportSQL.Name = "btnImportSQL"
-        Me.btnImportSQL.Size = New System.Drawing.Size(80, 23)
-        Me.btnImportSQL.TabIndex = 29
-        Me.btnImportSQL.Text = "Import SQL"
-        Me.btnImportSQL.UseVisualStyleBackColor = True
+        Me.GroupBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.GroupBox1.Controls.Add(Me.btnRunSQLQuery)
+        Me.GroupBox1.Controls.Add(Me.Label7)
+        Me.GroupBox1.Controls.Add(Me.btnSaveQuery)
+        Me.GroupBox1.Controls.Add(Me.txtFirstRows)
+        Me.GroupBox1.Controls.Add(Me.Label6)
+        Me.GroupBox1.Controls.Add(Me.Label9)
+        Me.GroupBox1.Controls.Add(Me.btnShowSQLQuery)
+        Me.GroupBox1.Controls.Add(Me.btnLoadQuery)
+        Me.GroupBox1.Location = New System.Drawing.Point(931, 13)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(331, 210)
+        Me.GroupBox1.TabIndex = 30
+        Me.GroupBox1.TabStop = False
+        '
+        'btnRunSQLQuery
+        '
+        Me.btnRunSQLQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnRunSQLQuery.Location = New System.Drawing.Point(14, 94)
+        Me.btnRunSQLQuery.MinimumSize = New System.Drawing.Size(140, 0)
+        Me.btnRunSQLQuery.Name = "btnRunSQLQuery"
+        Me.btnRunSQLQuery.Size = New System.Drawing.Size(140, 23)
+        Me.btnRunSQLQuery.TabIndex = 29
+        Me.btnRunSQLQuery.Text = "Run Query"
+        Me.btnRunSQLQuery.UseVisualStyleBackColor = True
+        '
+        'btnSaveQuery
+        '
+        Me.btnSaveQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnSaveQuery.Location = New System.Drawing.Point(14, 64)
+        Me.btnSaveQuery.MinimumSize = New System.Drawing.Size(140, 0)
+        Me.btnSaveQuery.Name = "btnSaveQuery"
+        Me.btnSaveQuery.Size = New System.Drawing.Size(140, 23)
+        Me.btnSaveQuery.TabIndex = 6
+        Me.btnSaveQuery.Text = "Save Query"
+        Me.btnSaveQuery.UseVisualStyleBackColor = True
+        '
+        'Label9
+        '
+        Me.Label9.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.Label9.AutoSize = True
+        Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label9.Location = New System.Drawing.Point(2, 12)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(168, 13)
+        Me.Label9.TabIndex = 8
+        Me.Label9.Text = "Execution and Save Options"
+        '
+        'btnShowSQLQuery
+        '
+        Me.btnShowSQLQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnShowSQLQuery.Location = New System.Drawing.Point(14, 172)
+        Me.btnShowSQLQuery.MinimumSize = New System.Drawing.Size(140, 0)
+        Me.btnShowSQLQuery.Name = "btnShowSQLQuery"
+        Me.btnShowSQLQuery.Size = New System.Drawing.Size(140, 23)
+        Me.btnShowSQLQuery.TabIndex = 28
+        Me.btnShowSQLQuery.Text = "Show Query"
+        Me.btnShowSQLQuery.UseVisualStyleBackColor = True
+        '
+        'btnLoadQuery
+        '
+        Me.btnLoadQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnLoadQuery.Location = New System.Drawing.Point(14, 34)
+        Me.btnLoadQuery.MinimumSize = New System.Drawing.Size(140, 0)
+        Me.btnLoadQuery.Name = "btnLoadQuery"
+        Me.btnLoadQuery.Size = New System.Drawing.Size(140, 23)
+        Me.btnLoadQuery.TabIndex = 5
+        Me.btnLoadQuery.Text = "Load Query"
+        Me.btnLoadQuery.UseVisualStyleBackColor = True
         '
         'ColumnSelect
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1316, 699)
-        Me.Controls.Add(Me.btnImportSQL)
+        Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.btnHideColumns)
         Me.Controls.Add(Me.btnRefresh)
         Me.Controls.Add(Me.GroupBox5)
         Me.Controls.Add(Me.GroupBox4)
-        Me.Controls.Add(Me.btnTestGetAttributes)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.btnClose)
         Me.Controls.Add(Me.lblMessage)
-        Me.Controls.Add(Me.btnSelectAll)
         Me.Controls.Add(Me.stsQueryBuilder)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtDatasetName)
@@ -761,6 +759,8 @@ Partial Class ColumnSelect
         Me.GroupBox4.PerformLayout()
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -778,13 +778,11 @@ Partial Class ColumnSelect
     Friend WithEvents stsQueryBuilder As StatusStrip
     Friend WithEvents Label2 As Label
     Friend WithEvents stsQueryBuilderLabel1 As ToolStripStatusLabel
-    Friend WithEvents btnSelectAll As Button
     Friend WithEvents btnSelectOrderBy As Button
     Friend WithEvents btnMoveOrderByFieldsDown As Button
     Friend WithEvents btnMoveOrderByFieldsUp As Button
     Friend WithEvents chklstOrderBY As CheckedListBox
     Friend WithEvents Label5 As Label
-    Friend WithEvents btnShowQuery As Button
     Friend WithEvents btnRemoveSelectedFields As Button
     Friend WithEvents btnRemoveOrderByFields As Button
     Friend WithEvents dtp2 As DateTimePicker
@@ -792,7 +790,6 @@ Partial Class ColumnSelect
     Friend WithEvents txtValue2 As TextBox
     Friend WithEvents lblMessage As Label
     Friend WithEvents lblValue As Label
-    Friend WithEvents cbIncludeSingleQuote As CheckBox
     Friend WithEvents txtValue As TextBox
     Friend WithEvents lblColumn As Label
     Friend WithEvents lblOperator As Label
@@ -811,7 +808,6 @@ Partial Class ColumnSelect
     Friend WithEvents GroupBox4 As GroupBox
     Friend WithEvents GroupBox5 As GroupBox
     Friend WithEvents txtINvalues As TextBox
-    Friend WithEvents btnTestGetAttributes As Button
     Friend WithEvents lblFilterRecords As Label
     Friend WithEvents lblDataElementsLabel As Label
     Friend WithEvents Label4 As Label
@@ -823,6 +819,10 @@ Partial Class ColumnSelect
     Friend WithEvents Label6 As Label
     Friend WithEvents btnRefresh As Button
     Friend WithEvents btnHideColumns As Button
-    Friend WithEvents btnRunQuery As Button
-    Friend WithEvents btnImportSQL As Button
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents btnRunSQLQuery As Button
+    Friend WithEvents btnSaveQuery As Button
+    Friend WithEvents Label9 As Label
+    Friend WithEvents btnShowSQLQuery As Button
+    Friend WithEvents btnLoadQuery As Button
 End Class

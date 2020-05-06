@@ -693,7 +693,7 @@ Public Class ColumnSelect
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
             btnAddCondition.PerformClick()
         ElseIf (e.Control AndAlso (e.KeyCode = Keys.S)) Then
-            btnShowQuery.PerformClick()
+            btnShowSQLQuery.PerformClick()
         ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
             btnClose.PerformClick()
         End If
@@ -725,7 +725,6 @@ Public Class ColumnSelect
         txtValue2.Text = ""
         cboOperators.SelectedIndex = cboOperators.FindString("Equals")
 
-        btnSelectAll.Text = "Select All"
         stsQueryBuilderLabel1.Text = ""
         stsQueryBuilderLabel2.Text = ""
         'Me.Height = 584
@@ -1225,20 +1224,20 @@ Public Class ColumnSelect
 
     End Sub
 
-    Private Sub btnSelectAll_Click(sender As Object, e As EventArgs) Handles btnSelectAll.Click
+    Private Sub btnSelectAll_Click(sender As Object, e As EventArgs)
         Dim Selected As Boolean = False
 
-        If btnSelectAll.Text = "Select All" Then
-            btnSelectAll.Text = "Unselect All"
-            btnSelectAll.Refresh()
-            Selected = True
-        Else
-            'If btnSelectAll.Text = "Unselect All" Then
-            btnSelectAll.Text = "Select All"
-            btnSelectAll.Refresh()
+        'If btnSelectAll.Text = "Select All" Then
+        'btnSelectAll.Text = "Unselect All"
+        'btnSelectAll.Refresh()
+        'Selected = True
+        'Else
+        'If btnSelectAll.Text = "Unselect All" Then
+        'btnSelectAll.Text = "Select All"
+        'btnSelectAll.Refresh()
 
-            Selected = False
-        End If
+        'Selected = False
+        'End If
         For i As Integer = 0 To dgvFieldSelection.Rows.Count - 1
             dgvFieldSelection.Rows(i).Cells("SelectField").Value = Selected
         Next
@@ -1291,30 +1290,6 @@ Public Class ColumnSelect
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         FieldAttributes.ClearAllDics()
         Close()
-
-    End Sub
-
-    Private Sub btnShowQuery_Click(sender As Object, e As EventArgs) Handles btnShowQuery.Click
-        Dim Answer As Integer
-        Dim Entry As Integer
-        Dim recs As Long
-
-        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
-            If FieldAttributes.HasCount = False Then
-                MsgBox("No Fields or Count Selected")
-                Exit Sub
-            End If
-        End If
-        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
-            Entry = 0
-        End If
-        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
-            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
-            If Answer = vbNo Then
-                Exit Sub
-            End If
-        End If
-        ShowQueryForm()
 
     End Sub
 
@@ -1430,7 +1405,7 @@ Public Class ColumnSelect
         txtValue2.Text = dtp2.Text
     End Sub
 
-    Private Sub btnTestGetAttributes_Click(sender As Object, e As EventArgs) Handles btnTestGetAttributes.Click
+    Private Sub btnTestGetAttributes_Click(sender As Object, e As EventArgs)
         TestGetAttributes()
 
     End Sub
@@ -1567,53 +1542,6 @@ Public Class ColumnSelect
 
     End Sub
 
-    Private Sub btnRunQuery_Click(sender As Object, e As EventArgs) Handles btnRunQuery.Click
-        Cursor = Cursors.WaitCursor
-        Refresh()
-        Dim Answer As Integer
-        Dim Entry As Integer
-        Dim FinalQuery As String
-
-        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
-            If FieldAttributes.HasCount = False Then
-                MsgBox("No Fields or Count Selected")
-                Cursor = Cursors.Default
-                Exit Sub
-            End If
-        End If
-        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
-            Entry = 0
-        End If
-        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
-            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
-            If Answer = vbNo Then
-                Cursor = Cursors.Default
-                Exit Sub
-            End If
-        End If
-
-        If FieldAttributes.GetFullQuery = "" Then
-            FinalQuery = BuildQueryFromSelection()
-            If FinalQuery = "" Then
-                Cursor = Cursors.Default
-                Exit Sub
-            End If
-        Else
-            FinalQuery = FieldAttributes.GetFullQuery
-        End If
-
-        Dim RQ As New RunQuery.QueryResultsDGV
-        RQ.GetParms(GlobalSession, GlobalParms)
-        RQ.PopulateForm(FinalQuery, FieldAttributes)
-        RQ.Show()
-        Cursor = Cursors.Default
-    End Sub
-
-    Private Sub btnImportQuery_Click(sender As Object, e As EventArgs)
-        'Read SQL Query from text file:
-
-    End Sub
-
     Sub SplitSQL()
         Dim FullQuery As String
         Dim SelectPart As String
@@ -1638,7 +1566,7 @@ Public Class ColumnSelect
         MsgBox(Output)
     End Sub
 
-    Private Sub btnImportSQL_Click(sender As Object, e As EventArgs) Handles btnImportSQL.Click
+    Private Sub btnLoadQuery_Click(sender As Object, e As EventArgs) Handles btnLoadQuery.Click
         'Read SQL Query from text file:
         Dim dlgLOAD As New OpenFileDialog()
         Dim strFilename As String
@@ -1658,4 +1586,106 @@ Public Class ColumnSelect
         End If
     End Sub
 
+    Private Sub btnSaveQuery_Click(sender As Object, e As EventArgs) Handles btnSaveQuery.Click
+        'SAVE SQL to text file:
+        Dim mySQLFile As System.IO.StreamWriter
+        Dim savedlg As New SaveFileDialog
+        Dim SQLQuery As String
+
+        SQLQuery = GetFinalQuery()
+        savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+        savedlg.FilterIndex = 1
+        savedlg.RestoreDirectory = True
+        savedlg.InitialDirectory = Application.StartupPath
+        If savedlg.ShowDialog() = DialogResult.OK Then
+            mySQLFile = File.CreateText(savedlg.FileName)
+            mySQLFile.WriteLine(SQLQuery)
+            mySQLFile.Close()
+        End If
+    End Sub
+
+    Function GetFinalQuery() As String
+        Dim Answer As Integer
+        Dim Entry As Integer
+        Dim FinalQuery As String = ""
+
+        GetFinalQuery = ""
+        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
+            If FieldAttributes.HasCount = False Then
+                MsgBox("No Fields or Count Selected")
+                Cursor = Cursors.Default
+                Exit Function
+            End If
+        End If
+        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
+            Entry = 0
+        End If
+        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
+            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
+            If Answer = vbNo Then
+                Cursor = Cursors.Default
+                Exit Function
+            End If
+        End If
+
+        If FieldAttributes.GetFullQuery = "" Then
+            FinalQuery = BuildQueryFromSelection()
+            If FinalQuery = "" Then
+                Cursor = Cursors.Default
+                Exit Function
+            End If
+        Else
+            FinalQuery = FieldAttributes.GetFullQuery
+        End If
+
+        Return FinalQuery
+
+    End Function
+
+    Private Sub btnRunSQLQuery_Click(sender As Object, e As EventArgs) Handles btnRunSQLQuery.Click
+        Cursor = Cursors.WaitCursor
+        Refresh()
+        Dim Answer As Integer
+        Dim Entry As Integer
+        Dim FinalQuery As String
+
+        FinalQuery = GetFinalQuery()
+
+        Dim RQ As New RunQuery.QueryResultsDGV
+        RQ.GetParms(GlobalSession, GlobalParms)
+        RQ.PopulateForm(FinalQuery, FieldAttributes)
+        RQ.Show()
+        Cursor = Cursors.Default
+    End Sub
+
+    Private Sub btnShowSQLQuery_Click(sender As Object, e As EventArgs) Handles btnShowSQLQuery.Click
+        Dim Answer As Integer
+        Dim Entry As Integer
+        Dim recs As Long
+
+        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
+            If FieldAttributes.HasCount = False Then
+                MsgBox("No Fields or Count Selected")
+                Exit Sub
+            End If
+        End If
+        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
+            Entry = 0
+        End If
+        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
+            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
+            If Answer = vbNo Then
+                Exit Sub
+            End If
+        End If
+        ShowQueryForm()
+    End Sub
+
+    Private Sub lstConditions_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstConditions.SelectedIndexChanged
+
+    End Sub
+
+    Private Sub btnImportSQL_Click(sender As Object, e As EventArgs)
+
+    End Sub
 End Class

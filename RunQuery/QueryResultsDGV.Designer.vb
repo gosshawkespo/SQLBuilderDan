@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class QueryResultsDGV
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class QueryResultsDGV
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.tssLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
@@ -42,7 +42,7 @@ Partial Class QueryResultsDGV
         'StatusStrip1
         '
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tssLabel1})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 550)
+        Me.StatusStrip1.Location = New System.Drawing.Point(0, 517)
         Me.StatusStrip1.Name = "StatusStrip1"
         Me.StatusStrip1.Size = New System.Drawing.Size(929, 22)
         Me.StatusStrip1.TabIndex = 23
@@ -71,7 +71,7 @@ Partial Class QueryResultsDGV
         Me.dgvOutput.Location = New System.Drawing.Point(3, 3)
         Me.dgvOutput.Name = "dgvOutput"
         Me.dgvOutput.ReadOnly = True
-        Me.dgvOutput.Size = New System.Drawing.Size(888, 405)
+        Me.dgvOutput.Size = New System.Drawing.Size(888, 372)
         Me.dgvOutput.TabIndex = 21
         '
         'btnClose
@@ -106,7 +106,7 @@ Partial Class QueryResultsDGV
         Me.TabControl1.Location = New System.Drawing.Point(12, 51)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(902, 437)
+        Me.TabControl1.Size = New System.Drawing.Size(902, 404)
         Me.TabControl1.TabIndex = 24
         '
         'TabPage1
@@ -115,7 +115,7 @@ Partial Class QueryResultsDGV
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(894, 411)
+        Me.TabPage1.Size = New System.Drawing.Size(894, 378)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Query Results"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -144,7 +144,7 @@ Partial Class QueryResultsDGV
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(929, 572)
+        Me.ClientSize = New System.Drawing.Size(929, 539)
         Me.Controls.Add(Me.btnExportToExcel)
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.StatusStrip1)

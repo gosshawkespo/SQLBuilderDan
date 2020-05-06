@@ -1,4 +1,5 @@
 ﻿Imports System.Data
+Imports System.IO
 
 Public Class ColumnSelect
     Private _DataSetID As Integer
@@ -732,10 +733,12 @@ Public Class ColumnSelect
 
     Sub RefreshForm()
         PopulateForm(Me.TheDataSetID, False)
+        FieldAttributes.GetFullQuery = "" 'Clears import flag.
     End Sub
 
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         ClearFields()
+        FieldAttributes.GetFullQuery = "" 'Clears import flag.
     End Sub
 
     Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
@@ -856,6 +859,7 @@ Public Class ColumnSelect
         Dim RowsSelected As New List(Of Integer)
         Dim strOrderByField As String
         Try
+            FieldAttributes.GetFullQuery = ""
             RowsSelected = GetSelectedGridRows() 'Grab NEW rows selected in grid...and puts into correct order.
             For i As Integer = 0 To RowsSelected.Count - 1
                 ColumnName = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("Column Name").Value
@@ -1074,8 +1078,8 @@ Public Class ColumnSelect
         TableName = txtTablename.Text
 
         If lstFields.Items.Count = 0 Then
-            'MsgBox("No Fields were selected")
-            'Exit Function
+            MsgBox("No Fields were selected")
+            Exit Function
         End If
 
         lstSelected = FieldAttributes.GetALLSelectedFields 'SORT THE FIELD IN POSITION ORDER
@@ -1115,7 +1119,7 @@ Public Class ColumnSelect
                     If NewColumnName <> "" Then
                         NewColumnName += "," & vbCrLf
                     End If
-                    NewColumnName += "COUNT(Distinct " & ColumnName & ")"
+                    NewColumnName += " COUNT(Distinct " & ColumnName & ")"
                     NewColumnName += " AS """ & ColumnText & " Count" & """"
                     IncludeGroupBy = True
                 End If
@@ -1245,9 +1249,10 @@ Public Class ColumnSelect
         Dim App As New ViewSQL
 
         Cursor = Cursors.Default
-        FinalQuery = BuildQueryFromSelection()
+
+        FinalQuery = FieldAttributes.GetFullQuery
         If FinalQuery = "" Then
-            Exit Sub
+            FinalQuery = BuildQueryFromSelection()
         End If
         stsQueryBuilderLabel1.Text = "Building Query ..."
         Cursor = Cursors.WaitCursor
@@ -1294,7 +1299,7 @@ Public Class ColumnSelect
         Dim Entry As Integer
         Dim recs As Long
 
-        If lstFields.Items.Count = 0 Then
+        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
             If FieldAttributes.HasCount = False Then
                 MsgBox("No Fields or Count Selected")
                 Exit Sub
@@ -1303,7 +1308,7 @@ Public Class ColumnSelect
         If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
             Entry = 0
         End If
-        If Entry = 0 And FieldAttributes.CountConditions = 0 Then
+        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
             Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
             If Answer = vbNo Then
                 Exit Sub
@@ -1569,25 +1574,32 @@ Public Class ColumnSelect
         Dim Entry As Integer
         Dim FinalQuery As String
 
-        If lstFields.Items.Count = 0 Then
+        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
             If FieldAttributes.HasCount = False Then
                 MsgBox("No Fields or Count Selected")
+                Cursor = Cursors.Default
                 Exit Sub
             End If
         End If
         If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
             Entry = 0
         End If
-        If Entry = 0 And FieldAttributes.CountConditions = 0 Then
+        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
             Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
             If Answer = vbNo Then
+                Cursor = Cursors.Default
                 Exit Sub
             End If
         End If
 
-        FinalQuery = BuildQueryFromSelection()
-        If FinalQuery = "" Then
-            Exit Sub
+        If FieldAttributes.GetFullQuery = "" Then
+            FinalQuery = BuildQueryFromSelection()
+            If FinalQuery = "" Then
+                Cursor = Cursors.Default
+                Exit Sub
+            End If
+        Else
+            FinalQuery = FieldAttributes.GetFullQuery
         End If
 
         Dim RQ As New RunQuery.QueryResultsDGV
@@ -1596,4 +1608,54 @@ Public Class ColumnSelect
         RQ.Show()
         Cursor = Cursors.Default
     End Sub
+
+    Private Sub btnImportQuery_Click(sender As Object, e As EventArgs)
+        'Read SQL Query from text file:
+
+    End Sub
+
+    Sub SplitSQL()
+        Dim FullQuery As String
+        Dim SelectPart As String
+        Dim FromPart As String
+        Dim WherePart As String
+        Dim GroupByPart As String
+        Dim OrderByPArt As String
+        Dim Output As String
+
+        FullQuery = ColumnSelect.FieldAttributes.GetFullQuery
+        'ColumnSelect.FieldAttributes.ReturnQueryParts(FullQuery)
+        'ColumnSelect.FieldAttributes.ReturnRegQueryParts(FullQuery)
+        ColumnSelect.FieldAttributes.ExtractFromWithRegEx(FullQuery)
+        SelectPart = ColumnSelect.FieldAttributes.GetSelectPart
+        FromPart = ColumnSelect.FieldAttributes.GetFromPart
+        WherePart = ColumnSelect.FieldAttributes.GetWherePart
+        GroupByPart = ColumnSelect.FieldAttributes.GetGroupByPart
+        OrderByPArt = ColumnSelect.FieldAttributes.GetOrderByPart
+
+        Output = "SELECT: " & SelectPart & vbCrLf & "FromPart: " & FromPart & vbCrLf & "WHERE:" & WherePart & vbCrLf
+        Output += "GroupBy: " & GroupByPart & vbCrLf & "OrderBy: " & OrderByPArt
+        MsgBox(Output)
+    End Sub
+
+    Private Sub btnImportSQL_Click(sender As Object, e As EventArgs) Handles btnImportSQL.Click
+        'Read SQL Query from text file:
+        Dim dlgLOAD As New OpenFileDialog()
+        Dim strFilename As String
+        Dim SQLStatement As String
+        Dim SQLFile As String
+
+        dlgLOAD.Title = "Select SQL text file"
+        dlgLOAD.InitialDirectory = Application.StartupPath
+        dlgLOAD.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+        dlgLOAD.FilterIndex = 1
+        dlgLOAD.RestoreDirectory = True
+        If dlgLOAD.ShowDialog() = DialogResult.OK Then
+            strFilename = dlgLOAD.FileName
+            SQLStatement = File.ReadAllText(strFilename, System.Text.Encoding.Default)
+            FieldAttributes.GetFullQuery = SQLStatement
+            MsgBox("Chars: " & Len(SQLStatement) & vbCrLf & SQLStatement)
+        End If
+    End Sub
+
 End Class

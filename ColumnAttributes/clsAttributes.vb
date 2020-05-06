@@ -1,4 +1,5 @@
-﻿Public Class ColumnAttributes
+﻿Imports System.Text.RegularExpressions
+Public Class ColumnAttributes
     Private _Fieldname As String
     Private _FieldType As String
     Private _FieldLength As Integer
@@ -17,6 +18,12 @@
     Private _lstConditions As List(Of String)
     Private _lastOperator As String
     Private _DBType As String
+    Private _SQLQuery As String
+    Private _SQLSelectPart As String
+    Private _SQLFromPart As String
+    Private _SQLWherePart As String
+    Private _SQLGroupByPart As String
+    Private _SQLOrderByPart As String
 
 
     Sub New()
@@ -192,6 +199,214 @@
             _DBType = value
         End Set
     End Property
+
+    Public Property GetFullQuery As String
+        Get
+            Return _SQLQuery
+        End Get
+        Set(value As String)
+            _SQLQuery = value
+        End Set
+    End Property
+
+    Public Property GetSelectPart As String
+        Get
+            Return _SQLSelectPart
+        End Get
+        Set(value As String)
+            _SQLSelectPart = value
+        End Set
+    End Property
+
+    Public Property GetFromPart As String
+        Get
+            Return _SQLFromPart
+        End Get
+        Set(value As String)
+            _SQLFromPart = value
+        End Set
+    End Property
+
+    Public Property GetWherePart As String
+        Get
+            Return _SQLWherePart
+        End Get
+        Set(value As String)
+            _SQLWherePart = value
+        End Set
+    End Property
+
+    Public Property GetGroupByPart As String
+        Get
+            Return _SQLGroupByPart
+        End Get
+        Set(value As String)
+            _SQLGroupByPart = value
+        End Set
+    End Property
+
+    Public Property GetOrderByPart As String
+        Get
+            Return _SQLOrderByPart
+        End Get
+        Set(value As String)
+            _SQLOrderByPart = value
+        End Set
+    End Property
+
+    Public Sub ReturnRegQueryParts(FullQuery As String)
+        Dim SelectPart As String
+        Dim WherePart As String
+        Dim GroupByPart As String
+        Dim OrderByPart As String
+        Dim SelectPos As Integer
+        Dim FromPos As Integer
+        Dim WherePos As Integer
+        Dim OrderByPos As Integer
+        Dim GroupByPos As Integer
+        Dim arrResult() As String
+        Dim Pattern As String = "vbcrlf(FROM)"
+        Dim arrIDX As Integer
+
+        arrResult = Regex.Split(FullQuery, Pattern)
+        arrIDX = 0
+        For Each item As String In arrResult
+            If UCase(item) = "SELECT" Then
+                'good start!
+                SelectPos = arrIDX
+            End If
+            If UCase(item) = "FROM" Then
+                FromPos = arrIDX
+            End If
+            If UCase(item) = "WHERE" Then
+                WherePos = arrIDX
+            End If
+            If UCase(item) = "GROUPBY" Then
+                GroupByPos = arrIDX
+            End If
+            If UCase(item) = "ORDERBY" Then
+                OrderByPos = arrIDX
+            End If
+            arrIDX += 1
+        Next
+        SelectPart = ""
+        If SelectPos > 0 Then
+            For i As Integer = 0 To FromPos
+                SelectPart += arrResult(i)
+            Next
+            WherePart = ""
+            If WherePos > 0 Then
+                If GroupByPos > 0 And OrderByPos = 0 Then
+                    For i As Integer = WherePos To GroupByPos
+                        WherePart += arrResult(i)
+                    Next
+                ElseIf GroupByPos = 0 And OrderByPos > 0 Then
+                    For i As Integer = WherePos To OrderByPos
+                        WherePart += arrResult(i)
+                    Next
+                Else
+                    For i As Integer = WherePos To arrResult.Length
+                        WherePart += arrResult(i)
+                    Next
+                End If
+            End If
+            GroupByPart = ""
+            If GroupByPos > 0 Then
+                If OrderByPos > 0 Then
+                    For i As Integer = GroupByPos To OrderByPos
+                        GroupByPart += arrResult(i)
+                    Next
+                Else
+                    For i As Integer = GroupByPos To arrResult.Length
+                        GroupByPart += arrResult(i)
+                    Next
+                End If
+            End If
+            OrderByPart = ""
+            If OrderByPart > 0 Then
+                For i As Integer = OrderByPart To arrResult.Length
+                    OrderByPart += arrResult(i)
+                Next
+            End If
+        End If
+        Me.GetSelectPart = SelectPart
+        Me.GetWherePart = WherePart
+        Me.GetGroupByPart = GroupByPart
+        Me.GetOrderByPart = OrderByPart
+    End Sub
+
+    Public Sub ExtractFromWithRegEx(FullQuery As String)
+        Dim SelectPart As String
+        Dim FromMatch As Match
+        Dim Pattern As String
+        Dim FromIDX As Integer
+
+        Pattern = "\r?${FROM}"
+        FromMatch = Regex.Match(FullQuery, Pattern, RegexOptions.Multiline)
+        SelectPart = FromMatch.Value
+        FromIDX = FromMatch.Index
+
+    End Sub
+
+    Public Sub ReturnQueryParts(FullQuery As String)
+        Dim SelectPart As String
+        Dim WherePart As String
+        Dim FromPart As String
+        Dim GroupByPart As String
+        Dim OrderByPart As String
+        Dim SelectPos As Integer
+        Dim FromPos As Integer
+        Dim WherePos As Integer
+        Dim GroupByPos As Integer
+        Dim OrderByPos As Integer
+
+        SelectPos = InStr(FullQuery, "SELECT ", CompareMethod.Text)
+        FromPos = InStr(FullQuery, "FROM ", CompareMethod.Text)
+        WherePos = InStr(FullQuery, "WHERE ", CompareMethod.Text)
+        OrderByPos = InStr(FullQuery, "ORDERBY ", CompareMethod.Text)
+        SelectPart = ""
+        FromPart = ""
+        WherePart = ""
+        GroupByPart = ""
+        OrderByPart = ""
+
+        If SelectPos > 0 Then
+            If FromPos > 0 Then
+                SelectPart = Mid(FullQuery, 1, FromPos - 1)
+                If WherePos > 0 And GroupByPos > 0 And OrderByPos > 0 Then
+                    WherePart = Mid(FullQuery, WherePos + 1, (GroupByPos - 1) - (WherePos + 1))
+                    FromPart = Mid(FullQuery, FromPos + 1, WherePos - 1)
+                    GroupByPart = Mid(FullQuery, GroupByPos + 1, (OrderByPos - 1) - (GroupByPos + 1))
+                    OrderByPart = Mid(FullQuery, OrderByPos + 1, Len(FullQuery))
+                ElseIf WherePos > 0 And GroupByPos = 0 And OrderByPos > 0 Then
+                    WherePart = Mid(FullQuery, WherePos + 1, (OrderByPos - 1) - (WherePos + 1))
+                    OrderByPart = Mid(FullQuery, (OrderByPos + 1), Len(FullQuery))
+                ElseIf WherePos > 0 And GroupByPos > 0 And OrderByPos = 0 Then
+                    WherePart = Mid(FullQuery, WherePos + 1, (GroupByPos - 1) - (WherePos + 1))
+                    GroupByPart = Mid(FullQuery, GroupByPos + 1, Len(FullQuery) - (GroupByPos + 1))
+                ElseIf WherePos > 0 And GroupByPos = 0 And OrderByPos = 0 Then
+                    WherePart = Mid(FullQuery, FromPos + 1, Len(FullQuery))
+                ElseIf WherePos = 0 And GroupByPos > 0 And OrderByPos > 0 Then
+                    FromPart = Mid(FullQuery, FromPos + 1, GroupByPos - 1)
+                    GroupByPart = Mid(FullQuery, GroupByPos + 1, (OrderByPos - 1) - (GroupByPos + 1))
+                    OrderByPart = Mid(FullQuery, OrderByPos + 1, Len(FullQuery))
+                ElseIf WherePos = 0 And GroupByPos = 0 And OrderByPos > 0 Then
+                    FromPart = Mid(FullQuery, FromPos + 1, OrderByPos - 1)
+                    OrderByPart = Mid(FullQuery, OrderByPos + 1, Len(FullQuery))
+                Else
+                    FromPart = Mid(FullQuery, FromPos + 1, Len(FullQuery))
+                End If
+
+            End If
+        End If
+
+        Me.GetSelectPart = SelectPart
+        Me.GetFromPart = FromPart
+        Me.GetWherePart = WherePart
+        Me.GetGroupByPart = GroupByPart
+        Me.GetOrderByPart = OrderByPart
+
+    End Sub
 
     Public Sub DeleteConditions()
         _WhereConditions = ""

@@ -1,6 +1,7 @@
 ﻿
 Imports System.Data.Odbc
-    Imports MySql.Data.MySqlClient
+Imports MySql.Data.MySqlClient
+Imports System.IO
 Public Class QueryResultsDGV
 
     'ViewSQL_KeyDown KEYS: CTRL+R = RUN QUERY, CTRL+SHIFT+C = CLOSE FORM
@@ -27,9 +28,11 @@ Public Class QueryResultsDGV
     End Sub
 
     Sub PopulateForm(SQLQuery As String, objFieldAttributes As Object)
+        FieldAttributes = objFieldAttributes
         SQLStatement = SQLQuery
         txtSQLQuery.Text = SQLStatement
-        FieldAttributes = objFieldAttributes
+        txtSQLQuery.Focus()
+
     End Sub
 
     Private Sub ClickHandler(sender As Object, e As MouseEventArgs) Handles Me.MouseClick
@@ -127,9 +130,11 @@ Public Class QueryResultsDGV
             Refresh()
             tssLabel1.Text = "Getting Data"
             Refresh()
-            dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
-            'dt = ExecuteMySQLQuery(txtSQLQuery.Text)
-
+            If FieldAttributes.DBType = "MYSQL" Then
+                dt = ExecuteMySQLQuery(txtSQLQuery.Text)
+            Else
+                dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
+            End If
 
             If dt IsNot Nothing Then
                 If dt.Rows.Count = 0 Then

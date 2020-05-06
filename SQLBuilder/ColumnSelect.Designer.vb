@@ -57,6 +57,7 @@ Partial Class ColumnSelect
         Me.cboOperators = New System.Windows.Forms.ComboBox()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
+        Me.btnRunQuery = New System.Windows.Forms.Button()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.txtFirstRows = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
@@ -80,7 +81,7 @@ Partial Class ColumnSelect
         Me.Label4 = New System.Windows.Forms.Label()
         Me.btnRefresh = New System.Windows.Forms.Button()
         Me.btnHideColumns = New System.Windows.Forms.Button()
-        Me.btnRunQuery = New System.Windows.Forms.Button()
+        Me.btnImportSQL = New System.Windows.Forms.Button()
         CType(Me.dgvFieldSelection, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsQueryBuilder.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
@@ -464,6 +465,16 @@ Partial Class ColumnSelect
         Me.GroupBox3.TabIndex = 20
         Me.GroupBox3.TabStop = False
         '
+        'btnRunQuery
+        '
+        Me.btnRunQuery.Location = New System.Drawing.Point(623, 50)
+        Me.btnRunQuery.MinimumSize = New System.Drawing.Size(100, 0)
+        Me.btnRunQuery.Name = "btnRunQuery"
+        Me.btnRunQuery.Size = New System.Drawing.Size(121, 23)
+        Me.btnRunQuery.TabIndex = 31
+        Me.btnRunQuery.Text = "Run Query"
+        Me.btnRunQuery.UseVisualStyleBackColor = True
+        '
         'Label7
         '
         Me.Label7.AutoSize = True
@@ -707,21 +718,21 @@ Partial Class ColumnSelect
         Me.btnHideColumns.Text = "+"
         Me.btnHideColumns.UseVisualStyleBackColor = False
         '
-        'btnRunQuery
+        'btnImportSQL
         '
-        Me.btnRunQuery.Location = New System.Drawing.Point(623, 50)
-        Me.btnRunQuery.MinimumSize = New System.Drawing.Size(100, 0)
-        Me.btnRunQuery.Name = "btnRunQuery"
-        Me.btnRunQuery.Size = New System.Drawing.Size(121, 23)
-        Me.btnRunQuery.TabIndex = 31
-        Me.btnRunQuery.Text = "Run Query"
-        Me.btnRunQuery.UseVisualStyleBackColor = True
+        Me.btnImportSQL.Location = New System.Drawing.Point(307, 40)
+        Me.btnImportSQL.Name = "btnImportSQL"
+        Me.btnImportSQL.Size = New System.Drawing.Size(80, 23)
+        Me.btnImportSQL.TabIndex = 29
+        Me.btnImportSQL.Text = "Import SQL"
+        Me.btnImportSQL.UseVisualStyleBackColor = True
         '
         'ColumnSelect
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1316, 699)
+        Me.Controls.Add(Me.btnImportSQL)
         Me.Controls.Add(Me.btnHideColumns)
         Me.Controls.Add(Me.btnRefresh)
         Me.Controls.Add(Me.GroupBox5)
@@ -813,4 +824,5 @@ Partial Class ColumnSelect
     Friend WithEvents btnRefresh As Button
     Friend WithEvents btnHideColumns As Button
     Friend WithEvents btnRunQuery As Button
+    Friend WithEvents btnImportSQL As Button
 End Class

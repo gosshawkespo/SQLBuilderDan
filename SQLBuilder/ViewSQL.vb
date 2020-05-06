@@ -229,4 +229,26 @@ Public Class ViewSQL
         End If
 
     End Sub
+
+    Private Sub btnAnalyseThis_Click(sender As Object, e As EventArgs) Handles btnAnalyseThis.Click
+        Dim FullQuery As String
+        Dim SelectPart As String
+        Dim FromPart As String
+        Dim WherePart As String
+        Dim GroupByPart As String
+        Dim OrderByPArt As String
+        Dim Output As String
+
+        FullQuery = ColumnSelect.FieldAttributes.GetFullQuery
+        ColumnSelect.FieldAttributes.ReturnQueryParts(FullQuery)
+        SelectPart = ColumnSelect.FieldAttributes.GetSelectPart
+        FromPart = ColumnSelect.FieldAttributes.GetFromPart
+        WherePart = ColumnSelect.FieldAttributes.GetWherePart
+        GroupByPart = ColumnSelect.FieldAttributes.GetGroupByPart
+        OrderByPArt = ColumnSelect.FieldAttributes.GetOrderByPart
+
+        Output = "SELECT: " & SelectPart & vbCrLf & "FromPart: " & FromPart & vbCrLf & "WHERE:" & WherePart & vbCrLf
+        Output += "GroupBy: " & GroupByPart & vbCrLf & "OrderBy: " & OrderByPArt
+        MsgBox(Output)
+    End Sub
 End Class

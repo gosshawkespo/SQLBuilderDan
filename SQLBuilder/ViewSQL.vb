@@ -251,4 +251,51 @@ Public Class ViewSQL
         Output += "GroupBy: " & GroupByPart & vbCrLf & "OrderBy: " & OrderByPArt
         MsgBox(Output)
     End Sub
+
+    Private Sub btnParseSQL_Click(sender As Object, e As EventArgs) Handles btnParseSQL.Click
+        Dim SQLStatement As String = ""
+        Dim Word As String = ""
+        Dim arrSELECT(100) As String
+        Dim blnSelectMode As Boolean = False
+        Dim blnFromMode As Boolean = False
+        Dim blnWhereMode As Boolean = False
+        Dim blnOrderByMode As Boolean = False
+        Dim blnFetchMode As Boolean = False
+        Dim blnInsideBracket As Boolean = False
+        Dim blnInsideQuote As Boolean = False
+        SQLStatement = txtSQLQuery.Text
+        Dim j As Integer
+        For i = 1 To Len(SQLStatement)
+            If (Mid(SQLStatement, i, 1) = " " And Not blnInsideBracket And Not blnInsideQuote) Or Mid(SQLStatement, i, 1) = vbCr Or Mid(SQLStatement, i, 1) = vbLf Or Mid(SQLStatement, i, 1) = "," Then ' Blank, CR, LF or , encountered
+                If Trim(Word) <> "" And Mid(SQLStatement, i, 1) <> vbCr And Mid(SQLStatement, i, 1) <> vbLf Then
+                    If Word.ToUpper = "SELECT" Then ' SQL Clause, flag that we are SELECT Mode
+                        blnSelectMode = True
+                    ElseIf Word.ToUpper = "FROM" Then ' SQL Clause, flag that we are FROM Mode
+                        blnSelectMode = False
+                        blnFromMode = True
+                    ElseIf Word = "," Then
+                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
+                        arrSELECT(j) = Word
+                        j += 1
+                    Else
+                    End If
+                    Word = ""
+                End If
+            Else
+                Word += Mid(SQLStatement, i, 1)
+                ' Check for quotes and brackets and flag if we are inside or outside at this point
+                If Mid(SQLStatement, i, 1) = "(" Then
+                    blnInsideBracket = True
+                ElseIf Mid(SQLStatement, i, 1) = ")" Then
+                    blnInsideBracket = False
+                ElseIf Mid(SQLStatement, i, 1) = """" And Not blnInsideQuote Then
+                    blnInsideQuote = True
+                ElseIf Mid(SQLStatement, i, 1) = """" And blnInsideQuote Then
+                    blnInsideQuote = False
+                    Word = ""
+                End If
+            End If
+        Next i
+    End Sub
+
 End Class

@@ -212,7 +212,12 @@ Public Class QueryResultsDGV
         Cursor = Cursors.WaitCursor
         Refresh()
         Dim rsADO As ADODB.Recordset
-        rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+        If FieldAttributes.DBType = "MYSQL" Then
+            rsADO = ExecuteMySQL(GlobalSession.ConnectString, SQLStatement)
+        Else
+            rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+        End If
+
         ExportToExcel2("Report Title", rsADO)
     End Sub
 
@@ -228,6 +233,38 @@ Public Class QueryResultsDGV
         rs.Open(SQLStatement, cn)
         Return rs
     End Function
+
+    Public Function ExecuteMySQL(ConnectString As String, SQLStatement As String) As ADODB.Recordset
+        Dim rs As New ADODB.Recordset
+        Dim cn As New ADODB.Connection
+
+        Dim ConnString As String
+        Dim ZeroDatetime As Boolean = True
+        Dim Server As String = "localhost"
+        Dim DbaseName As String = "simplequerybuilder"
+        Dim USERNAME As String = "root"
+        Dim password As String = "root"
+        Dim port As String = "3306"
+
+        Try
+            'ConnString = setupMySQLconnection("localhost", "simplequerybuilder", "root", "root", "3306", ErrMessage)
+            MsgBox(ConnectString)
+            ConnString = String.Format("server={0}; user id={1}; password={2}; database={3}; Convert Zero Datetime={4}; port={5}; pooling=false", Server, USERNAME, password, DbaseName, ZeroDatetime, port)
+            cn.ConnectionString = ConnectString
+            cn.Open()
+            cn.CommandTimeout = 0
+            rs.CursorLocation = ADODB.CursorLocationEnum.adUseClient
+            rs.LockType = ADODB.LockTypeEnum.adLockReadOnly
+            rs.CursorType = ADODB.CursorTypeEnum.adOpenStatic
+            rs.Open(SQLStatement, cn)
+        Catch ex As Exception
+            MsgBox("DB ERROR: " & ex.Message)
+        End Try
+
+
+        Return rs
+    End Function
+
     Private Sub ExportToExcel2(ReportName As String, rsADO As ADODB.Recordset)
         Dim xlApp As Microsoft.Office.Interop.Excel.Application
         Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook

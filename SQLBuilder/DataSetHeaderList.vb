@@ -44,8 +44,8 @@
         Try
             dgvHeaderList.Columns.Clear()
             dgvHeaderList.DataSource = Nothing
-            DBVersion = "MYSQL"
-            'DBVersion = "IBM"
+            'DBVersion = "MYSQL"
+            DBVersion = "IBM"
             If DBVersion = "IBM" Then
                 dt = myDAL.GetHeaderList(GlobalSession.ConnectString)
             Else

@@ -1574,7 +1574,8 @@ Public Class ColumnSelect
         Dim SQLFile As String
 
         dlgLOAD.Title = "Select SQL text file"
-        dlgLOAD.InitialDirectory = Application.StartupPath
+        'dlgLOAD.InitialDirectory = Application.StartupPath
+        dlgLOAD.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         dlgLOAD.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         dlgLOAD.FilterIndex = 1
         dlgLOAD.RestoreDirectory = True
@@ -1596,7 +1597,8 @@ Public Class ColumnSelect
         savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         savedlg.FilterIndex = 1
         savedlg.RestoreDirectory = True
-        savedlg.InitialDirectory = Application.StartupPath
+        savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        'savedlg.InitialDirectory = Application.StartupPath
         If savedlg.ShowDialog() = DialogResult.OK Then
             mySQLFile = File.CreateText(savedlg.FileName)
             mySQLFile.WriteLine(SQLQuery)

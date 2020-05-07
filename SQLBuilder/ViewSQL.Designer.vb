@@ -33,6 +33,7 @@ Partial Class ViewSQL
         Me.btnViewAttributes = New System.Windows.Forms.Button()
         Me.btnSaveSQL = New System.Windows.Forms.Button()
         Me.btnAnalyseThis = New System.Windows.Forms.Button()
+        Me.btnParseSQL = New System.Windows.Forms.Button()
         CType(Me.dgvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -130,7 +131,7 @@ Partial Class ViewSQL
         '
         'btnAnalyseThis
         '
-        Me.btnAnalyseThis.Location = New System.Drawing.Point(378, 364)
+        Me.btnAnalyseThis.Location = New System.Drawing.Point(483, 364)
         Me.btnAnalyseThis.Name = "btnAnalyseThis"
         Me.btnAnalyseThis.Size = New System.Drawing.Size(85, 23)
         Me.btnAnalyseThis.TabIndex = 19
@@ -138,11 +139,21 @@ Partial Class ViewSQL
         Me.btnAnalyseThis.UseVisualStyleBackColor = True
         Me.btnAnalyseThis.Visible = False
         '
+        'btnParseSQL
+        '
+        Me.btnParseSQL.Location = New System.Drawing.Point(347, 364)
+        Me.btnParseSQL.Name = "btnParseSQL"
+        Me.btnParseSQL.Size = New System.Drawing.Size(85, 23)
+        Me.btnParseSQL.TabIndex = 20
+        Me.btnParseSQL.Text = "Parse SQL"
+        Me.btnParseSQL.UseVisualStyleBackColor = True
+        '
         'ViewSQL
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(1021, 534)
+        Me.Controls.Add(Me.btnParseSQL)
         Me.Controls.Add(Me.btnAnalyseThis)
         Me.Controls.Add(Me.btnSaveSQL)
         Me.Controls.Add(Me.btnViewAttributes)
@@ -174,4 +185,5 @@ Partial Class ViewSQL
     Friend WithEvents btnViewAttributes As Button
     Friend WithEvents btnSaveSQL As Button
     Friend WithEvents btnAnalyseThis As Button
+    Friend WithEvents btnParseSQL As Button
 End Class

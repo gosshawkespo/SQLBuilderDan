@@ -111,6 +111,43 @@ Public Class SQLBuilderDAL
 
     End Function
 
+    Function LocateDataSetID_MySQL(TableName As String, ColumnName As String) As DataTable
+        Dim ConnString As String
+        Dim myDR As MySqlDataReader = Nothing
+        Dim SQLStatement As String
+        Dim ZeroDatetime As Boolean = True
+        Dim Server As String = "localhost"
+        Dim DbaseName As String = "simplequerybuilder"
+        Dim USERNAME As String = "root"
+        Dim password As String = "root"
+        Dim port As String = "3306"
+
+        LocateDataSetID_MySQL = Nothing
+        Try
+            'ConnString = setupMySQLconnection("localhost", "simplequerybuilder", "root", "root", "3306", ErrMessage)
+            ConnString = String.Format("server={0}; user id={1}; password={2}; database={3}; Convert Zero Datetime={4}; port={5}; pooling=false", Server, USERNAME, password, DbaseName, ZeroDatetime, port)
+            Dim cn As New MySqlConnection(ConnString)
+            cn.Open()
+            SQLStatement = "SELECT " &
+            "DataSetID " &
+            "FROM ebi7023t " &
+            "Where Tablename= '" & TableName & "' AND ColumnName= '" & ColumnName & "'"
+
+            Dim cmd As New MySqlCommand
+            cmd.Connection = cn
+            cmd.CommandTimeout = 0
+            cmd.CommandType = CommandType.Text
+            cmd.CommandText = SQLStatement
+            Dim da As New MySqlDataAdapter(cmd)
+            Dim ds As New DataSet
+            da.Fill(ds)
+            Return ds.Tables(0)
+        Catch ex As Exception
+            MsgBox("DB ERROR: " & ex.Message)
+        End Try
+
+    End Function
+
     Function GetHeaderListMYSQL() As DataTable
         Dim ConnString As String
         Dim SQLStatement As String

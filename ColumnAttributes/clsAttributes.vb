@@ -9,7 +9,11 @@ Public Class ColumnAttributes
     Private _IsMAX As Boolean
     Private _HasCount As Boolean
     Private _SelectedFields As List(Of String)
-    Private _SelectedAttributes As List(Of ColumnAttributeProperties)
+    Private _SelectedAlias As List(Of String)
+    Private _GroupByList As List(Of String)
+    Private _OrderByList As List(Of String)
+    Private _SortedList As List(Of String)
+    Private _SelectedAttributes As List(Of String)
     Private _Dic_Attributes As Object
     Private _Dic_Types As Object
     Private _Dic_FieldAlias As Object
@@ -24,18 +28,25 @@ Public Class ColumnAttributes
     Private _SQLWherePart As String
     Private _SQLGroupByPart As String
     Private _SQLOrderByPart As String
+    Private _FetchCount As Integer
+    Private _TableName As String
 
 
     Sub New()
-        _SelectedAttributes = New List(Of ColumnAttributeProperties)
+        _SelectedFields = New List(Of String)
+        _SelectedAlias = New List(Of String)
+        _GroupByList = New List(Of String)
+        _OrderByList = New List(Of String)
+        _SortedList = New List(Of String)
+        _lstConditions = New List(Of String)
+        _SelectedAttributes = New List(Of String)
         _Dic_Attributes = CreateObject("Scripting.Dictionary")
         _Dic_Attributes.CompareMode = vbTextCompare
         _Dic_FieldAlias = CreateObject("Scripting.Dictionary")
         _Dic_FieldAlias.CompareMode = vbTextCompare
         _Dic_Types = CreateObject("Scripting.Dictionary")
         _Dic_Types.CompareMode = vbTextCompare
-        _SelectedFields = New List(Of String)
-        _lstConditions = New List(Of String)
+
     End Sub
 
     Public Property Dic_Attributes As Object
@@ -44,15 +55,6 @@ Public Class ColumnAttributes
         End Get
         Set(value As Object)
             _Dic_Attributes = value
-        End Set
-    End Property
-
-    Public Property SelectedAttributes As List(Of ColumnAttributeProperties)
-        Get
-            Return _SelectedAttributes
-        End Get
-        Set(value As List(Of ColumnAttributeProperties))
-            _SelectedAttributes = value
         End Set
     End Property
 
@@ -89,6 +91,51 @@ Public Class ColumnAttributes
         End Get
         Set(value As List(Of String))
             _SelectedFields = value
+        End Set
+    End Property
+
+    Public Property SelectedAlias As List(Of String)
+        Get
+            Return _SelectedAlias
+        End Get
+        Set(value As List(Of String))
+            _SelectedAlias = value
+        End Set
+    End Property
+
+    Public Property GroupByList As List(Of String)
+        Get
+            Return _GroupByList
+        End Get
+        Set(value As List(Of String))
+            _GroupByList = value
+        End Set
+    End Property
+
+    Public Property OrderByList As List(Of String)
+        Get
+            Return _OrderByList
+        End Get
+        Set(value As List(Of String))
+            _OrderByList = value
+        End Set
+    End Property
+
+    Public Property SortedList As List(Of String)
+        Get
+            Return _SortedList
+        End Get
+        Set(value As List(Of String))
+            _SortedList = value
+        End Set
+    End Property
+
+    Public Property SelectedAttributes As List(Of String)
+        Get
+            Return _SelectedAttributes
+        End Get
+        Set(value As List(Of String))
+            _SelectedAttributes = value
         End Set
     End Property
 
@@ -254,6 +301,38 @@ Public Class ColumnAttributes
         End Set
     End Property
 
+    Public Property TableName As String
+        Get
+            Return _TableName
+        End Get
+        Set(value As String)
+            _TableName = value
+        End Set
+    End Property
+
+    Public Property FetchRecords As Integer
+        Get
+            Return _FetchCount
+        End Get
+        Set(value As Integer)
+            _FetchCount = value
+        End Set
+    End Property
+
+    Function RemoveALLBrackets(FieldText As String) As String
+        FieldText = RemoveBrackets(FieldText, "SUM(")
+        FieldText = RemoveBrackets(FieldText, " SUM")
+        FieldText = RemoveBrackets(FieldText, ")")
+        FieldText = RemoveBrackets(FieldText, "MIN(")
+        FieldText = RemoveBrackets(FieldText, " MIN")
+        FieldText = RemoveBrackets(FieldText, "MAX(")
+        FieldText = RemoveBrackets(FieldText, " MAX")
+        FieldText = RemoveBrackets(FieldText, "COUNT(")
+        FieldText = RemoveBrackets(FieldText, " Count")
+        FieldText = RemoveBrackets(FieldText, "Distinct ")
+        Return FieldText
+    End Function
+
     Public Sub ReturnRegQueryParts(FullQuery As String)
         Dim SelectPart As String
         Dim WherePart As String
@@ -369,7 +448,7 @@ Public Class ColumnAttributes
         WherePart = ""
         GroupByPart = ""
         OrderByPart = ""
-
+        'THIS BIT COULD WORK IF THE POSITIONs are correct:
         If SelectPos > 0 Then
             If FromPos > 0 Then
                 SelectPart = Mid(FullQuery, 1, FromPos - 1)
@@ -409,7 +488,16 @@ Public Class ColumnAttributes
     End Sub
 
     Public Sub DeleteConditions()
+        Dim ItemName As String
+
         _WhereConditions = ""
+        For i As Integer = 0 To lbConditions.Count - 1
+            If IsNothing(lbConditions.Item(i)) Then
+                'lbConditions.RemoveAt(i)
+                'ItemName = lbConditions.Item(i)
+                lbConditions.Remove(lbConditions.Item(i))
+            End If
+        Next
     End Sub
 
     Public Sub ClearConditionsList()
@@ -418,11 +506,44 @@ Public Class ColumnAttributes
         End If
     End Sub
 
-    Public Sub ClearSelectedAttributesList()
+    Public Sub ClearSelectedFieldsList()
         If SelectedFields IsNot Nothing Then
             SelectedFields.Clear()
             'Me.Dic_Attributes.removeall
         End If
+    End Sub
+
+    Public Sub ClearSelectedAliasList()
+        If SelectedAlias IsNot Nothing Then
+            SelectedAlias.Clear()
+        End If
+    End Sub
+
+    Public Sub clearGroupByList()
+        If GroupByList IsNot Nothing Then
+            GroupByList.Clear()
+        End If
+    End Sub
+
+    Public Sub clearOrderByList()
+        If OrderByList() IsNot Nothing Then
+            OrderByList.Clear()
+        End If
+    End Sub
+
+    Public Sub ClearAttributesList()
+        If SelectedAttributes IsNot Nothing Then
+            SelectedAttributes.Clear()
+        End If
+    End Sub
+
+    Public Sub ClearALLLists()
+        ClearConditionsList()
+        ClearSelectedFieldsList()
+        ClearSelectedAliasList()
+        clearGroupByList()
+        clearOrderByList()
+        ClearAttributesList()
     End Sub
 
     Public Function IsConditionInList(strItem As String) As Boolean
@@ -469,11 +590,7 @@ Public Class ColumnAttributes
             Exit Sub
         End If
 
-        ColumnName = RemoveBrackets(ColumnName, "SUM(")
-        ColumnName = RemoveBrackets(ColumnName, ")")
-        ColumnName = RemoveBrackets(ColumnName, "MIN(")
-        ColumnName = RemoveBrackets(ColumnName, "MAX(")
-        ColumnName = RemoveBrackets(ColumnName, "COUNT(")
+        ColumnName = RemoveALLBrackets(ColumnName)
 
         Me.ChangeFieldnameAttribute_IsMAX(ColumnName, False)
         Me.ChangeFieldnameAttribute_IsMIN(ColumnName, False)
@@ -516,11 +633,7 @@ Public Class ColumnAttributes
         Dim tempAttribute As New ColumnAttributeProperties
 
         If RemoveTheBrackets Then
-            Fieldname = RemoveBrackets(Fieldname, "SUM(")
-            Fieldname = RemoveBrackets(Fieldname, ")")
-            Fieldname = RemoveBrackets(Fieldname, "MIN(")
-            Fieldname = RemoveBrackets(Fieldname, "MAX(")
-            Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+            Fieldname = RemoveALLBrackets(Fieldname)
         End If
 
 
@@ -539,13 +652,8 @@ Public Class ColumnAttributes
         Dim tempAttribute As New ColumnAttributeProperties
 
         If RemoveTheBrackets Then
-            Fieldname = RemoveBrackets(Fieldname, "SUM(")
-            Fieldname = RemoveBrackets(Fieldname, ")")
-            Fieldname = RemoveBrackets(Fieldname, "MIN(")
-            Fieldname = RemoveBrackets(Fieldname, "MAX(")
-            Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+            Fieldname = RemoveALLBrackets(Fieldname)
         End If
-
 
         FindAttributeFieldText = False
         If Me.Dic_Attributes IsNot Nothing Then
@@ -563,7 +671,7 @@ Public Class ColumnAttributes
         Dim CloseBracketPos As Integer
         Dim NewField As String
 
-        NewField = Replace(UpdateFieldname, RemovePart, "")
+        NewField = Replace(UpdateFieldname, RemovePart, "", 1, -1, CompareMethod.Text)
         Return NewField
 
     End Function
@@ -572,11 +680,7 @@ Public Class ColumnAttributes
         Dim tempAttribute As New ColumnAttributeProperties
 
         'Need to recognise the SUM() fieldname and strip off the AGGREGATE() part:
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "SUM(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, ")")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "MIN(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "MAX(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "COUNT(")
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
 
         tempAttribute = Me.Dic_Attributes(UpdateFieldname)
         If Not IsNothing(tempAttribute) Then
@@ -591,11 +695,7 @@ Public Class ColumnAttributes
     Sub ChangeFieldnameAttribute_IsSelected(UpdateFieldname As String, IsSelected As Boolean)
         Dim tempAttribute As New ColumnAttributeProperties
 
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "SUM(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, ")")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "MIN(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "MAX(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "COUNT(")
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
 
         tempAttribute = Me.Dic_Attributes(UpdateFieldname)
         If Not IsNothing(tempAttribute) Then
@@ -611,8 +711,7 @@ Public Class ColumnAttributes
         Dim tempAttribute As New ColumnAttributeProperties
 
         If RemoveTheBrackets Then
-            UpdateFieldname = RemoveBrackets(UpdateFieldname, "COUNT(")
-            UpdateFieldname = RemoveBrackets(UpdateFieldname, ")")
+            UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
         End If
         tempAttribute = Me.Dic_Attributes(UpdateFieldname)
         If Not IsNothing(tempAttribute) Then
@@ -627,8 +726,7 @@ Public Class ColumnAttributes
     Sub ChangeFieldnameAttribute_IsSUM(UpdateFieldname As String, IsSUM As Boolean)
         Dim tempAttribute As New ColumnAttributeProperties
 
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "SUM(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, ")")
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
 
         tempAttribute = Me.Dic_Attributes(UpdateFieldname)
         If Not IsNothing(tempAttribute) Then
@@ -643,8 +741,7 @@ Public Class ColumnAttributes
     Sub ChangeFieldnameAttribute_IsMIN(UpdateFieldname As String, IsMIN As Boolean)
         Dim tempAttribute As New ColumnAttributeProperties
 
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "MIN(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, ")")
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
 
         tempAttribute = Me.Dic_Attributes(UpdateFieldname)
         If Not IsNothing(tempAttribute) Then
@@ -659,8 +756,7 @@ Public Class ColumnAttributes
     Sub ChangeFieldnameAttribute_IsMAX(UpdateFieldname As String, IsMAX As Boolean)
         Dim tempAttribute As New ColumnAttributeProperties
 
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, "MAX(")
-        UpdateFieldname = RemoveBrackets(UpdateFieldname, ")")
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
 
         tempAttribute = Me.Dic_Attributes(UpdateFieldname)
         If Not IsNothing(tempAttribute) Then
@@ -675,11 +771,7 @@ Public Class ColumnAttributes
     Function GetFieldPosition(ByVal Fieldname As String) As Integer
         Dim tempAttribute As New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         tempAttribute = Me.Dic_Attributes(Fieldname)
         If Not IsNothing(tempAttribute) Then
@@ -690,11 +782,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldPosition(ByVal Fieldname As String) As Integer
         Dim tempAttribute As New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         tempAttribute = Me.Dic_Attributes(Fieldname)
         If Not IsNothing(tempAttribute) Then
@@ -710,16 +798,7 @@ Public Class ColumnAttributes
         Dim Message As String = ""
         Dim FieldName As String = ""
 
-        FieldText = RemoveBrackets(FieldText, "SUM(")
-        FieldText = RemoveBrackets(FieldText, " SUM")
-        FieldText = RemoveBrackets(FieldText, ")")
-        FieldText = RemoveBrackets(FieldText, "MIN(")
-        FieldText = RemoveBrackets(FieldText, " MIN")
-        FieldText = RemoveBrackets(FieldText, "MAX(")
-        FieldText = RemoveBrackets(FieldText, " MAX")
-        FieldText = RemoveBrackets(FieldText, "COUNT(")
-        FieldText = RemoveBrackets(FieldText, " Count")
-        FieldText = RemoveBrackets(FieldText, "Distinct ")
+        FieldText = RemoveALLBrackets(FieldText)
         'FieldText = RemoveBrackets(FieldText, " ") 'NO ! if spaces are removed - may not reflect original fieldname.
 
         GetFieldNameFromFieldText = ""
@@ -745,11 +824,7 @@ Public Class ColumnAttributes
     Function GetSelectedAttributes(Fieldname As String) As String
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedAttributes = ""
         Me.ErrMessage = ""
@@ -766,11 +841,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldText(Fieldname As String) As String
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldText = ""
         Me.ErrMessage = ""
@@ -787,11 +858,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldType(Fieldname As String) As String
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldType = ""
         Me.ErrMessage = ""
@@ -808,11 +875,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldLength(Fieldname As String) As Integer
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldLength = 0
         Me.ErrMessage = ""
@@ -829,11 +892,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldDecimals(Fieldname As String) As Integer
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldDecimals = 0
         Me.ErrMessage = ""
@@ -850,11 +909,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldSUM(Fieldname As String) As Boolean
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldSUM = False
         Me.ErrMessage = ""
@@ -871,11 +926,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldMIN(Fieldname As String) As Boolean
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldMIN = False
         Me.ErrMessage = ""
@@ -892,11 +943,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldMAX(Fieldname As String) As Boolean
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldMAX = False
         Me.ErrMessage = ""
@@ -913,11 +960,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldCOUNT(Fieldname As String) As Boolean
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldCOUNT = False
         Me.ErrMessage = ""
@@ -934,11 +977,7 @@ Public Class ColumnAttributes
     Function GetSelectedFieldAlias(Fieldname As String) As String
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetSelectedFieldAlias = ""
         Me.ErrMessage = ""
@@ -955,11 +994,7 @@ Public Class ColumnAttributes
     Function GetIsSelectedField(Fieldname As String) As Boolean
         Dim tempAttribute = New ColumnAttributeProperties
 
-        Fieldname = RemoveBrackets(Fieldname, "SUM(")
-        Fieldname = RemoveBrackets(Fieldname, ")")
-        Fieldname = RemoveBrackets(Fieldname, "MIN(")
-        Fieldname = RemoveBrackets(Fieldname, "MAX(")
-        Fieldname = RemoveBrackets(Fieldname, "COUNT(")
+        Fieldname = RemoveALLBrackets(Fieldname)
 
         GetIsSelectedField = False
         Me.ErrMessage = ""
@@ -980,7 +1015,6 @@ Public Class ColumnAttributes
         Dim Pos As Integer
         Dim lstTemp As New List(Of String)
         Dim NewFieldname As String
-
 
         For Each key As String In Me.Dic_Attributes.keys
             tempAttribute = Me.Dic_Attributes(key)

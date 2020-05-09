@@ -100,7 +100,7 @@ Public Class ViewSQL
 
             If dt IsNot Nothing Then
                 If dt.Rows.Count = 0 Then
-                    'MsgBox("No records")
+                    MsgBox("No records")
                     tssLabel1.Text = "Records: 0"
                 Else
                     tssLabel1.Text = "Loading Data to Grid"
@@ -181,7 +181,7 @@ Public Class ViewSQL
             Output = ""
             For i As Integer = 0 To dgvOutput.Columns.Count - 1
                 'FieldName = ColumnSelect.FieldAttributes.SelectedFields.Item(i)
-                ColumnText = dgvOutput.Columns(i).HeaderText ' Works only if ColumnText is also in FieldAttributes.Dic_Attributes()
+                ColumnText = 'dgvOutput.Columns(i).HeaderText ' Works only if ColumnText is also in FieldAttributes.Dic_Attributes()
                 Fieldname = ColumnSelect.FieldAttributes.GetFieldNameFromFieldText(ColumnText)
                 FieldPos = ColumnSelect.FieldAttributes.GetSelectedFieldPosition(Fieldname)
                 Attributes = ColumnSelect.FieldAttributes.GetSelectedAttributes(Fieldname)
@@ -253,9 +253,13 @@ Public Class ViewSQL
     End Sub
 
     Private Sub btnParseSQL_Click(sender As Object, e As EventArgs) Handles btnParseSQL.Click
+        PArse2()
+
+    End Sub
+
+    Sub PArse2()
         Dim SQLStatement As String = ""
         Dim Word As String = ""
-        Dim arrSELECT(100) As String
         Dim blnSelectMode As Boolean = False
         Dim blnFromMode As Boolean = False
         Dim blnWhereMode As Boolean = False
@@ -265,9 +269,14 @@ Public Class ViewSQL
         Dim blnInsideQuote As Boolean = False
         SQLStatement = txtSQLQuery.Text
         Dim j As Integer
-        For i = 1 To Len(SQLStatement)
-            If (Mid(SQLStatement, i, 1) = " " And Not blnInsideBracket And Not blnInsideQuote) Or Mid(SQLStatement, i, 1) = vbCr Or Mid(SQLStatement, i, 1) = vbLf Or Mid(SQLStatement, i, 1) = "," Then ' Blank, CR, LF or , encountered
-                If Trim(Word) <> "" And Mid(SQLStatement, i, 1) <> vbCr And Mid(SQLStatement, i, 1) <> vbLf Then
+        Dim wrkChar As Char
+        Dim arrSelectColumn(200) As String
+        Dim arrSELECTColumnText(200) As String
+        For int1 = 1 To Len(SQLStatement)
+            wrkChar = Mid(SQLStatement, int1, 1)
+            If (wrkChar = " " And Not blnInsideBracket And Not blnInsideQuote) Or wrkChar = vbCr Or wrkChar = vbLf Or wrkChar = "," Then ' Blank, CR, LF or , encountered
+                'If Trim(Word) <> "" And wrkChar <> vbCr And wrkChar <> vbLf Then
+                If Trim(Word) <> "" Then
                     If Word.ToUpper = "SELECT" Then ' SQL Clause, flag that we are SELECT Mode
                         blnSelectMode = True
                     ElseIf Word.ToUpper = "FROM" Then ' SQL Clause, flag that we are FROM Mode
@@ -275,27 +284,27 @@ Public Class ViewSQL
                         blnFromMode = True
                     ElseIf Word = "," Then
                     ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        arrSELECT(j) = Word
+                        arrSelectColumn(j) = Word
+                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = True And blnInsideQuote Then ' We have something in quotes within a select so must be column text
+                        arrSELECTColumnText(j) = Word
                         j += 1
-                    Else
+                        blnInsideQuote = False
                     End If
                     Word = ""
                 End If
             Else
-                Word += Mid(SQLStatement, i, 1)
+                Word += wrkChar
                 ' Check for quotes and brackets and flag if we are inside or outside at this point
-                If Mid(SQLStatement, i, 1) = "(" Then
+                If wrkChar = "(" Then
                     blnInsideBracket = True
-                ElseIf Mid(SQLStatement, i, 1) = ")" Then
+                ElseIf wrkChar = ")" Then
                     blnInsideBracket = False
-                ElseIf Mid(SQLStatement, i, 1) = """" And Not blnInsideQuote Then
+                ElseIf wrkChar = """" And Not blnInsideQuote Then
                     blnInsideQuote = True
-                ElseIf Mid(SQLStatement, i, 1) = """" And blnInsideQuote Then
-                    blnInsideQuote = False
-                    Word = ""
                 End If
             End If
-        Next i
+        Next int1
     End Sub
+
 
 End Class

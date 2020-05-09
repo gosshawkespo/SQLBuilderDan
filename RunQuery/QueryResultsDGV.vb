@@ -246,6 +246,16 @@ Public Class QueryResultsDGV
         Dim password As String = "root"
         Dim port As String = "3306"
 
+        'm_sConnStr = "Provider='SQLOLEDB';Data Source='MySqlServer';" &  "Initial Catalog='Northwind';Integrated Security='SSPI';"
+        'OR
+        'With objConn 
+        '.Provider = "SQLOLEDB"
+        '.DefaultDatabase = "Northwind"
+        '.Properties("Data Source") = "MySqlServer"
+        '.Properties("Integrated Security") = "SSPI"
+        '.Open
+        'End With
+
         Try
             'ConnString = setupMySQLconnection("localhost", "simplequerybuilder", "root", "root", "3306", ErrMessage)
             MsgBox(ConnectString)
@@ -286,7 +296,8 @@ Public Class QueryResultsDGV
             xlWorkSheet.Cells(1, lngCount) = rsADO.Fields.Item(lngCount - 1).Name
         Next lngCount
 
-
+        'Need condition to check if Excel is open: getting exception error here that operation cannot be performed if closed.
+        ' - If error has occured already before - it seems to trigger this.
         xlWorkSheet.Cells(2, 1).CopyFromRecordset(rsADO)
 
         xlWorkSheet.Range("A1:AZ1").Font.Bold = True
@@ -331,4 +342,7 @@ Public Class QueryResultsDGV
         End Try
     End Sub
 
+    Private Sub TabPage1_Click(sender As Object, e As EventArgs) Handles TabPage1.Click
+
+    End Sub
 End Class

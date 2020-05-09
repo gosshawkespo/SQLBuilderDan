@@ -66,12 +66,14 @@ Partial Class QueryResultsDGV
         Me.dgvOutput.AllowUserToAddRows = False
         Me.dgvOutput.AllowUserToDeleteRows = False
         Me.dgvOutput.AllowUserToOrderColumns = True
+        Me.dgvOutput.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.dgvOutput.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvOutput.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvOutput.Location = New System.Drawing.Point(3, 3)
         Me.dgvOutput.Name = "dgvOutput"
         Me.dgvOutput.ReadOnly = True
-        Me.dgvOutput.Size = New System.Drawing.Size(888, 372)
+        Me.dgvOutput.Size = New System.Drawing.Size(888, 428)
         Me.dgvOutput.TabIndex = 21
         '
         'btnClose
@@ -86,14 +88,15 @@ Partial Class QueryResultsDGV
         '
         'txtSQLQuery
         '
-        Me.txtSQLQuery.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.txtSQLQuery.Anchor = CType((((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtSQLQuery.Location = New System.Drawing.Point(6, 6)
         Me.txtSQLQuery.Multiline = True
         Me.txtSQLQuery.Name = "txtSQLQuery"
         Me.txtSQLQuery.ReadOnly = True
         Me.txtSQLQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.txtSQLQuery.Size = New System.Drawing.Size(882, 459)
+        Me.txtSQLQuery.Size = New System.Drawing.Size(882, 425)
         Me.txtSQLQuery.TabIndex = 18
         '
         'TabControl1
@@ -106,7 +109,7 @@ Partial Class QueryResultsDGV
         Me.TabControl1.Location = New System.Drawing.Point(12, 51)
         Me.TabControl1.Name = "TabControl1"
         Me.TabControl1.SelectedIndex = 0
-        Me.TabControl1.Size = New System.Drawing.Size(902, 404)
+        Me.TabControl1.Size = New System.Drawing.Size(902, 463)
         Me.TabControl1.TabIndex = 24
         '
         'TabPage1
@@ -115,7 +118,7 @@ Partial Class QueryResultsDGV
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
         Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(894, 378)
+        Me.TabPage1.Size = New System.Drawing.Size(894, 437)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Query Results"
         Me.TabPage1.UseVisualStyleBackColor = True
@@ -126,7 +129,7 @@ Partial Class QueryResultsDGV
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
         Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage2.Size = New System.Drawing.Size(894, 411)
+        Me.TabPage2.Size = New System.Drawing.Size(894, 437)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "SQL Statement"
         Me.TabPage2.UseVisualStyleBackColor = True

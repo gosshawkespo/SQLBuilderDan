@@ -423,6 +423,8 @@ Public Class ColumnSelect
         ElseIf UCase(PosType) = "BETWEEN" Then
             lblValue.Visible = True
             txtValue.Visible = True
+            txtValue.Text = ""
+            txtValue2.Text = ""
             If FieldAttributes.Dic_Types(Fieldname) = "L" Then
                 dtp1.Visible = True
                 dtp2.Visible = True
@@ -503,12 +505,17 @@ Public Class ColumnSelect
             FieldType = FieldAttributes.Dic_Types(strWhereField1)
             If FieldType = "A" Then
                 Quote = "'"
+                'txtValue.Text = ""
+                'txtValue2.Text = ""
             ElseIf FieldType = "L" Then
                 Quote = "'"
                 ExcludeUPPER = True
                 txtValue.Text = dtp1.Value.ToString("dd/MM/yyyy")
                 txtValue2.Text = dtp2.Value.ToString("dd/MM/yyyy")
             ElseIf FieldType = "N" Then
+                'txtValue.Text = ""
+                'txtValue2.Text = ""
+                Quote = ""
                 ExcludeUPPER = True
             Else
                 MsgBox("Field Type Not Recognised")
@@ -520,11 +527,12 @@ Public Class ColumnSelect
                 If UCase(strOperator) = "BETWEEN" Or UCase(strOperator) = "NOT BETWEEN" Then
                     'two dates in both text boxes:
                     ExcludeUPPER = True
-                    txtValue.Text = dtp1.Value
-                    txtValue2.Text = dtp2.Value
+
                     If txtValue.Text <> "" And txtValue2.Text <> "" Then
                         If IsDate(txtValue.Text) Then
                             If IsDate(txtValue2.Text) Then
+                                txtValue.Text = dtp1.Value
+                                txtValue2.Text = dtp2.Value
                                 strValue = Quote & CDate(txtValue.Text).ToString("yyyy-MM-dd") & Quote & " AND " & Quote & CDate(txtValue2.Text).ToString("yyyy-MM-dd") & Quote
                             End If
                         Else
@@ -1877,6 +1885,9 @@ Public Class ColumnSelect
         Dim Filename As String
 
         SQLQuery = GetFinalQuery()
+        If SQLQuery = "" Then
+            Exit Sub
+        End If
         savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         savedlg.FilterIndex = 1
         savedlg.RestoreDirectory = False
@@ -1886,6 +1897,8 @@ Public Class ColumnSelect
             savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         End If
         'savedlg.InitialDirectory = Application.StartupPath
+        savedlg.FileName = Filename
+
         If savedlg.ShowDialog() = DialogResult.OK Then
             mySQLFile = File.CreateText(savedlg.FileName)
             path = IO.Path.GetDirectoryName(savedlg.FileName)

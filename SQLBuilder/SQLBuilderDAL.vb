@@ -119,9 +119,9 @@ Public Class SQLBuilderDAL
         Try
             cn.Open()
             SQLStatement = "SELECT " &
-            "DataSetID,TableName " &
+            "DataSetID " &
             "FROM ebi7020t " &
-            "Where Tablename= '" & TableName
+            "Where Tablename= '" & TableName & "'"
 
             Dim cm As OdbcCommand = cn.CreateCommand 'Create a command object via the connection
             cm.CommandTimeout = 0
@@ -133,7 +133,7 @@ Public Class SQLBuilderDAL
             Return ds.Tables(0)
 
         Catch ex As Exception
-            MsgBox("DB ERROR: " & ex.Message)
+            MsgBox("DB ERROR in LocateDataSetID_SQL: " & ex.Message)
         End Try
 
     End Function
@@ -171,7 +171,7 @@ Public Class SQLBuilderDAL
             da.Fill(ds)
             Return ds.Tables(0)
         Catch ex As Exception
-            MsgBox("DB ERROR: " & ex.Message)
+            MsgBox("DB ERROR in LocateDataSetID_MySQL: " & ex.Message)
         End Try
 
     End Function

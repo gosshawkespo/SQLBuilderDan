@@ -1837,18 +1837,31 @@ Public Class ColumnSelect
         Dim strFilename As String
         Dim SQLStatement As String
         Dim SQLFile As String
+        Dim path As String
+        Dim Filename As String
 
         dlgLOAD.Title = "Select SQL text file"
         'dlgLOAD.InitialDirectory = Application.StartupPath
-        dlgLOAD.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        If txtPath.Text <> "" Then
+            dlgLOAD.InitialDirectory = txtPath.Text
+        Else
+            dlgLOAD.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        End If
+
         dlgLOAD.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         dlgLOAD.FilterIndex = 1
-        dlgLOAD.RestoreDirectory = True
+        dlgLOAD.RestoreDirectory = False
         If dlgLOAD.ShowDialog() = DialogResult.OK Then
             strFilename = dlgLOAD.FileName
             SQLStatement = File.ReadAllText(strFilename, System.Text.Encoding.Default)
             FieldAttributes.GetFullQuery = SQLStatement
-            MsgBox("Chars: " & Len(SQLStatement) & vbCrLf & SQLStatement)
+            'MsgBox("Chars: " & Len(SQLStatement) & vbCrLf & SQLStatement)
+            path = IO.Path.GetDirectoryName(dlgLOAD.FileName)
+            Filename = IO.Path.GetFileName(dlgLOAD.FileName)
+            txtPath.Text = path
+            txtFilename.Text = Filename
+        Else
+            Exit Sub
         End If
         ParseSQL4(SQLStatement)
         PopulateFromImport()
@@ -1860,17 +1873,29 @@ Public Class ColumnSelect
         Dim mySQLFile As System.IO.StreamWriter
         Dim savedlg As New SaveFileDialog
         Dim SQLQuery As String
+        Dim path As String
+        Dim Filename As String
 
         SQLQuery = GetFinalQuery()
         savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         savedlg.FilterIndex = 1
-        savedlg.RestoreDirectory = True
-        savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        savedlg.RestoreDirectory = False
+        If txtPath.Text <> "" Then
+            savedlg.InitialDirectory = txtPath.Text
+        Else
+            savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        End If
         'savedlg.InitialDirectory = Application.StartupPath
         If savedlg.ShowDialog() = DialogResult.OK Then
             mySQLFile = File.CreateText(savedlg.FileName)
+            path = IO.Path.GetDirectoryName(savedlg.FileName)
+            Filename = IO.Path.GetFileName(savedlg.FileName)
+            txtPath.Text = "Saved To:" & path
+            txtFilename.Text = Filename
             mySQLFile.WriteLine(SQLQuery)
             mySQLFile.Close()
+        Else
+            Exit Sub
         End If
     End Sub
 

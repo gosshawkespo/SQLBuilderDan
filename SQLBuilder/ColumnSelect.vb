@@ -1566,159 +1566,6 @@ Public Class ColumnSelect
         MsgBox(Output)
     End Sub
 
-    Sub ParseSQL(SQLStatement As String)
-        Dim Word As String = ""
-        Dim blnSelectMode As Boolean = False
-        Dim blnFromMode As Boolean = False
-        Dim blnWhereMode As Boolean = False
-        Dim blnOrderByMode As Boolean = False
-        Dim blnFetchMode As Boolean = False
-        Dim blnInsideBracket As Boolean = False
-        Dim blnInsideQuote As Boolean = False
-        Dim j As Integer
-        Dim wrkChar As Char
-        Dim arrSelectColumn(200) As String
-        Dim arrSELECTColumnText(200) As String
-        For int1 = 1 To Len(SQLStatement)
-            wrkChar = Mid(SQLStatement, int1, 1)
-            If (wrkChar = " " And Not blnInsideBracket And Not blnInsideQuote) Or wrkChar = vbCr Or wrkChar = vbLf Or wrkChar = "," Then ' Blank, CR, LF or , encountered
-                'If Trim(Word) <> "" And wrkChar <> vbCr And wrkChar <> vbLf Then
-                If Trim(Word) <> "" Then
-                    If Word.ToUpper = "SELECT" Then ' SQL Clause, flag that we are SELECT Mode
-                        blnSelectMode = True
-                    ElseIf Word.ToUpper = "FROM" Then ' SQL Clause, flag that we are FROM Mode
-                        blnSelectMode = False
-                        blnFromMode = True
-                    ElseIf Word = "," Then
-                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        arrSelectColumn(j) = Word
-                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = True And blnInsideQuote Then ' We have something in quotes within a select so must be column text
-                        arrSELECTColumnText(j) = Word
-                        j += 1
-                        blnInsideQuote = False
-                    End If
-                    Word = ""
-                End If
-            Else
-                Word += wrkChar
-                ' Check for quotes and brackets and flag if we are inside or outside at this point
-                If wrkChar = "(" Then
-                    blnInsideBracket = True
-                ElseIf wrkChar = ")" Then
-                    blnInsideBracket = False
-                ElseIf wrkChar = """" And Not blnInsideQuote Then
-                    blnInsideQuote = True
-                End If
-            End If
-        Next int1
-    End Sub
-
-    Sub ParseSQL3(SQLStatement As String)
-        Dim Word As String = ""
-        Dim blnSelectMode As Boolean = False
-        Dim blnFromMode As Boolean = False
-        Dim blnWhereMode As Boolean = False
-        Dim blnGroupByMode As Boolean = False
-        Dim blnOrderByMode As Boolean = False
-        Dim blnFetchMode As Boolean = False
-        Dim blnInsideBracket As Boolean = False
-        Dim blnInsideQuote As Boolean = False
-        SQLStatement = Replace(SQLStatement, "ORDER BY", "ORDERBY")
-        SQLStatement = Replace(SQLStatement, "GROUP BY", "GROUPBY")
-        SQLStatement = Replace(SQLStatement, "FETCH FIRST", "FETCHFIRST")
-        SQLStatement = Replace(SQLStatement, "LIMIT", "FETCHFIRST")
-        Dim int2 As Integer = 0
-        Dim wrkChar As Char
-        Dim arrSELECTColumn(200) As String
-        Dim arrSELECTColumnText(200) As String
-        Dim arrORDERBY(50) As String
-        Dim arrGROUPBY(50) As String
-        Dim strFROM As String = ""
-        Dim intFetchRecords = 0
-        For int1 = 1 To Len(SQLStatement)
-            wrkChar = Mid(SQLStatement, int1, 1)
-            If (wrkChar = " " And Not blnInsideBracket And Not blnInsideQuote) Or wrkChar = vbCr Or wrkChar = vbLf Or wrkChar = "," Then ' Blank, CR, LF or , encountered
-                'If Trim(Word) <> "" And wrkChar <> vbCr And wrkChar <> vbLf Then
-                If Trim(Word) <> "" Then
-                    If Word.ToUpper = "SELECT" Then ' SQL Clause, flag that we are SELECT Mode
-                        blnSelectMode = True
-                    ElseIf Word.ToUpper = "FROM" Then ' SQL Clause, flag that we are FROM Mode
-                        blnSelectMode = False
-                        blnFromMode = True
-                        int2 = 0
-                    ElseIf Word.ToUpper = "WHERE" Then ' SQL Clause, flag that we are Order By Mode
-                        blnSelectMode = False
-                        blnFromMode = False
-                        blnWhereMode = True
-                        int2 = 0
-                    ElseIf Word.ToUpper = "GROUPBY" Then ' SQL Clause, flag that we are Group By Mode
-                        blnSelectMode = False
-                        blnFromMode = False
-                        blnWhereMode = False
-                        blnGroupByMode = True
-                        int2 = 0
-                    ElseIf Word.ToUpper = "ORDERBY" Then ' SQL Clause, flag that we are Order By Mode
-                        blnSelectMode = False
-                        blnFromMode = False
-                        blnWhereMode = False
-                        blnGroupByMode = False
-                        blnOrderByMode = True
-                        int2 = 0
-                    ElseIf Word.ToUpper = "FETCHFIRST" Then ' SQL Clause, flag that we are Group By Mode
-                        blnSelectMode = False
-                        blnFromMode = False
-                        blnWhereMode = False
-                        blnGroupByMode = False
-                        blnOrderByMode = False
-                        blnFetchMode = True
-                    ElseIf Word = "," Then
-                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        arrSELECTColumn(int2) = Word
-                    ElseIf blnFromMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        strFROM = Word
-                    ElseIf blnOrderByMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        arrORDERBY(int2) = Word
-                        int2 += 1
-                    ElseIf blnGroupByMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        arrGROUPBY(int2) = Word
-                        int2 += 1
-                    ElseIf blnFetchMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-                        intFetchRecords = Word
-                        blnFetchMode = False
-                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = True And blnInsideQuote Then ' We have something in quotes within a select so must be column text
-                        arrSELECTColumnText(int2) = Word
-                        int2 += 1
-                        blnInsideQuote = False
-                    End If
-                    Word = ""
-                End If
-            Else
-                Word += wrkChar
-                ' Check for quotes and brackets and flag if we are inside or outside at this point
-                If wrkChar = "(" Then
-                    blnInsideBracket = True
-                ElseIf wrkChar = ")" Then
-                    blnInsideBracket = False
-                ElseIf wrkChar = """" And Not blnInsideQuote Then
-                    blnInsideQuote = True
-                End If
-            End If
-        Next int1
-        ' Process last word
-        If blnFromMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
-            strFROM = Word
-        End If
-
-        FieldAttributes.TableName = strFROM
-        FieldAttributes.FetchRecords = intFetchRecords
-        FieldAttributes.GetSelectPart = "" 'Not actually needed yet really....
-        'BUT will need a list of Fieldnames ...
-        For i As Integer = 0 To arrSELECTColumn.Length
-            FieldAttributes.Dic_Attributes(arrSELECTColumn(i)) = ""
-
-        Next
-    End Sub
-
     Sub ParseSQL4(SQLStatement As String)
         Dim Word As String = ""
         Dim blnSelectMode As Boolean = False
@@ -1929,7 +1776,12 @@ Public Class ColumnSelect
             ColumnName = FieldAttributes.SelectedFields.Item(0)
         End If
 
-        dt = myDAL.LocateDataSetID_MySQL(FieldAttributes.TableName, ColumnName)
+        If FieldAttributes.DBType = "MYSQL" Then
+            dt = myDAL.LocateDataSetID_MySQL(FieldAttributes.TableName, ColumnName)
+        Else
+            dt = myDAL.LocateDataSetID_SQL(GlobalSession.ConnectString, FieldAttributes.TableName, ColumnName)
+        End If
+
         If dt IsNot Nothing Then
             DataSetID = dt.Rows(0)("DataSetID")
             PopulateForm(DataSetID, False) 'clears all controls

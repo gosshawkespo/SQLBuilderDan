@@ -111,6 +111,34 @@ Public Class SQLBuilderDAL
 
     End Function
 
+    Function LocateDataSetID_SQL(ConnectString As String, TableName As String, ColumnName As String) As DataTable
+        Dim cn As New OdbcConnection(ConnectString)
+        Dim SQLStatement As String
+
+        LocateDataSetID_SQL = Nothing
+        Try
+            cn.Open()
+            SQLStatement = "SELECT " &
+            "DataSetID,TableName,ColumnName " &
+            "FROM ebi7023t " &
+            "Where Tablename= '" & TableName & "' AND ColumnName= '" & ColumnName & "'"
+
+            cn.Open()
+            Dim cm As OdbcCommand = cn.CreateCommand 'Create a command object via the connection
+            cm.CommandTimeout = 0
+            cm.CommandType = CommandType.Text
+            cm.CommandText = SQLStatement
+            Dim da As New OdbcDataAdapter(cm)
+            Dim ds As New DataSet
+            da.Fill(ds)
+            Return ds.Tables(0)
+
+        Catch ex As Exception
+            MsgBox("DB ERROR: " & ex.Message)
+        End Try
+
+    End Function
+
     Function LocateDataSetID_MySQL(TableName As String, ColumnName As String) As DataTable
         Dim ConnString As String
         Dim myDR As MySqlDataReader = Nothing

@@ -46,10 +46,10 @@
             dgvHeaderList.DataSource = Nothing
             'DBVersion = "MYSQL"
             DBVersion = "IBM"
-            If DBVersion = "IBM" Then
-                dt = myDAL.GetHeaderList(GlobalSession.ConnectString)
-            Else
+            If DBVersion = "MYSQL" Then
                 dt = myDAL.GetHeaderListMYSQL()
+            Else
+                dt = myDAL.GetHeaderList(GlobalSession.ConnectString)
             End If
 
             If dt.Rows.Count > 0 Then

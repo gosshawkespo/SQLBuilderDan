@@ -401,6 +401,7 @@ Partial Class ColumnSelect
         '
         'GroupBox3
         '
+        Me.GroupBox3.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.GroupBox3.Controls.Add(Me.txtINvalues)
         Me.GroupBox3.Controls.Add(Me.rbOR)
         Me.GroupBox3.Controls.Add(Me.lstConditions)
@@ -757,6 +758,8 @@ Partial Class ColumnSelect
         '
         'txtPath
         '
+        Me.txtPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.txtPath.Location = New System.Drawing.Point(521, 8)
         Me.txtPath.Name = "txtPath"
         Me.txtPath.ReadOnly = True

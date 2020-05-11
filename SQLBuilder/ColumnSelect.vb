@@ -1776,6 +1776,7 @@ Public Class ColumnSelect
         Dim dt As DataTable
         Dim myDAL As New SQLBuilderDAL
         Dim DataSetID As Integer
+        Dim DataSetName As String
         Dim ColumnName As String = ""
         Dim Sorted As String
         Dim SortIDX As Integer
@@ -1792,7 +1793,10 @@ Public Class ColumnSelect
 
         If dt IsNot Nothing Then
             DataSetID = dt.Rows(0)("DataSetID")
+            DataSetName = dt.Rows(0)("DatasetName")
             PopulateForm(DataSetID, False) 'clears all controls
+            txtTablename.Text = FieldAttributes.TableName
+            txtDatasetName.Text = DataSetName
         Else
             MsgBox("DB Error: Problem getting dataset")
             Exit Sub

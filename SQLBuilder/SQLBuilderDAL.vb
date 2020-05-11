@@ -119,7 +119,7 @@ Public Class SQLBuilderDAL
         Try
             cn.Open()
             SQLStatement = "SELECT " &
-            "DataSetID " &
+            "DataSetID,DatasetName " &
             "FROM ebi7020t " &
             "Where Tablename= '" & TableName & "'"
 
@@ -156,7 +156,7 @@ Public Class SQLBuilderDAL
             Dim cn As New MySqlConnection(ConnString)
             cn.Open()
             SQLStatement = "SELECT " &
-            "DataSetID " &
+            "DataSetID,DatasetName " &
             "FROM ebi7020t " &
             "Where Tablename= '" & TableName & "'"
             Dim cmd As New MySqlCommand

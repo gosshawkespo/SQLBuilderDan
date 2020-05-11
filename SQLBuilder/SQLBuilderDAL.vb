@@ -111,7 +111,7 @@ Public Class SQLBuilderDAL
 
     End Function
 
-    Function LocateDataSetID_SQL(ConnectString As String, TableName As String, ColumnName As String) As DataTable
+    Function LocateDataSetID_SQL(ConnectString As String, TableName As String) As DataTable
         Dim cn As New OdbcConnection(ConnectString)
         Dim SQLStatement As String
 
@@ -119,9 +119,9 @@ Public Class SQLBuilderDAL
         Try
             cn.Open()
             SQLStatement = "SELECT " &
-            "DataSetID,TableName,ColumnName " &
-            "FROM ebi7023t " &
-            "Where Tablename= '" & TableName & "' AND ColumnName= '" & ColumnName & "'"
+            "DataSetID,TableName " &
+            "FROM ebi7020t " &
+            "Where Tablename= '" & TableName
 
             Dim cm As OdbcCommand = cn.CreateCommand 'Create a command object via the connection
             cm.CommandTimeout = 0
@@ -138,7 +138,7 @@ Public Class SQLBuilderDAL
 
     End Function
 
-    Function LocateDataSetID_MySQL(TableName As String, ColumnName As String) As DataTable
+    Function LocateDataSetID_MySQL(TableName As String) As DataTable
         Dim ConnString As String
         Dim myDR As MySqlDataReader = Nothing
         Dim SQLStatement As String
@@ -157,10 +157,11 @@ Public Class SQLBuilderDAL
             cn.Open()
             SQLStatement = "SELECT " &
             "DataSetID " &
-            "FROM ebi7023t " &
-            "Where Tablename= '" & TableName & "' AND ColumnName= '" & ColumnName & "'"
-
+            "FROM ebi7020t " &
+            "Where Tablename= '" & TableName & "'"
             Dim cmd As New MySqlCommand
+            '"FROM ebi7023t " &
+            '"Where Tablename= '" & TableName & "' AND ColumnName= '" & ColumnName & "'"
             cmd.Connection = cn
             cmd.CommandTimeout = 0
             cmd.CommandType = CommandType.Text

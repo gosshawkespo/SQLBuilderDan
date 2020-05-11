@@ -1777,16 +1777,18 @@ Public Class ColumnSelect
         End If
 
         If FieldAttributes.DBType = "MYSQL" Then
-            dt = myDAL.LocateDataSetID_MySQL(FieldAttributes.TableName, ColumnName)
+            dt = myDAL.LocateDataSetID_MySQL(FieldAttributes.TableName)
         Else
-            dt = myDAL.LocateDataSetID_SQL(GlobalSession.ConnectString, FieldAttributes.TableName, ColumnName)
+            dt = myDAL.LocateDataSetID_SQL(GlobalSession.ConnectString, FieldAttributes.TableName)
         End If
 
         If dt IsNot Nothing Then
             DataSetID = dt.Rows(0)("DataSetID")
             PopulateForm(DataSetID, False) 'clears all controls
         Else
-            FieldAttributes.ClearAllDics()
+            MsgBox("DB Error: Problem getting dataset")
+            Exit Sub
+            'FieldAttributes.ClearAllDics()
         End If
 
         txtFirstRows.Text = CStr(FieldAttributes.FetchRecords)

@@ -123,7 +123,6 @@ Public Class SQLBuilderDAL
             "FROM ebi7023t " &
             "Where Tablename= '" & TableName & "' AND ColumnName= '" & ColumnName & "'"
 
-            cn.Open()
             Dim cm As OdbcCommand = cn.CreateCommand 'Create a command object via the connection
             cm.CommandTimeout = 0
             cm.CommandType = CommandType.Text

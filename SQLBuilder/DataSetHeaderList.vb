@@ -41,6 +41,7 @@
         Dim Tablename As String
 
         Me.Text = "Data Set List"
+        stsDataSetListLabel1.Text = "Records: 0"
         Try
             dgvHeaderList.Columns.Clear()
             dgvHeaderList.DataSource = Nothing
@@ -51,10 +52,14 @@
             Else
                 dt = myDAL.GetHeaderList(GlobalSession.ConnectString)
             End If
-
-            If dt.Rows.Count > 0 Then
-                dgvHeaderList.DataSource = dt
+            If dt IsNot Nothing Then
+                If dt.Rows.Count > 0 Then
+                    dgvHeaderList.DataSource = dt
+                    stsDataSetListLabel1.Text = "Records " & CStr(dt.Rows.Count)
+                End If
             End If
+
+
         Catch ex As Exception
             Cursor = Cursors.Default
             MsgBox("Populate Error: " & ex.Message)
@@ -78,8 +83,10 @@
     Private Sub DataSetHeaderList_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         If e.KeyValue = Keys.F5 Then
             'btnSearch.PerformClick()
+            btnRefresh.PerformClick()
         ElseIf e.KeyValue = 27 Then 'ESC key
             'PopulateForm()
+            btnRefresh.PerformClick()
         ElseIf e.KeyValue = Keys.F7 Then
             UndockChild()
         End If
@@ -150,5 +157,15 @@
             End If
             HeaderListCRUD.Show(Cursor.Position)
         End If
+    End Sub
+
+    Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
+        'Refresh form:
+        PopulateForm()
+    End Sub
+
+    Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+        Close()
+
     End Sub
 End Class

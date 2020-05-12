@@ -177,6 +177,7 @@ Public Class ColumnSelect
                     dgvFieldSelection.Columns("Column Decimals").ReadOnly = True
                     'dgvFieldSelection.Columns("Column Decimals").DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 End If
+                stsQueryBuilderLabel1.Text = "Columns: " & CStr(dt.Rows.Count)
             End If
 
 
@@ -695,9 +696,10 @@ Public Class ColumnSelect
 
     Private Sub SQLBuilder_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         If e.KeyValue = Keys.F5 Then
-            'btnRefresh.PerformClick()
+            btnRefresh.PerformClick()
         ElseIf e.KeyValue = 27 Then 'ESC pressed
             'Clear certain fields
+            btnClear.PerformClick()
         ElseIf e.KeyValue = Keys.F7 Then
             UndockChild()
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
@@ -726,6 +728,7 @@ Public Class ColumnSelect
         lstConditions.Items.Clear()
         ClearTicks()
         FieldAttributes.ClearALLLists()
+
         FieldAttributes.ResetAllSelectedFields()
         ColumnSelect.FieldAttributes.DeleteConditions()
         cboWhereFields.Text = ""
@@ -741,6 +744,7 @@ Public Class ColumnSelect
     Sub RefreshForm()
         PopulateForm(Me.TheDataSetID, False)
         FieldAttributes.GetFullQuery = "" 'Clears import flag.
+        FieldAttributes.ClearALLLists()
     End Sub
 
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
@@ -1526,12 +1530,6 @@ Public Class ColumnSelect
 
     End Sub
 
-    Private Sub dgvFieldSelection_RowEnter(sender As Object, e As DataGridViewCellEventArgs) Handles dgvFieldSelection.RowEnter
-        stsQueryBuilderLabel1.Text = ""
-        stsQueryBuilderLabel2.Text = ""
-
-    End Sub
-
     Private Sub btnHideColumns_Click(sender As Object, e As EventArgs) Handles btnHideColumns.Click
         'Default is HIDE columns: FIELD,TYPE,LENGTH,DECIMALS
         If btnHideColumns.Text = "+" Then
@@ -1749,6 +1747,7 @@ Public Class ColumnSelect
         'New List(Of String)(arrSELECTColumn)
         FieldAttributes.ClearAllDics()
         FieldAttributes.ClearALLLists()
+        FieldAttributes.ClearConditionsList()
         FieldAttributes.SelectedFields = PopulateListWithoutNothings(arrSELECTColumn)
         FieldAttributes.SelectedAlias = PopulateListWithoutNothings(arrSELECTColumnText)
         FieldAttributes.lbConditions = PopulateListWithoutNothings(arrWHERE)

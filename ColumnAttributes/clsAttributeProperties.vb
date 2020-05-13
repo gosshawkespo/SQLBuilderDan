@@ -10,9 +10,11 @@
     Private _IsMIN As Boolean
     Private _IsMAX As Boolean
     Private _IsCount As Boolean
+    Private _IsHaving As Boolean
     Private _FieldAlias As String
     Private _IsSelected As Boolean
     Private _Attributes As String
+    Private _HavingClause As String
     'Private _Dic_Types As Object
     'Private _Dic_FieldAlias As Object
     'Private _Dic_Attributes As Object
@@ -115,6 +117,15 @@
             _IsCount = value
         End Set
     End Property
+    '_IsHaving
+    Public Property IsHaving As Boolean
+        Get
+            Return _IsHaving
+        End Get
+        Set(value As Boolean)
+            _IsHaving = value
+        End Set
+    End Property
 
     Public Property IsSelected As Boolean
         Get
@@ -140,6 +151,15 @@
         End Get
         Set(value As String)
             _FieldAlias = value
+        End Set
+    End Property
+
+    Public Property HavingClause As String
+        Get
+            Return _HavingClause
+        End Get
+        Set(value As String)
+            _HavingClause = value
         End Set
     End Property
 

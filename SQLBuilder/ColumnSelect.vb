@@ -523,7 +523,7 @@ Public Class ColumnSelect
         If cboWhereFields.Items.Count > 0 Then
             'grab selected field:
             strWhereField1 = cboWhereFields.SelectedValue
-            strWhereColumnText = cboWhereFields.SelectedText
+            strWhereColumnText = cboWhereFields.Text
             If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText, "COUNT(") > 0 Then
                 isAggregate = True
                 strWhereField1 = strWhereColumnText
@@ -1145,6 +1145,7 @@ Public Class ColumnSelect
         Dim IsChecked As Boolean
         Dim FinalQuery As String
         Dim IncludeGroupBy As Boolean = False
+        Dim IsHaving As Boolean = False
         Dim tempAttribute As ColumnAttributes.ColumnAttributeProperties
         Dim lstSelected As New List(Of String)
         Dim FirstRows As Long
@@ -1212,6 +1213,7 @@ Public Class ColumnSelect
             End If
 
         Next
+
         If FieldAttributes.HasCount Then
             IncludeGroupBy = True
             If FieldsSelected = "" Then

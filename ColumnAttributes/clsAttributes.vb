@@ -768,6 +768,36 @@ Public Class ColumnAttributes
 
     End Sub
 
+    Sub ChangeFieldnameAttribute_IsHAVING(UpdateFieldname As String, IsHAVING As Boolean)
+        Dim tempAttribute As New ColumnAttributeProperties
+
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
+
+        tempAttribute = Me.Dic_Attributes(UpdateFieldname)
+        If Not IsNothing(tempAttribute) Then
+            If Me.FindAttributeFieldName(UpdateFieldname, True) Then
+                tempAttribute.IsHaving = IsHAVING
+                Me.Dic_Attributes(UpdateFieldname) = tempAttribute
+            End If
+        End If
+
+    End Sub
+
+    Sub ChangeSelectedFieldname_HAVINGClause(UpdateFieldname As String, HAVINGClause As String)
+        Dim tempAttribute As New ColumnAttributeProperties
+
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
+
+        tempAttribute = Me.Dic_Attributes(UpdateFieldname)
+        If Not IsNothing(tempAttribute) Then
+            If Me.FindAttributeFieldName(UpdateFieldname, True) Then
+                tempAttribute.HavingClause = HAVINGClause
+                Me.Dic_Attributes(UpdateFieldname) = tempAttribute
+            End If
+        End If
+
+    End Sub
+
     Function GetFieldPosition(ByVal Fieldname As String) As Integer
         Dim tempAttribute As New ColumnAttributeProperties
 
@@ -968,6 +998,40 @@ Public Class ColumnAttributes
         If tempAttribute IsNot Nothing Then
             If tempAttribute.IsSelected Then
                 Return tempAttribute.IsCount
+            End If
+        Else
+            Me.ErrMessage = "Fieldname not found"
+        End If
+    End Function
+
+    Function GetSelectedFieldHAVING(Fieldname As String) As Boolean
+        Dim tempAttribute = New ColumnAttributeProperties
+
+        Fieldname = RemoveALLBrackets(Fieldname)
+
+        GetSelectedFieldHAVING = False
+        Me.ErrMessage = ""
+        tempAttribute = Me.Dic_Attributes(Fieldname)
+        If tempAttribute IsNot Nothing Then
+            If tempAttribute.IsSelected Then
+                Return tempAttribute.IsHaving
+            End If
+        Else
+            Me.ErrMessage = "Fieldname not found"
+        End If
+    End Function
+
+    Function GetSelectedFieldHAVINGClause(Fieldname As String) As String
+        Dim tempAttribute = New ColumnAttributeProperties
+
+        Fieldname = RemoveALLBrackets(Fieldname)
+
+        GetSelectedFieldHAVINGClause = ""
+        Me.ErrMessage = ""
+        tempAttribute = Me.Dic_Attributes(Fieldname)
+        If tempAttribute IsNot Nothing Then
+            If tempAttribute.IsHaving Then
+                Return tempAttribute.HavingClause
             End If
         Else
             Me.ErrMessage = "Fieldname not found"

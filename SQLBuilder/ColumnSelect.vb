@@ -526,6 +526,7 @@ Public Class ColumnSelect
             strWhereColumnText = cboWhereFields.Text
             If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText, "COUNT(") > 0 Then
                 isAggregate = True
+                FieldAttributes.ChangeFieldnameAttribute_IsHAVING(strWhereField1, True)
                 strWhereField1 = strWhereColumnText
             End If
         Else
@@ -640,7 +641,7 @@ Public Class ColumnSelect
                     strCondition += strWhereField1 & " " & strOperator & " " & strValue
                 End If
 
-                If Not ColumnSelect.FieldAttributes.IsInList(strCondition) Then
+                If Not ColumnSelect.FieldAttributes.IsInList(strJoin & strCondition) Then
                     ColumnSelect.FieldAttributes.lbConditions.Add(strJoin & strCondition)
                 Else
                     MsgBox("Condition Already in List")
@@ -662,29 +663,47 @@ Public Class ColumnSelect
         Dim AndPos As Integer
         Dim OrPos As Integer
         Dim FirstPart As String
+        Dim ColumnName As String
+        Dim strHavingClause As String
+        Dim OpenBracketPos As Integer
+        Dim CloseBracketPos As Integer
 
         'If ColumnSelect.FieldAttributes.CountConditions > 0 Then
         ColumnSelect.FieldAttributes.DeleteConditions()
         lstConditions.Items.Clear()
+        strHavingClause = ""
+        OpenBracketPos = 0
+        CloseBracketPos = 0
         'what if the first condition is deleted - this leaves the others with AND in front.
         For i As Integer = 0 To ColumnSelect.FieldAttributes.lbConditions.Count - 1
             Condition = ColumnSelect.FieldAttributes.lbConditions.Item(i)
             If Not IsNothing(Condition) Then
-                If Len(Condition) > 5 And i = 0 Then
+                If Len(Condition) > 5 Then
                     FirstPart = Mid(Condition, 1, 5)
                     If InStr(UCase(FirstPart), "AND ") > 0 Then
-                        Condition = Replace(Condition, "AND", "", 1, 1, CompareMethod.Text)
+                        If i = 0 Then
+                            Condition = Replace(Condition, "AND", "", 1, 1, CompareMethod.Text)
+                        End If
                     End If
                     If InStr(UCase(FirstPart), "OR ") > 0 Then
-                        Condition = Replace(Condition, "OR", "", 1, 1, CompareMethod.Text)
+                        If i = 0 Then
+                            Condition = Replace(Condition, "OR", "", 1, 1, CompareMethod.Text)
+                        End If
                     End If
                     ColumnSelect.FieldAttributes.lbConditions.Item(i) = Condition
                     'ColumnSelect.FieldAttributes.lbConditions.Item(i) = "WHERE " & Condition
                 End If
-                ColumnSelect.FieldAttributes.MyWhereCondtions += Condition
+                If InStr(Condition, "SUM(") > 0 Or InStr(Condition, "MIN(") > 0 Or InStr(Condition, "MAX(") > 0 Or InStr(Condition, "COUNT(") > 0 Then
+                    strHavingClause += Condition
+                    ColumnSelect.FieldAttributes.HavingConditions += Condition
+                Else
+                    ColumnSelect.FieldAttributes.MyWhereCondtions += Condition
+                End If
+
                 lstConditions.Items.Add(Condition)
             End If
         Next
+        'FieldAttributes.ChangeSelectedFieldname_HAVINGClause(ColumnName, Condition)
         'Else
         'MsgBox("No conditions are entered")
         'End If
@@ -1275,10 +1294,15 @@ Public Class ColumnSelect
         If GroupByFields <> "" Then
             SelectPart += vbCrLf & "GROUP BY " & GroupByFields
         End If
+        'HAVING:
+        If FieldAttributes.HavingConditions <> "" Then
+            SelectPart += vbCrLf & "HAVING " & FieldAttributes.HavingConditions
+        End If
         'ORDERBY:
         If OrderByFields <> "" Then
             SelectPart += vbCrLf & "ORDER BY " & OrderByFields
         End If
+        'FETCH RECORDS / LIMIT:
         If IsNumeric(txtFirstRows.Text) Then
             FirstRows = CLng(txtFirstRows.Text)
             If FirstRows > 0 Then

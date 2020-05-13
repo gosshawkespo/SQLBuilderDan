@@ -30,6 +30,7 @@ Public Class ColumnAttributes
     Private _SQLOrderByPart As String
     Private _FetchCount As Integer
     Private _TableName As String
+    Private _HavingConditions As String
 
 
     Sub New()
@@ -226,6 +227,15 @@ Public Class ColumnAttributes
         End Get
         Set(value As List(Of String))
             _lstConditions = value
+        End Set
+    End Property
+
+    Public Property HavingConditions As String
+        Get
+            Return _HavingConditions
+        End Get
+        Set(value As String)
+            _HavingConditions = value
         End Set
     End Property
 
@@ -491,6 +501,7 @@ Public Class ColumnAttributes
         Dim ItemName As String
 
         _WhereConditions = ""
+        _HavingConditions = ""
         For i As Integer = 0 To lbConditions.Count - 1
             If IsNothing(lbConditions.Item(i)) Then
                 'lbConditions.RemoveAt(i)

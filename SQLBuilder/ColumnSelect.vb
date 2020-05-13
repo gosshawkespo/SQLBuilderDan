@@ -84,7 +84,7 @@ Public Class ColumnSelect
         Dim FieldText As String
         Dim lstWhereFields As New List(Of ColumnAttributes.WhereField)
 
-        dtWhere = dt
+        dtWhere = dt.Copy
         'cboWhereFields.DataSource = dt
         For i As Integer = 0 To dt.Rows.Count - 1
             Fieldname = dt.Rows(i)("Column Name")
@@ -509,6 +509,8 @@ Public Class ColumnSelect
         Dim FieldType As String
         Dim Quote As String
         Dim ExcludeUPPER As Boolean
+        Dim strWhereColumnText As String
+        Dim isAggregate As Boolean = False
 
         strValue = ""
         AddCondition = ""
@@ -521,6 +523,11 @@ Public Class ColumnSelect
         If cboWhereFields.Items.Count > 0 Then
             'grab selected field:
             strWhereField1 = cboWhereFields.SelectedValue
+            strWhereColumnText = cboWhereFields.SelectedText
+            If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText, "COUNT(") > 0 Then
+                isAggregate = True
+                strWhereField1 = strWhereColumnText
+            End If
         Else
             'Not applicable at moment because auto-filled from grid...
             'Except aggregate fields - inserted when user clicks Add Fields button..
@@ -829,7 +836,36 @@ Public Class ColumnSelect
 
     End Function
 
+    Sub AddAggregateToWhereField(ColumnName As String, AggregateItem As String)
+        Dim myDataRow As DataRow = dtWhere.NewRow
+        Dim ColumnType As String
+
+        ColumnType = FieldAttributes.Dic_Types(ColumnName)
+        If cboWhereFields.FindStringExact(AggregateItem) = -1 Then
+            myDataRow("Column Name") = ColumnName
+            myDataRow("Column Text") = AggregateItem
+            dtWhere.Rows.Add(myDataRow)
+            cboWhereFields.DataSource = dtWhere
+            FieldAttributes.Dic_Types(AggregateItem) = ColumnType
+        End If
+    End Sub
+
+    Sub RemoveAggregateFromWhereField(ColumnName As String, AggregateItem As String)
+        Dim myDataRow As DataRow = dtWhere.NewRow
+        Dim ColumnType As String
+
+        ColumnType = FieldAttributes.Dic_Types(ColumnName)
+        If cboWhereFields.FindStringExact(AggregateItem) > -1 Then
+            myDataRow("Column Name") = ColumnName
+            myDataRow("Column Text") = AggregateItem
+            dtWhere.Rows.Remove(myDataRow)
+            cboWhereFields.DataSource = dtWhere
+            'FieldAttributes.Dic_Types(AggregateItem) = ColumnType
+        End If
+    End Sub
+
     Sub TestCheckboxCondition(ColumnName As String, ItemIDX As Integer, CheckboxType As String, strItem As String, ItemIsTicked As Boolean, ByRef ItemSelected As Integer)
+        Dim ColumnType As String
 
         If InStr(CheckboxType, "SUM") > 0 Then
             FieldAttributes.ChangeFieldnameAttribute_IsSUM(ColumnName, ItemIsTicked)
@@ -849,20 +885,11 @@ Public Class ColumnSelect
             If IsInList(lstFields, ColumnName, ItemIDX) Then
                 lstFields.Items.RemoveAt(ItemIDX)
                 lstFields.Items.Insert(ItemIDX, strItem)
-                If cboWhereFields.FindStringExact(strItem) = -1 Then
-                    Dim AddWhere As ColumnAttributes.WhereField = New ColumnAttributes.WhereField(ColumnName, strItem)
-                    Dim myDataRow As DataRow = dtWhere.NewRow
-
-                    myDataRow("Column Name") = ColumnName
-                    myDataRow("Column Text") = strItem
-                    dtWhere.Rows.Add(myDataRow)
-                    'cboWhereFields.Items.Insert(0, AddWhere)
-                    'cboWhereFields.DataSource = dtWhere
-                End If
+                'Dim AddWhere As ColumnAttributes.WhereField = New ColumnAttributes.WhereField(ColumnName, strItem)
                 FieldAttributes.ChangeSelectedFieldnameAttribute_Position(ColumnName, ItemIDX + 1)
+
             End If
-
-
+            AddAggregateToWhereField(ColumnName, strItem)
             If Not IsInList(lstFields, strItem, ItemIDX) Then
                 lstFields.Items.Add(strItem)
                 If ItemIDX = -1 Then
@@ -872,11 +899,10 @@ Public Class ColumnSelect
             End If
         ElseIf ItemIsTicked = False Then 'ITEM NOT SELECTED, if un-ticked - remove function from list and replace with normal field:
             ItemSelected = 0
+            'RemoveAggregateFromWhereField(ColumnName, strItem) 'giving error at moment.
             If IsInList(lstFields, strItem, ItemIDX) Then
                 lstFields.Items.RemoveAt(ItemIDX)
-                If cboWhereFields.FindStringExact(strItem) > -1 Then
-                    cboWhereFields.Items.Remove(strItem)
-                End If
+
                 If FieldAttributes.GetSelectedFieldSUM(ColumnName) = False And
                     FieldAttributes.GetSelectedFieldMIN(ColumnName) = False And
                     FieldAttributes.GetSelectedFieldMAX(ColumnName) = False And

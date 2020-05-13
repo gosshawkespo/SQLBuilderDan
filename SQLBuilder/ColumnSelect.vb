@@ -7,6 +7,7 @@ Public Class ColumnSelect
     Private _WhereField As String
     Dim GlobalParms As New ESPOParms.Framework
     Dim GlobalSession As New ESPOParms.Session
+    Dim dtWhere As DataTable
     'Public Shared myWhereConditions As New myGlobals
     Public Shared FieldAttributes As New columnattributes.columnattributes
 
@@ -76,6 +77,30 @@ Public Class ColumnSelect
         End Set
     End Property
 
+    Sub BuildWhereFieldCombo(dt As DataTable, FirstTIme As Boolean)
+        Dim IDX As Integer
+        Dim myDAL As New SQLBuilderDAL
+        Dim Fieldname As String
+        Dim FieldText As String
+        Dim lstWhereFields As New List(Of ColumnAttributes.WhereField)
+
+        dtWhere = dt
+        'cboWhereFields.DataSource = dt
+        For i As Integer = 0 To dt.Rows.Count - 1
+            Fieldname = dt.Rows(i)("Column Name")
+            FieldText = dt.Rows(i)("Column Text")
+            'lstWhereFields.Add(New ColumnAttributes.WhereField With {.ColumnName = Fieldname, .ColumnText = FieldText})
+            lstWhereFields.Add(New ColumnAttributes.WhereField(Fieldname, FieldText))
+        Next
+        If FirstTIme Then
+            cboWhereFields.DataSource = dtWhere
+            cboWhereFields.ValueMember = "Column Name"
+            cboWhereFields.DisplayMember = "Column Text"
+        End If
+        cboWhereFields.Text = ""
+
+    End Sub
+
     Sub PopulateForm(DataSetID As Integer, FirstTIme As Boolean)
         Cursor = Cursors.WaitCursor
         Dim myDAL As New SQLBuilderDAL
@@ -138,22 +163,23 @@ Public Class ColumnSelect
             dgvFieldSelection.DataSource = Nothing
             If dt IsNot Nothing Then
                 If dt.Rows.Count > 0 Then
-                    dgvFieldSelection.DataSource = dt
+
                     PopulateAttributes(dt)
-                    cboWhereFields.DataSource = dt
-                    cboWhereFields.Text = ""
+                    BuildWhereFieldCombo(dt, FirstTIme)
+                    'cboWhereFields.DataSource = dt
+                    'cboWhereFields.Text = ""
                     cboOperators.SelectedValue = "="
                     If FirstTIme Then
-                        cboWhereFields.ValueMember = "Column Name"
-                        cboWhereFields.DisplayMember = "Column Text"
+                        'cboWhereFields.ValueMember = "Column Name"
+                        'cboWhereFields.DisplayMember = "Column Text"
                         cboOperators.ValueMember = "="
-
                         BuildOperatorCombo()
                         'AdjustGridColumns()
                     End If
                     cboOperators.SelectedValue = "="
                     dtp1.Value = Now()
                     dtp2.Value = Now()
+                    dgvFieldSelection.DataSource = dt
                     'dgvFieldSelection.Columns.Add(dgvCheck)
                     dgvFieldSelection.Columns.Add(dgvCheckSUM)
                     dgvFieldSelection.Columns.Add(dgvCheckMIN)
@@ -243,7 +269,7 @@ Public Class ColumnSelect
     Function GetSelectedGridRows() As List(Of Integer)
         Dim tempRowsSelected As New List(Of Integer)
         Dim RowsSelected As New List(Of Integer)
-
+        'A selected row is retrieved in reverse order by VS from a grid.
         Try
             For i As Integer = 0 To dgvFieldSelection.SelectedCells.Count - 1
                 If Not tempRowsSelected.Contains(CInt(dgvFieldSelection.SelectedCells(i).RowIndex)) Then
@@ -308,7 +334,7 @@ Public Class ColumnSelect
             tempAttribute.IsCount = False
             tempAttribute.IsSelected = False
             tempAttribute.Attributes = strFieldType & ";" & strFieldLength & ";" & strDecimals & ";"
-            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & CStr(intCOUNT)
+            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & ";" & CStr(intCOUNT)
 
             'If Not FieldAttributes.FindAttributeFieldName(strFieldname) Then
             If Not FieldAttributes.Dic_Attributes.exists(strFieldname) Then
@@ -496,6 +522,8 @@ Public Class ColumnSelect
             'grab selected field:
             strWhereField1 = cboWhereFields.SelectedValue
         Else
+            'Not applicable at moment because auto-filled from grid...
+            'Except aggregate fields - inserted when user clicks Add Fields button..
             MsgBox("Dont forget to press the Add Field button.")
             Exit Function
         End If
@@ -817,13 +845,23 @@ Public Class ColumnSelect
         End If
         If ItemIsTicked = True Then 'ITEM SELECTED, if ticked - insert function in list, remove normal field and replace with function
             ItemSelected = 1
-
+            'Insert column name,column text with relevant function() around it:
             If IsInList(lstFields, ColumnName, ItemIDX) Then
                 lstFields.Items.RemoveAt(ItemIDX)
                 lstFields.Items.Insert(ItemIDX, strItem)
+                If cboWhereFields.FindStringExact(strItem) = -1 Then
+                    Dim AddWhere As ColumnAttributes.WhereField = New ColumnAttributes.WhereField(ColumnName, strItem)
+                    Dim myDataRow As DataRow = dtWhere.NewRow
+
+                    myDataRow("Column Name") = ColumnName
+                    myDataRow("Column Text") = strItem
+                    dtWhere.Rows.Add(myDataRow)
+                    'cboWhereFields.Items.Insert(0, AddWhere)
+                    'cboWhereFields.DataSource = dtWhere
+                End If
                 FieldAttributes.ChangeSelectedFieldnameAttribute_Position(ColumnName, ItemIDX + 1)
             End If
-            'Insert fieldname with relevant function() around it:
+
 
             If Not IsInList(lstFields, strItem, ItemIDX) Then
                 lstFields.Items.Add(strItem)
@@ -836,6 +874,9 @@ Public Class ColumnSelect
             ItemSelected = 0
             If IsInList(lstFields, strItem, ItemIDX) Then
                 lstFields.Items.RemoveAt(ItemIDX)
+                If cboWhereFields.FindStringExact(strItem) > -1 Then
+                    cboWhereFields.Items.Remove(strItem)
+                End If
                 If FieldAttributes.GetSelectedFieldSUM(ColumnName) = False And
                     FieldAttributes.GetSelectedFieldMIN(ColumnName) = False And
                     FieldAttributes.GetSelectedFieldMAX(ColumnName) = False And
@@ -937,7 +978,7 @@ Public Class ColumnSelect
             Next
 
         Catch ex As Exception
-
+            MsgBox("ERROR IN SelectFields2: " & ex.Message)
         End Try
     End Sub
 

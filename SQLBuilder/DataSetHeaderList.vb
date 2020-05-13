@@ -45,8 +45,8 @@
         Try
             dgvHeaderList.Columns.Clear()
             dgvHeaderList.DataSource = Nothing
-            'DBVersion = "MYSQL"
-            DBVersion = "IBM"
+            DBVersion = "MYSQL"
+            'DBVersion = "IBM"
             If DBVersion = "MYSQL" Then
                 dt = myDAL.GetHeaderListMYSQL()
             Else
@@ -55,10 +55,9 @@
             If dt IsNot Nothing Then
                 If dt.Rows.Count > 0 Then
                     dgvHeaderList.DataSource = dt
-                    stsDataSetListLabel1.Text = "Records " & CStr(dt.Rows.Count)
+                    stsDataSetListLabel1.Text = "Records: " & CStr(dt.Rows.Count)
                 End If
             End If
-
 
         Catch ex As Exception
             Cursor = Cursors.Default

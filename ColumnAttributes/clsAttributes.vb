@@ -20,6 +20,7 @@ Public Class ColumnAttributes
     Private _ErrMessage As String
     Private _WhereConditions As String
     Private _lstConditions As List(Of String)
+    Private _lstHavings As List(Of String)
     Private _lastOperator As String
     Private _DBType As String
     Private _SQLQuery As String
@@ -40,6 +41,7 @@ Public Class ColumnAttributes
         _OrderByList = New List(Of String)
         _SortedList = New List(Of String)
         _lstConditions = New List(Of String)
+        _lstHavings = New List(Of String)
         _SelectedAttributes = New List(Of String)
         _Dic_Attributes = CreateObject("Scripting.Dictionary")
         _Dic_Attributes.CompareMode = vbTextCompare
@@ -236,6 +238,16 @@ Public Class ColumnAttributes
         End Get
         Set(value As String)
             _HavingConditions = value
+        End Set
+    End Property
+    '_lstHavings
+
+    Public Property lstHavings As List(Of String)
+        Get
+            Return _lstHavings
+        End Get
+        Set(value As List(Of String))
+            _lstHavings = value
         End Set
     End Property
 
@@ -501,7 +513,6 @@ Public Class ColumnAttributes
         Dim ItemName As String
 
         _WhereConditions = ""
-        _HavingConditions = ""
         For i As Integer = 0 To lbConditions.Count - 1
             If IsNothing(lbConditions.Item(i)) Then
                 'lbConditions.RemoveAt(i)
@@ -511,9 +522,19 @@ Public Class ColumnAttributes
         Next
     End Sub
 
+    Public Sub DeleteHaving()
+        _HavingConditions = ""
+    End Sub
+
     Public Sub ClearConditionsList()
         If lbConditions IsNot Nothing Then
             lbConditions.Clear()
+        End If
+    End Sub
+
+    Public Sub ClearHavingList()
+        If lstHavings IsNot Nothing Then
+            lstHavings.Clear()
         End If
     End Sub
 
@@ -550,6 +571,7 @@ Public Class ColumnAttributes
 
     Public Sub ClearALLLists()
         ClearConditionsList()
+        ClearHavingList()
         ClearSelectedFieldsList()
         ClearSelectedAliasList()
         clearGroupByList()
@@ -571,6 +593,23 @@ Public Class ColumnAttributes
         CountConditions = 0
         If lbConditions IsNot Nothing Then
             CountConditions = lbConditions.Count
+        End If
+    End Function
+
+    Public Function IsHavingInList(strItem As String) As Boolean
+        IsHavingInList = False
+        If lstHavings IsNot Nothing Then
+            If lstHavings.Contains(strItem) Then
+                Return True
+            End If
+        End If
+
+    End Function
+
+    Public Function CountHavings() As Integer
+        CountHavings = 0
+        If lstHavings IsNot Nothing Then
+            CountHavings = lstHavings.Count
         End If
     End Function
 

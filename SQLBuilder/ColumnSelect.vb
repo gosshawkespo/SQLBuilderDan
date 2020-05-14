@@ -497,12 +497,14 @@ Public Class ColumnSelect
     Function AddCondition() As String
         '****************************************************** Add Condition to list: *****************************************************
         Dim strCondition As String
+        Dim strHaving As String
         Dim strWhereField1 As String
         Dim strWhereField2 As String
         Dim intSelectedFieldIDX As Integer
         Dim strOperator As String
         Dim strValue As String
-        Dim strJoin As String
+        Dim strJoinConditions As String
+        Dim strJoinHavings As String
         Dim Position As Integer
         Dim Message As String
         Dim lstValues As String
@@ -515,6 +517,11 @@ Public Class ColumnSelect
         strValue = ""
         AddCondition = ""
         strCondition = ""
+        strHaving = ""
+        ExcludeUPPER = False
+        strOperator = ""
+        strJoinConditions = ""
+        strJoinHavings = ""
         intSelectedFieldIDX = cboWhereFields.SelectedIndex
         If intSelectedFieldIDX = -1 Then
             MsgBox("Please select a field first")
@@ -527,7 +534,9 @@ Public Class ColumnSelect
             If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText, "COUNT(") > 0 Then
                 isAggregate = True
                 FieldAttributes.ChangeFieldnameAttribute_IsHAVING(strWhereField1, True)
-                strWhereField1 = strWhereColumnText
+                'strWhereField1 = strWhereColumnText
+            Else
+                isAggregate = False
             End If
         Else
             'Not applicable at moment because auto-filled from grid...
@@ -535,9 +544,7 @@ Public Class ColumnSelect
             MsgBox("Dont forget to press the Add Field button.")
             Exit Function
         End If
-        ExcludeUPPER = False
-        strOperator = ""
-        strJoin = ""
+
         If strWhereField1 <> "" Then
             FieldType = FieldAttributes.Dic_Types(strWhereField1)
             If FieldType = "A" Then
@@ -562,12 +569,13 @@ Public Class ColumnSelect
                 strOperator = txtOperator.Text
                 strValue = Quote & txtValue.Text & Quote
                 If UCase(strOperator) = "BETWEEN" Or UCase(strOperator) = "NOT BETWEEN" Then
-                    'two dates in both text boxes:
-                    ExcludeUPPER = True
+                    'Could have BETWEEN two numeric fields or two date fields or even Alphanumeric fields ?
 
                     If txtValue.Text <> "" And txtValue2.Text <> "" Then
                         If IsDate(txtValue.Text) Then
                             If IsDate(txtValue2.Text) Then
+                                'two dates in both text boxes:
+                                ExcludeUPPER = True
                                 txtValue.Text = dtp1.Value
                                 txtValue2.Text = dtp2.Value
                                 strValue = Quote & CDate(txtValue.Text).ToString("yyyy-MM-dd") & Quote & " AND " & Quote & CDate(txtValue2.Text).ToString("yyyy-MM-dd") & Quote
@@ -619,35 +627,57 @@ Public Class ColumnSelect
                     strValue = "'%" & txtValue.Text & "%'"
                     ColumnSelect.FieldAttributes.LastOperator = strOperator
                 Else
-
-                End If
-                'Check if any other conditions exist:
-                If ColumnSelect.FieldAttributes.CountConditions > 0 Then
-                    If rbAND.Checked Then
-                        strJoin = " AND "
-                    End If
-                    If rbOR.Checked Then
-                        strJoin = " OR "
-                    End If
+                    '=, >, <, >=, <=, <> 
                 End If
 
                 If txtValue.Text = "" And strValue = "" Then
                     MsgBox("Please enter a value")
                     Exit Function
                 End If
-                If cbIgnoreCase.Checked And ExcludeUPPER = False Then
-                    strCondition += "UPPER(" & (strWhereField1) & ") " & strOperator & " UPPER(" & strValue & ")"
+                If isAggregate Then
+                    'INSERT HAVING CLAUSE:
+                    If ColumnSelect.FieldAttributes.CountHavings > 0 Then
+                        If rbAND.Checked Then
+                            strJoinHavings = " AND "
+                        End If
+                        If rbOR.Checked Then
+                            strJoinHavings = " OR "
+                        End If
+                    End If
+                    strHaving += strWhereColumnText & " " & strOperator & " " & strValue
+                    If Not ColumnSelect.FieldAttributes.IsHavingInList(strHaving) Then
+                        ColumnSelect.FieldAttributes.lstHavings.Add(strJoinHavings & strHaving)
+                    Else
+                        MsgBox("Condition Already in List")
+                        Exit Function
+                    End If
+                    UpdateInternalHavingList()
                 Else
-                    strCondition += strWhereField1 & " " & strOperator & " " & strValue
+                    'Check if any other conditions exist:
+                    If ColumnSelect.FieldAttributes.CountConditions > 0 Then
+                        If rbAND.Checked Then
+                            strJoinConditions = " AND "
+                        End If
+                        If rbOR.Checked Then
+                            strJoinConditions = " OR "
+                        End If
+                    End If
+                    If cbIgnoreCase.Checked And ExcludeUPPER = False Then
+                        strCondition += "UPPER(" & (strWhereField1) & ") " & strOperator & " UPPER(" & strValue & ")"
+                    Else
+                        strCondition += strWhereField1 & " " & strOperator & " " & strValue
+                    End If
+
+                    If Not ColumnSelect.FieldAttributes.IsConditionInList(strCondition) Then
+                        ColumnSelect.FieldAttributes.lbConditions.Add(strJoinConditions & strCondition)
+                    Else
+                        MsgBox("Condition Already in List")
+                        Exit Function
+                    End If
+                    UpdateInternalConditionList()
                 End If
 
-                If Not ColumnSelect.FieldAttributes.IsInList(strJoin & strCondition) Then
-                    ColumnSelect.FieldAttributes.lbConditions.Add(strJoin & strCondition)
-                Else
-                    MsgBox("Condition Already in List")
-                    Exit Function
-                End If
-                UpdateInternalConditionList()
+
                 'WhereConditions += strJoin & strCondition & vbCrLf
 
                 Return strCondition
@@ -658,6 +688,55 @@ Public Class ColumnSelect
         End If
     End Function
 
+    Sub UpdateInternalHavingList()
+        Dim Having As String
+        Dim AndPos As Integer
+        Dim OrPos As Integer
+        Dim FirstPart As String
+        Dim ColumnName As String
+        Dim strHavingClause As String
+        Dim OpenBracketPos As Integer
+        Dim CloseBracketPos As Integer
+        Dim ReturnIDX As Integer
+
+        'If ColumnSelect.FieldAttributes.CountConditions > 0 Then
+        ColumnSelect.FieldAttributes.DeleteHaving()
+        'lstConditions.Items.Clear()
+        strHavingClause = ""
+        OpenBracketPos = 0
+        CloseBracketPos = 0
+        'what if the first condition is deleted - this leaves the others with AND in front.
+        For i As Integer = 0 To ColumnSelect.FieldAttributes.lstHavings.Count - 1
+            Having = ColumnSelect.FieldAttributes.lstHavings.Item(i)
+            If Not IsNothing(Having) Then
+                If Len(Having) > 5 Then
+                    FirstPart = Mid(Having, 1, 5)
+                    If i = 0 Then
+                        If InStr(UCase(FirstPart), "AND ") > 0 Then
+                            Having = Replace(Having, "AND", "", 1, 1, CompareMethod.Text)
+                        End If
+                        If InStr(UCase(FirstPart), "OR ") > 0 Then
+                            Having = Replace(Having, "OR", "", 1, 1, CompareMethod.Text)
+                        End If
+                        'ColumnSelect.FieldAttributes.lstHavings.Item(i) = "Having " & Condition
+                    End If
+
+                    ColumnSelect.FieldAttributes.lstHavings.Item(i) = Having
+
+                End If
+                ColumnSelect.FieldAttributes.HavingConditions += Having
+                If Not IsInList(lstConditions, Having, ReturnIDX) Then
+                    lstConditions.Items.Add(Having)
+                End If
+
+            End If
+        Next
+        'FieldAttributes.ChangeSelectedFieldname_HAVINGClause(ColumnName, Condition)
+        'Else
+        'MsgBox("No conditions are entered")
+        'End If
+    End Sub
+
     Sub UpdateInternalConditionList()
         Dim Condition As String
         Dim AndPos As Integer
@@ -667,11 +746,11 @@ Public Class ColumnSelect
         Dim strHavingClause As String
         Dim OpenBracketPos As Integer
         Dim CloseBracketPos As Integer
+        Dim ReturnIDX As Integer
 
         'If ColumnSelect.FieldAttributes.CountConditions > 0 Then
         ColumnSelect.FieldAttributes.DeleteConditions()
-        lstConditions.Items.Clear()
-        strHavingClause = ""
+        'lstConditions.Items.Clear()
         OpenBracketPos = 0
         CloseBracketPos = 0
         'what if the first condition is deleted - this leaves the others with AND in front.
@@ -693,14 +772,10 @@ Public Class ColumnSelect
                     ColumnSelect.FieldAttributes.lbConditions.Item(i) = Condition
                     'ColumnSelect.FieldAttributes.lbConditions.Item(i) = "WHERE " & Condition
                 End If
-                If InStr(Condition, "SUM(") > 0 Or InStr(Condition, "MIN(") > 0 Or InStr(Condition, "MAX(") > 0 Or InStr(Condition, "COUNT(") > 0 Then
-                    strHavingClause += Condition
-                    ColumnSelect.FieldAttributes.HavingConditions += Condition
-                Else
-                    ColumnSelect.FieldAttributes.MyWhereCondtions += Condition
+                ColumnSelect.FieldAttributes.MyWhereCondtions += Condition
+                If Not IsInList(lstConditions, Condition, ReturnIDX) Then
+                    lstConditions.Items.Add(Condition)
                 End If
-
-                lstConditions.Items.Add(Condition)
             End If
         Next
         'FieldAttributes.ChangeSelectedFieldname_HAVINGClause(ColumnName, Condition)
@@ -708,6 +783,8 @@ Public Class ColumnSelect
         'MsgBox("No conditions are entered")
         'End If
     End Sub
+
+
 
     Private Sub btnRemoveCondition_Click(sender As Object, e As EventArgs) Handles btnRemoveCondition.Click
         Dim NextIDX As Integer

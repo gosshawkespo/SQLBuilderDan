@@ -546,7 +546,7 @@ Public Class ColumnSelect
             'grab selected field:
             strWhereField1 = cboWhereFields.SelectedValue
             strWhereColumnText = cboWhereFields.Text
-            If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText, "COUNT(") > 0 Then
+            If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText.ToUpper, "COUNT(") > 0 Then
                 isAggregate = True
                 FieldAttributes.ChangeFieldnameAttribute_IsHAVING(strWhereField1, True)
                 'strWhereField1 = strWhereColumnText
@@ -989,7 +989,11 @@ Public Class ColumnSelect
             myDataRow("Column Text") = AggregateItem
             dtWhere.Rows.Add(myDataRow)
             cboWhereFields.DataSource = dtWhere
+            If ColumnName.ToUpper = "COUNT(*)" Then
+                ColumnType = "N"
+            End If
             FieldAttributes.Dic_Types(AggregateItem) = ColumnType
+
         End If
     End Sub
 
@@ -1738,6 +1742,7 @@ Public Class ColumnSelect
         If Not IsInList(lstFields, "Count(*)", ReturnIDX) Then
             lstFields.Items.Add("Count(*)")
             FieldAttributes.HasCount = True
+            AddAggregateToWhereField("Count(*)", "Count(*)", True)
         End If
     End Sub
 
@@ -2364,7 +2369,7 @@ Public Class ColumnSelect
             mySQLFile = File.CreateText(savedlg.FileName)
             path = IO.Path.GetDirectoryName(savedlg.FileName)
             Filename = IO.Path.GetFileName(savedlg.FileName)
-            txtPath.Text = "Saved To:" & path
+            txtPath.Text = path
             txtFilename.Text = Filename
             mySQLFile.WriteLine(SQLQuery)
             mySQLFile.Close()

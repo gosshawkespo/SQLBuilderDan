@@ -298,6 +298,10 @@ Public Class ColumnSelect
         Dim intMIN As Integer
         Dim intMAX As Integer
         Dim intCOUNT As Integer
+        Dim aggSUM As String
+        Dim aggMIN As String
+        Dim aggMAX As String
+        Dim aggCount As String
         Dim tempAttribute As ColumnAttributes.ColumnAttributeProperties
 
         'Applies to ALL rows in the grid:
@@ -347,6 +351,17 @@ Public Class ColumnSelect
             If Not FieldAttributes.Dic_Types.exists(strFieldname) Then
                 FieldAttributes.Dic_Types(strFieldname) = strFieldType
                 FieldAttributes.Dic_Types(strFieldText) = strFieldType
+                If strFieldType.ToUpper = "N" Then
+                    aggSUM = "SUM(" & strFieldname & ")"
+                    aggMIN = "MIN(" & strFieldname & ")"
+                    aggMAX = "MAX(" & strFieldname & ")"
+                    aggCount = "COUNT(Distinct " & strFieldname & ")"
+                    FieldAttributes.Dic_Types(aggSUM) = strFieldType.ToUpper
+                    FieldAttributes.Dic_Types(aggMIN) = strFieldType.ToUpper
+                    FieldAttributes.Dic_Types(aggMAX) = strFieldType.ToUpper
+                    FieldAttributes.Dic_Types(aggCount) = strFieldType.ToUpper
+                End If
+
             End If
         Next
 
@@ -709,26 +724,27 @@ Public Class ColumnSelect
         For i As Integer = 0 To ColumnSelect.FieldAttributes.lstHavings.Count - 1
             Having = ColumnSelect.FieldAttributes.lstHavings.Item(i)
             If Not IsNothing(Having) Then
-                If Len(Having) > 5 Then
-                    FirstPart = Mid(Having, 1, 5)
-                    If i = 0 Then
+                If i = 0 Then
+                    If Len(Having) > 5 Then
+                        FirstPart = Mid(Having, 1, 5)
+
                         If InStr(UCase(FirstPart), "AND ") > 0 Then
                             Having = Replace(Having, "AND", "", 1, 1, CompareMethod.Text)
                         End If
                         If InStr(UCase(FirstPart), "OR ") > 0 Then
                             Having = Replace(Having, "OR", "", 1, 1, CompareMethod.Text)
                         End If
+                        If InStr(Having, "HAVING") = 0 Then
+                            Having = "HAVING " & Having
+                        End If
                         'ColumnSelect.FieldAttributes.lstHavings.Item(i) = "Having " & Condition
                     End If
-
-                    ColumnSelect.FieldAttributes.lstHavings.Item(i) = Having
-
                 End If
+                ColumnSelect.FieldAttributes.lstHavings.Item(i) = Having
                 ColumnSelect.FieldAttributes.HavingConditions += Having
                 If Not IsInList(lstConditions, Having, ReturnIDX) Then
                     lstConditions.Items.Add(Having)
                 End If
-
             End If
         Next
         'FieldAttributes.ChangeSelectedFieldname_HAVINGClause(ColumnName, Condition)
@@ -743,35 +759,34 @@ Public Class ColumnSelect
         Dim OrPos As Integer
         Dim FirstPart As String
         Dim ColumnName As String
-        Dim strHavingClause As String
+        Dim strConditionClause As String
         Dim OpenBracketPos As Integer
         Dim CloseBracketPos As Integer
         Dim ReturnIDX As Integer
 
-        'If ColumnSelect.FieldAttributes.CountConditions > 0 Then
         ColumnSelect.FieldAttributes.DeleteConditions()
-        'lstConditions.Items.Clear()
         OpenBracketPos = 0
         CloseBracketPos = 0
         'what if the first condition is deleted - this leaves the others with AND in front.
         For i As Integer = 0 To ColumnSelect.FieldAttributes.lbConditions.Count - 1
             Condition = ColumnSelect.FieldAttributes.lbConditions.Item(i)
             If Not IsNothing(Condition) Then
-                If Len(Condition) > 5 Then
-                    FirstPart = Mid(Condition, 1, 5)
-                    If InStr(UCase(FirstPart), "AND ") > 0 Then
-                        If i = 0 Then
+                If i = 0 Then
+                    If Len(Condition) > 5 Then
+                        FirstPart = Mid(Condition, 1, 5)
+                        If InStr(UCase(FirstPart), "AND ") > 0 Then
                             Condition = Replace(Condition, "AND", "", 1, 1, CompareMethod.Text)
                         End If
-                    End If
-                    If InStr(UCase(FirstPart), "OR ") > 0 Then
-                        If i = 0 Then
+                        If InStr(UCase(FirstPart), "OR ") > 0 Then
                             Condition = Replace(Condition, "OR", "", 1, 1, CompareMethod.Text)
                         End If
+                        Condition = Trim(Condition)
+                        If InStr(Condition, "WHERE") = 0 Then
+                            Condition = "WHERE " & Condition
+                        End If
                     End If
-                    ColumnSelect.FieldAttributes.lbConditions.Item(i) = Condition
-                    'ColumnSelect.FieldAttributes.lbConditions.Item(i) = "WHERE " & Condition
                 End If
+                ColumnSelect.FieldAttributes.lbConditions.Item(i) = Condition
                 ColumnSelect.FieldAttributes.MyWhereCondtions += Condition
                 If Not IsInList(lstConditions, Condition, ReturnIDX) Then
                     lstConditions.Items.Add(Condition)
@@ -784,7 +799,14 @@ Public Class ColumnSelect
         'End If
     End Sub
 
+    Function RemoveCondition(Condition As String, lstCondition As List(Of String), Prefix As String) As List(Of String)
+        Dim WithoutPrefix As String
 
+        WithoutPrefix = Replace(Condition, Prefix, "", 1, -1, CompareMethod.Text)
+        If lstCondition.Contains(Prefix) Then
+
+        End If
+    End Function
 
     Private Sub btnRemoveCondition_Click(sender As Object, e As EventArgs) Handles btnRemoveCondition.Click
         Dim NextIDX As Integer
@@ -795,10 +817,21 @@ Public Class ColumnSelect
         Else
             Dim SelectedConditions = (From i In lstConditions.SelectedItems).ToList
             For Each SelectedCondition In SelectedConditions
-                lstConditions.Items.Remove(SelectedCondition)
-                ColumnSelect.FieldAttributes.lbConditions.Remove(SelectedCondition)
-                UpdateInternalConditionList()
+                If InStr(SelectedCondition, "SUM(") > 0 Or
+                    InStr(SelectedCondition, "MIN(") > 0 Or
+                    InStr(SelectedCondition, "MAX(") > 0 Or
+                    InStr(SelectedCondition, "COUNT(") > 0 Then
+                    'Aggregate function clause (Having):
+                    ColumnSelect.FieldAttributes.lstHavings.Remove(SelectedCondition)
+                Else
+                    ColumnSelect.FieldAttributes.lbConditions.Remove(SelectedCondition)
+                End If
+                'lstConditions.Items.Remove(SelectedCondition)
+
             Next
+            lstConditions.Items.Clear()
+            UpdateInternalConditionList()
+            UpdateInternalHavingList()
         End If
         'Highlight NEXT item:
         If lstConditions.Items.Count > 0 Then
@@ -932,10 +965,24 @@ Public Class ColumnSelect
 
     End Function
 
-    Sub AddAggregateToWhereField(ColumnName As String, AggregateItem As String)
+    Sub AddAggregateToWhereField(ColumnName As String, AggregateItem As String, ItemIsTicked As Boolean)
         Dim myDataRow As DataRow = dtWhere.NewRow
         Dim ColumnType As String
 
+        If InStr(ColumnName, "SUM") > 0 Then
+            FieldAttributes.ChangeFieldnameAttribute_IsSUM(ColumnName, ItemIsTicked)
+        End If
+        If InStr(ColumnName, "MIN") > 0 Then
+            FieldAttributes.ChangeFieldnameAttribute_IsMIN(ColumnName, ItemIsTicked)
+        End If
+        If InStr(ColumnName, "MAX") > 0 Then
+            FieldAttributes.ChangeFieldnameAttribute_IsMAX(ColumnName, ItemIsTicked)
+        End If
+        If InStr(ColumnName, "COUNT") > 0 Then
+            FieldAttributes.ChangeFieldnameAttribute_IsCount(ColumnName, ItemIsTicked, True)
+        End If
+        'If AggregateItem = "SUM(" & ColumnName & ")" Then
+        'FieldAttributes.ChangeFieldnameAttribute_IsSUM(ColumnName, ItemIsTicked)
         ColumnType = FieldAttributes.Dic_Types(ColumnName)
         If cboWhereFields.FindStringExact(AggregateItem) = -1 Then
             myDataRow("Column Name") = ColumnName
@@ -985,7 +1032,7 @@ Public Class ColumnSelect
                 FieldAttributes.ChangeSelectedFieldnameAttribute_Position(ColumnName, ItemIDX + 1)
 
             End If
-            AddAggregateToWhereField(ColumnName, strItem)
+            AddAggregateToWhereField(ColumnName, strItem, ItemIsTicked)
             If Not IsInList(lstFields, strItem, ItemIDX) Then
                 lstFields.Items.Add(strItem)
                 If ItemIDX = -1 Then
@@ -1365,7 +1412,11 @@ Public Class ColumnSelect
 
         SelectPart += FieldsSelected & vbCrLf & "FROM " & TableName
         If FieldAttributes.MyWhereCondtions <> "" Then
-            SelectPart += vbCrLf & "WHERE " & FieldAttributes.MyWhereCondtions
+            If InStr(FieldAttributes.MyWhereCondtions, "WHERE") = 0 Then
+                SelectPart += vbCrLf & "WHERE " & FieldAttributes.MyWhereCondtions
+            Else
+                SelectPart += vbCrLf & FieldAttributes.MyWhereCondtions
+            End If
         End If
         'GROUPBY:
         If GroupByFields <> "" Then
@@ -1373,7 +1424,12 @@ Public Class ColumnSelect
         End If
         'HAVING:
         If FieldAttributes.HavingConditions <> "" Then
-            SelectPart += vbCrLf & "HAVING " & FieldAttributes.HavingConditions
+            If InStr(FieldAttributes.HavingConditions, "HAVING") = 0 Then
+                SelectPart += vbCrLf & "HAVING " & FieldAttributes.HavingConditions
+            Else
+                SelectPart += vbCrLf & FieldAttributes.HavingConditions
+            End If
+
         End If
         'ORDERBY:
         If OrderByFields <> "" Then
@@ -1928,6 +1984,228 @@ Public Class ColumnSelect
 
     End Sub
 
+    Sub ParseSQL5(SQLStatement As String)
+        Dim Word As String = ""
+        Dim blnSelectMode As Boolean = False
+        Dim blnFromMode As Boolean = False
+        Dim blnHavingMode As Boolean = False
+        Dim blnHavingBetweenMode As Boolean = False
+        Dim blnWhereMode As Boolean = False
+        Dim blnWhereBetweenMode As Boolean = False
+        Dim blnGroupByMode As Boolean = False
+        Dim blnOrderByMode As Boolean = False
+        Dim blnFetchMode As Boolean = False
+        Dim blnInsideBracket As Boolean = False
+        Dim blnInsideQuote As Boolean = False
+        'SQLStatement = SQLStatement.ToUpper
+        SQLStatement = Replace(SQLStatement, "ORDER BY", "ORDERBY", 1, -1, CompareMethod.Text)
+        SQLStatement = Replace(SQLStatement, "GROUP BY", "GROUPBY", 1, -1, CompareMethod.Text)
+        SQLStatement = Replace(SQLStatement, "FETCH FIRST", "FETCHFIRST", 1, -1, CompareMethod.Text)
+        SQLStatement = Replace(SQLStatement, "LIMIT", "FETCHFIRST", 1, -1, CompareMethod.Text)
+        Dim int2 As Integer = 0
+        Dim wrkChar As Char
+        Dim desc As String
+        Dim arrSELECTColumn(200) As String
+        Dim arrSELECTColumnText(200) As String
+        Dim arrWHERE(200) As String
+        Dim arrHAVING(200) As String
+        Dim arrORDERBY(50) As String
+        Dim arrSorted(50) As String
+        Dim arrGROUPBY(50) As String
+        Dim strFROM As String = ""
+        Dim strWHERE As String = ""
+        Dim strHaving As String = ""
+        Dim intFetchRecords = 0
+
+        For int1 = 1 To Len(SQLStatement)
+            wrkChar = Mid(SQLStatement, int1, 1)
+            If int1 < Len(SQLStatement) - 4 Then
+                desc = Mid(SQLStatement, int1 + 1, 4)
+            End If
+            If (wrkChar = " " And Not blnInsideBracket And Not blnInsideQuote) Or wrkChar = vbCr Or wrkChar = vbLf Or wrkChar = "," Then ' Blank, CR, LF or , encountered
+                If Trim(Word) <> "" Then
+                    If Word.ToUpper = "SELECT" Then ' SQL Clause, flag that we are SELECT Mode
+                        blnSelectMode = True
+                    ElseIf Word.ToUpper = "FROM" Then ' SQL Clause, flag that we are FROM Mode
+                        blnSelectMode = False
+                        blnFromMode = True
+                        int2 = 0
+                    ElseIf Word.ToUpper = "WHERE" Then ' SQL Clause, flag that we are Order By Mode
+                        blnSelectMode = False
+                        blnFromMode = False
+                        blnWhereMode = True
+
+                        int2 = 0
+                    ElseIf Word.ToUpper = "GROUPBY" Then ' SQL Clause, flag that we are Group By Mode
+                        blnSelectMode = False
+                        blnFromMode = False
+                        blnWhereMode = False
+                        blnGroupByMode = True
+                        If strWHERE <> "" Then ' flush out pending where condition
+                            arrWHERE(int2) = strWHERE
+                            strWHERE = ""
+                        End If
+                        int2 = 0
+                    ElseIf Word.ToUpper = "HAVING" Then ' SQL Clause, flag that we are Order By Mode
+                        blnSelectMode = False
+                        blnFromMode = False
+                        blnWhereMode = False
+                        blnGroupByMode = False
+                        blnHavingMode = True
+                        int2 = 0
+                    ElseIf Word.ToUpper = "ORDERBY" Then ' SQL Clause, flag that we are Order By Mode
+                        blnSelectMode = False
+                        blnFromMode = False
+                        blnWhereMode = False
+                        blnGroupByMode = False
+                        blnHavingMode = False
+                        blnOrderByMode = True
+                        If strWHERE <> "" Then ' flush out pending where condition
+                            arrWHERE(int2) = strWHERE
+                            strWHERE = ""
+                        End If
+                        If strHaving <> "" Then ' flush out pending Having condition
+                            arrHAVING(int2) = strHaving
+                            strHaving = ""
+                        End If
+                        int2 = 0
+                    ElseIf Word.ToUpper = "FETCHFIRST" Then ' SQL Clause, flag that we are Group By Mode
+                        blnSelectMode = False
+                        blnFromMode = False
+                        blnWhereMode = False
+                        blnGroupByMode = False
+                        blnHavingMode = False
+                        blnOrderByMode = False
+                        blnFetchMode = True
+                        If strWHERE <> "" Then ' flush out pending where condition
+                            arrWHERE(int2) = strWHERE
+                            strWHERE = ""
+                        End If
+                        If strHaving <> "" Then ' flush out pending Having condition
+                            arrHAVING(int2) = strHaving
+                            strHaving = ""
+                        End If
+
+                    ElseIf Word.ToUpper = "BETWEEN" And blnWhereMode Then
+                        blnWhereBetweenMode = True
+                        strWHERE = strWHERE & " " & Word
+                    ElseIf Word.ToUpper = "BETWEEN" And blnHavingMode Then
+                        blnHavingBetweenMode = True
+                        strHaving = strHaving & " " & Word
+
+                    ElseIf Word = "," Then
+                    ElseIf Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
+                        If blnSelectMode = True Then
+                            arrSELECTColumn(int2) = Word
+                        ElseIf blnFromMode = True Then
+                            strFROM = Word
+                        ElseIf blnGroupByMode = True Then
+                            arrGROUPBY(int2) = Word
+                            int2 += 1
+                        ElseIf blnOrderByMode = True And Word.ToUpper <> "DESC" Then
+                            arrORDERBY(int2) = Word
+                            If desc.ToUpper = "DESC" Then
+                                arrSorted(int2) = "DESC"
+                            Else
+                                arrSorted(int2) = "ASC"
+                            End If
+                            int2 += 1
+                        ElseIf blnOrderByMode = True And desc.ToUpper = "DESC" Then
+                            'arrSorted(int2) = "DESC"
+                        ElseIf blnFetchMode = True Then ' We have a word we want
+                            intFetchRecords = Word
+                            blnFetchMode = False
+                        ElseIf blnWhereMode Then
+                            If (Word.ToUpper = "AND" Or Word.ToUpper = "OR") And Not blnWhereBetweenMode Then
+                                arrWHERE(int2) = strWHERE
+                                strWHERE = ""
+
+                                int2 += 1
+                            End If
+                            strWHERE = strWHERE & " " & Word
+                            If blnWhereBetweenMode And Word.ToUpper = "AND" Then
+                                blnWhereBetweenMode = False ' OK, so if you are already in between mode and you find another "AND" thats it
+                            End If
+                        ElseIf blnHavingMode Then
+                            If (Word.ToUpper = "AND" Or Word.ToUpper = "OR") And Not blnHavingBetweenMode Then
+                                arrHAVING(int2) = strHaving
+                                strHaving = ""
+                                int2 += 1
+                            End If
+                            strHaving = strHaving & " " & Word
+                            If blnHavingBetweenMode And Word.ToUpper = "AND" Then
+                                blnHavingBetweenMode = False ' OK, so if you are already in between mode and you find another "AND" thats it
+                            End If
+                        End If
+
+                    ElseIf blnSelectMode = True And Word <> "AS" And Word.Contains("""") = True And blnInsideQuote Then ' We have something in quotes within a select so must be column text
+                        arrSELECTColumnText(int2) = Word
+                        int2 += 1
+                        blnInsideQuote = False
+                    End If
+                    Word = ""
+                End If
+            Else
+                Word += wrkChar
+                ' Check for quotes and brackets and flag if we are inside or outside at this point
+                If wrkChar = "(" Then
+                    blnInsideBracket = True
+                ElseIf wrkChar = ")" Then
+                    blnInsideBracket = False
+                ElseIf wrkChar = """" And Not blnInsideQuote Then
+                    blnInsideQuote = True
+                End If
+            End If
+        Next int1
+        ' Process last word
+        If blnFromMode = True And Word <> "AS" And Word.Contains("""") = False Then ' We have a word we want
+            strFROM = Word
+        End If
+        lstFields.Items.Clear()
+        chklstOrderBY.Items.Clear()
+        For Each item As String In arrSELECTColumn
+            If item IsNot Nothing Then
+                lstFields.Items.Add(item)
+            End If
+        Next
+        For Each item As String In arrWHERE
+            If item IsNot Nothing Then
+                lstConditions.Items.Add(item)
+            End If
+        Next
+        For Each item As String In arrORDERBY
+            If item IsNot Nothing Then
+                chklstOrderBY.Items.Add(item)
+            End If
+        Next
+        'lstFields.Items.AddRange(New List(Of String)(arrSELECTColumn))
+        'chklstOrderBY.Items.AddRange(arrORDERBY)
+        'lstConditions.Items.AddRange(arrWHERE)
+        txtTablename.Text = strFROM
+        txtFirstRows.Text = CStr(intFetchRecords)
+        FieldAttributes.FetchRecords = intFetchRecords
+        If InStr(strFROM, ".") > 0 Then
+            FieldAttributes.TableName = Mid(strFROM, InStr(strFROM, ".") + 1, Len(strFROM))
+        Else
+            FieldAttributes.TableName = strFROM
+        End If
+
+        'New List(Of String)(array) 'captures ALL elements including nothing...
+        'New List(Of String)(arrSELECTColumn)
+        FieldAttributes.ClearAllDics()
+        FieldAttributes.ClearALLLists()
+        FieldAttributes.ClearConditionsList()
+        FieldAttributes.SelectedFields = PopulateListWithoutNothings(arrSELECTColumn)
+        FieldAttributes.SelectedAlias = PopulateListWithoutNothings(arrSELECTColumnText)
+        FieldAttributes.lbConditions = PopulateListWithoutNothings(arrWHERE)
+        FieldAttributes.lstHavings = PopulateListWithoutNothings(arrHAVING)
+        FieldAttributes.GroupByList = PopulateListWithoutNothings(arrGROUPBY)
+        FieldAttributes.OrderByList = PopulateListWithoutNothings(arrORDERBY)
+        FieldAttributes.SortedList = PopulateListWithoutNothings(arrSorted)
+        FieldAttributes.GetFullQuery = ""
+
+    End Sub
+
     Function PopulateListWithoutNothings(ByRef arr() As String) As List(Of String)
         Dim lst As New List(Of String)
 
@@ -1950,65 +2228,72 @@ Public Class ColumnSelect
         Dim Sorted As String
         Dim SortIDX As Integer
 
-        If Not IsNothing(FieldAttributes.SelectedFields.Item(0)) Then
-            ColumnName = FieldAttributes.SelectedFields.Item(0)
-        End If
-
-        If FieldAttributes.DBType = "MYSQL" Then
-            dt = myDAL.LocateDataSetID_MySQL(FieldAttributes.TableName)
-        Else
-            dt = myDAL.LocateDataSetID_SQL(GlobalSession.ConnectString, FieldAttributes.TableName)
-        End If
-
-        If dt IsNot Nothing Then
-            DataSetID = dt.Rows(0)("DataSetID")
-            DataSetName = dt.Rows(0)("DatasetName")
-            PopulateForm(DataSetID, False) 'clears all controls
-            txtTablename.Text = FieldAttributes.TableName
-            txtDatasetName.Text = DataSetName
-        Else
-            MsgBox("DB Error: Problem getting dataset")
-            Exit Sub
-            'FieldAttributes.ClearAllDics()
-        End If
-
-        txtFirstRows.Text = CStr(FieldAttributes.FetchRecords)
-        'maybe ALL items in the list will need to be in .Dic_Attributes() ?
-        For i As Integer = 0 To FieldAttributes.SelectedFields.Count - 1
-            ColumnName = FieldAttributes.SelectedFields.Item(i)
-            If Not IsNothing(ColumnName) Then
-                lstFields.Items.Add(ColumnName)
-                If InStr(ColumnName, "SUM") > 0 Then
-                    FieldAttributes.ChangeFieldnameAttribute_IsSUM(ColumnName, True)
-                End If
-                If InStr(ColumnName, "MIN") > 0 Then
-                    FieldAttributes.ChangeFieldnameAttribute_IsMIN(ColumnName, True)
-                End If
-                If InStr(ColumnName, "MAX") > 0 Then
-                    FieldAttributes.ChangeFieldnameAttribute_IsMAX(ColumnName, True)
-                End If
-                If InStr(ColumnName, "COUNT") > 0 Then
-                    FieldAttributes.ChangeFieldnameAttribute_IsCount(ColumnName, True, True)
-                End If
-                FieldAttributes.ChangeSelectedFieldnameAttribute_Position(ColumnName, i + 1) 'only the last item will get this.
-                FieldAttributes.ChangeFieldnameAttribute_IsSelected(ColumnName, True)
+        Try
+            If Not IsNothing(FieldAttributes.SelectedFields.Item(0)) Then
+                ColumnName = FieldAttributes.SelectedFields.Item(0)
             End If
-        Next
-        SortIDX = 0
-        For Each item As String In FieldAttributes.OrderByList
-            If Not IsNothing(item) Then
-                Sorted = FieldAttributes.SortedList.Item(SortIDX)
-                chklstOrderBY.Items.Add(item)
-                If Sorted.ToUpper = "DESC" Then chklstOrderBY.SetItemChecked(SortIDX, True)
+
+            If FieldAttributes.DBType = "MYSQL" Then
+                dt = myDAL.LocateDataSetID_MySQL(FieldAttributes.TableName)
+            Else
+                dt = myDAL.LocateDataSetID_SQL(GlobalSession.ConnectString, FieldAttributes.TableName)
             End If
-            SortIDX += 1
-        Next
-        UpdateInternalConditionList()
-        'For Each item As String In FieldAttributes.lbConditions
-        'If Not IsNothing(item) Then
-        'lstConditions.Items.Add(item)
-        'End If
-        'Next
+
+            If dt IsNot Nothing Then
+                DataSetID = dt.Rows(0)("DataSetID")
+                DataSetName = dt.Rows(0)("DatasetName")
+                PopulateForm(DataSetID, False) 'clears all controls
+                txtTablename.Text = FieldAttributes.TableName
+                txtDatasetName.Text = DataSetName
+            Else
+                MsgBox("DB Error: Problem getting dataset")
+                Exit Sub
+                'FieldAttributes.ClearAllDics()
+            End If
+
+            txtFirstRows.Text = CStr(FieldAttributes.FetchRecords)
+            'maybe ALL items in the list will need to be in .Dic_Attributes() ?
+            For i As Integer = 0 To FieldAttributes.SelectedFields.Count - 1
+                ColumnName = FieldAttributes.SelectedFields.Item(i)
+                If Not IsNothing(ColumnName) Then
+                    AddAggregateToWhereField(ColumnName, ColumnName, True)
+                    lstFields.Items.Add(ColumnName)
+                    'If InStr(ColumnName, "SUM") > 0 Then
+                    'FieldAttributes.ChangeFieldnameAttribute_IsSUM(ColumnName, True)
+                    'End If
+                    'If InStr(ColumnName, "MIN") > 0 Then
+                    'FieldAttributes.ChangeFieldnameAttribute_IsMIN(ColumnName, True)
+                    'End If
+                    'If InStr(ColumnName, "MAX") > 0 Then
+                    'FieldAttributes.ChangeFieldnameAttribute_IsMAX(ColumnName, True)
+                    'End If
+                    'If InStr(ColumnName, "COUNT") > 0 Then
+                    'FieldAttributes.ChangeFieldnameAttribute_IsCount(ColumnName, True, True)
+                    'End If
+                    FieldAttributes.ChangeSelectedFieldnameAttribute_Position(ColumnName, i + 1) 'only the last item will get this.
+                    FieldAttributes.ChangeFieldnameAttribute_IsSelected(ColumnName, True)
+                End If
+            Next
+            SortIDX = 0
+            For Each item As String In FieldAttributes.OrderByList
+                If Not IsNothing(item) Then
+                    Sorted = FieldAttributes.SortedList.Item(SortIDX)
+                    chklstOrderBY.Items.Add(item)
+                    If Sorted.ToUpper = "DESC" Then chklstOrderBY.SetItemChecked(SortIDX, True)
+                End If
+                SortIDX += 1
+            Next
+            UpdateInternalConditionList()
+            UpdateInternalHavingList()
+            'For Each item As String In FieldAttributes.lbConditions
+            'If Not IsNothing(item) Then
+            'lstConditions.Items.Add(item)
+            'End If
+            'Next
+        Catch ex As Exception
+            MsgBox("Exception Error in PopulateFromImport(): " & ex.Message)
+        End Try
+
 
     End Sub
 
@@ -2044,7 +2329,7 @@ Public Class ColumnSelect
         Else
             Exit Sub
         End If
-        ParseSQL4(SQLStatement)
+        ParseSQL5(SQLStatement)
         PopulateFromImport()
 
     End Sub
@@ -2057,7 +2342,7 @@ Public Class ColumnSelect
         Dim path As String
         Dim Filename As String
 
-        SQLQuery = GetFinalQuery()
+        SQLQuery = GetFinalQuery(True)
         If SQLQuery = "" Then
             Exit Sub
         End If
@@ -2070,6 +2355,9 @@ Public Class ColumnSelect
             savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         End If
         'savedlg.InitialDirectory = Application.StartupPath
+        If txtPath.Text <> "" Then
+            Filename = txtPath.Text & "\" & txtFilename.Text
+        End If
         savedlg.FileName = Filename
 
         If savedlg.ShowDialog() = DialogResult.OK Then
@@ -2085,27 +2373,29 @@ Public Class ColumnSelect
         End If
     End Sub
 
-    Function GetFinalQuery() As String
+    Function GetFinalQuery(SaveOnly As Boolean) As String
         Dim Answer As Integer
         Dim Entry As Integer
         Dim FinalQuery As String = ""
 
         GetFinalQuery = ""
-        If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
-            If FieldAttributes.HasCount = False Then
-                MsgBox("No Fields or Count Selected")
-                Cursor = Cursors.Default
-                Exit Function
+        If SaveOnly = False Then
+            If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
+                If FieldAttributes.HasCount = False Then
+                    MsgBox("No Fields or Count Selected")
+                    Cursor = Cursors.Default
+                    Exit Function
+                End If
             End If
-        End If
-        If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
-            Entry = 0
-        End If
-        If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
-            Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
-            If Answer = vbNo Then
-                Cursor = Cursors.Default
-                Exit Function
+            If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
+                Entry = 0
+            End If
+            If Entry = 0 And FieldAttributes.CountConditions = 0 And FieldAttributes.GetFullQuery = "" Then
+                Answer = MsgBox("No where Conditions defined, this may Generate a large number of records. Are You Sure ?", vbYesNo)
+                If Answer = vbNo Then
+                    Cursor = Cursors.Default
+                    Exit Function
+                End If
             End If
         End If
 
@@ -2130,7 +2420,7 @@ Public Class ColumnSelect
         Dim Entry As Integer
         Dim FinalQuery As String
 
-        FinalQuery = GetFinalQuery()
+        FinalQuery = GetFinalQuery(False)
 
         If FinalQuery <> "" Then
             Dim RQ As New RunQuery.QueryResultsDGV

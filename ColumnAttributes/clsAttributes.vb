@@ -530,12 +530,14 @@ Public Class ColumnAttributes
         If lbConditions IsNot Nothing Then
             lbConditions.Clear()
         End If
+        Me.DeleteConditions()
     End Sub
 
     Public Sub ClearHavingList()
         If lstHavings IsNot Nothing Then
             lstHavings.Clear()
         End If
+        Me.DeleteHaving()
     End Sub
 
     Public Sub ClearSelectedFieldsList()

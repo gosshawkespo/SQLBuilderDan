@@ -146,6 +146,9 @@ Public Class ColumnSelect
             Dim dgvCheckCOUNT As New DataGridViewCheckBoxColumn()
             dgvCheckCOUNT.HeaderText = "COUNT()"
             dgvCheckCOUNT.Name = "COUNT"
+            Dim dgvCheckAVG As New DataGridViewCheckBoxColumn()
+            dgvCheckAVG.HeaderText = "AVG()"
+            dgvCheckAVG.Name = "AVG"
 
             'dgvCheckCOUNT.DisplayIndex = 4
 
@@ -185,6 +188,7 @@ Public Class ColumnSelect
                     dgvFieldSelection.Columns.Add(dgvCheckMIN)
                     dgvFieldSelection.Columns.Add(dgvCheckMAX)
                     dgvFieldSelection.Columns.Add(dgvCheckCOUNT)
+                    dgvFieldSelection.Columns.Add(dgvCheckAVG)
                     AdjustGridColumns()
                     'dgvFieldSelection.Columns("Column Name").Visible = True
                     dgvFieldSelection.Columns("Column Name").HeaderText = "Field"
@@ -254,10 +258,11 @@ Public Class ColumnSelect
         dgvFieldSelection.Columns("MIN").DisplayIndex = 2
         dgvFieldSelection.Columns("MAX").DisplayIndex = 3
         dgvFieldSelection.Columns("COUNT").DisplayIndex = 4
-        dgvFieldSelection.Columns("Column Name").DisplayIndex = 6
-        dgvFieldSelection.Columns("Column Type").DisplayIndex = 6
-        dgvFieldSelection.Columns("Column Length").DisplayIndex = 7
-        dgvFieldSelection.Columns("Column Decimals").DisplayIndex = 8
+        dgvFieldSelection.Columns("AVG").DisplayIndex = 5
+        dgvFieldSelection.Columns("Column Name").DisplayIndex = 7
+        dgvFieldSelection.Columns("Column Type").DisplayIndex = 7
+        dgvFieldSelection.Columns("Column Length").DisplayIndex = 8
+        dgvFieldSelection.Columns("Column Decimals").DisplayIndex = 9
 
         dgvFieldSelection.Columns("Column Name").Visible = False
         dgvFieldSelection.Columns("Column Type").Visible = False
@@ -298,10 +303,12 @@ Public Class ColumnSelect
         Dim intMIN As Integer
         Dim intMAX As Integer
         Dim intCOUNT As Integer
+        Dim intAVG As Integer
         Dim aggSUM As String
         Dim aggMIN As String
         Dim aggMAX As String
         Dim aggCount As String
+        Dim aggAVG As String
         Dim tempAttribute As ColumnAttributes.ColumnAttributeProperties
 
         'Applies to ALL rows in the grid:
@@ -324,6 +331,7 @@ Public Class ColumnSelect
             intMIN = 0
             intMAX = 0
             intCOUNT = 0
+            intAVG = 0
             tempAttribute = New ColumnAttributes.ColumnAttributeProperties
             tempAttribute.FieldPos = i + 1
             tempAttribute.SelectedFieldPos = 0
@@ -336,9 +344,10 @@ Public Class ColumnSelect
             tempAttribute.IsMIN = False
             tempAttribute.IsMAX = False
             tempAttribute.IsCount = False
+            tempAttribute.IsAVG = False
             tempAttribute.IsSelected = False
             tempAttribute.Attributes = strFieldType & ";" & strFieldLength & ";" & strDecimals & ";"
-            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & ";" & CStr(intCOUNT)
+            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & ";" & CStr(intCOUNT) & ";" & CStr(intAVG)
 
             'If Not FieldAttributes.FindAttributeFieldName(strFieldname) Then
             If Not FieldAttributes.Dic_Attributes.exists(strFieldname) Then
@@ -356,10 +365,12 @@ Public Class ColumnSelect
                     aggMIN = "MIN(" & strFieldname & ")"
                     aggMAX = "MAX(" & strFieldname & ")"
                     aggCount = "COUNT(Distinct " & strFieldname & ")"
+                    aggAVG = "AVG(" & strFieldname & ")"
                     FieldAttributes.Dic_Types(aggSUM) = strFieldType.ToUpper
                     FieldAttributes.Dic_Types(aggMIN) = strFieldType.ToUpper
                     FieldAttributes.Dic_Types(aggMAX) = strFieldType.ToUpper
                     FieldAttributes.Dic_Types(aggCount) = strFieldType.ToUpper
+                    FieldAttributes.Dic_Types(aggAVG) = strFieldType.ToUpper
                 End If
 
             End If
@@ -379,6 +390,7 @@ Public Class ColumnSelect
         Dim IsMIN As String
         Dim IsMAX As String
         Dim IsCOUNT As String
+        Dim IsAVG As String
         Dim Output As String
         Dim lstSelected As New List(Of String)
 
@@ -398,19 +410,28 @@ Public Class ColumnSelect
                 Else
                     IsSUM = "NO SUM"
                 End If
-                If ColumnSelect.FieldAttributes.GetSelectedFieldSUM(Fieldname) Then
+                If ColumnSelect.FieldAttributes.GetSelectedFieldMIN(Fieldname) Then
                     IsMIN = "MIN"
                 Else
                     IsMIN = "NO MIN"
                 End If
-                If ColumnSelect.FieldAttributes.GetSelectedFieldSUM(Fieldname) Then
+                If ColumnSelect.FieldAttributes.GetSelectedFieldMAX(Fieldname) Then
                     IsMAX = "MAX"
                 Else
                     IsMAX = "NO MAX"
                 End If
-
+                If ColumnSelect.FieldAttributes.GetSelectedFieldCOUNT(Fieldname) Then
+                    IsCOUNT = "COUNT"
+                Else
+                    IsCOUNT = "NO COUNT"
+                End If
+                If ColumnSelect.FieldAttributes.GetSelectedFieldAVG(Fieldname) Then
+                    IsAVG = "AVG"
+                Else
+                    IsAVG = "NO AVG"
+                End If
                 Output += CStr(FieldPos) & ") " & Fieldname & " " & Attributes & ": " & FieldText & " : "
-                Output += IsSUM & ", " & IsMIN & ", " & IsMAX & ", " & IsCOUNT
+                Output += IsSUM & ", " & IsMIN & ", " & IsMAX & ", " & IsCOUNT & ", " & IsAVG
                 Output += vbCrLf
             Next
             If FieldAttributes.ErrMessage <> "" Then
@@ -546,10 +567,9 @@ Public Class ColumnSelect
             'grab selected field:
             strWhereField1 = cboWhereFields.SelectedValue
             strWhereColumnText = cboWhereFields.Text
-            If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText.ToUpper, "COUNT(") > 0 Then
+            If InStr(strWhereColumnText, "SUM(") > 0 Or InStr(strWhereColumnText, "MIN(") > 0 Or InStr(strWhereColumnText, "MAX(") > 0 Or InStr(strWhereColumnText.ToUpper, "COUNT(") > 0 Or InStr(strWhereColumnText.ToUpper, "AVG(") > 0 Then
                 isAggregate = True
                 FieldAttributes.ChangeFieldnameAttribute_IsHAVING(strWhereField1, True)
-                'strWhereField1 = strWhereColumnText
             Else
                 isAggregate = False
             End If
@@ -820,6 +840,7 @@ Public Class ColumnSelect
                 If InStr(SelectedCondition, "SUM(") > 0 Or
                     InStr(SelectedCondition, "MIN(") > 0 Or
                     InStr(SelectedCondition, "MAX(") > 0 Or
+                    InStr(SelectedCondition, "AVG(") > 0 Or
                     InStr(SelectedCondition, "COUNT(") > 0 Then
                     'Aggregate function clause (Having):
                     ColumnSelect.FieldAttributes.lstHavings.Remove(SelectedCondition)
@@ -840,14 +861,6 @@ Public Class ColumnSelect
                 lstConditions.SetSelected(NextIDX, True)
             End If
         End If
-
-        'lstIDX = lstConditions.SelectedIndex
-        'If lstIDX > -1 Then
-        'ItemName = lstConditions.Items(lstIDX)
-        'lstConditions.Items.RemoveAt(lstIDX)
-        'ColumnSelect.FieldAttributes.lbConditions.Remove(ItemName)
-        'UpdateInternalConditionList()
-        'End If
     End Sub
 
     Private Sub UndockChild()
@@ -881,6 +894,7 @@ Public Class ColumnSelect
             dgvFieldSelection.Rows(i).Cells("MIN").Value = False
             dgvFieldSelection.Rows(i).Cells("MAX").Value = False
             dgvFieldSelection.Rows(i).Cells("COUNT").Value = False
+            dgvFieldSelection.Rows(i).Cells("AVG").Value = False
         Next
 
     End Sub
@@ -981,6 +995,9 @@ Public Class ColumnSelect
         If InStr(ColumnName, "COUNT") > 0 Then
             FieldAttributes.ChangeFieldnameAttribute_IsCount(ColumnName, ItemIsTicked, True)
         End If
+        If InStr(ColumnName, "AVG") > 0 Then
+            FieldAttributes.ChangeFieldnameAttribute_IsAVG(ColumnName, ItemIsTicked)
+        End If
         'If AggregateItem = "SUM(" & ColumnName & ")" Then
         'FieldAttributes.ChangeFieldnameAttribute_IsSUM(ColumnName, ItemIsTicked)
         ColumnType = FieldAttributes.Dic_Types(ColumnName)
@@ -1026,6 +1043,9 @@ Public Class ColumnSelect
         If InStr(CheckboxType, "COUNT") > 0 Then
             FieldAttributes.ChangeFieldnameAttribute_IsCount(ColumnName, ItemIsTicked, True)
         End If
+        If InStr(CheckboxType, "AVG") > 0 Then
+            FieldAttributes.ChangeFieldnameAttribute_IsAVG(ColumnName, ItemIsTicked)
+        End If
         If ItemIsTicked = True Then 'ITEM SELECTED, if ticked - insert function in list, remove normal field and replace with function
             ItemSelected = 1
             'Insert column name,column text with relevant function() around it:
@@ -1070,17 +1090,20 @@ Public Class ColumnSelect
         Dim SumSelected As Integer
         Dim MinSelected As Integer
         Dim MaxSelected As Integer
+        Dim AVGSelected As Integer
         Dim CountSelected As Integer
         Dim SumItem As String
         Dim MINItem As String
         Dim MAXItem As String
         Dim COUNTItem As String
+        Dim AVGItem As String
         Dim lstItem As String
         Dim ItemIDX As Integer
         Dim IsSUM As Boolean
         Dim IsMIN As Boolean
         Dim IsMAX As Boolean
         Dim IsCOUNT As Boolean
+        Dim IsAVG As Boolean
         Dim RowsSelected As New List(Of Integer)
         Dim strOrderByField As String
         Try
@@ -1104,6 +1127,7 @@ Public Class ColumnSelect
                 IsMIN = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("MIN").Value
                 IsMAX = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("MAX").Value
                 IsCOUNT = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("COUNT").Value
+                IsAVG = dgvFieldSelection.Rows(RowsSelected.Item(i)).Cells("AVG").Value
                 If (ColumnType <> "N" And IsSUM = True) Then
                     MsgBox("Cannot include SUM on a non-numeric field")
                     Exit Sub
@@ -1112,16 +1136,18 @@ Public Class ColumnSelect
                 MinSelected = 0
                 MaxSelected = 0
                 CountSelected = 0
+                AVGSelected = 0
                 'For VISUAL Purpose in Display Listbox:
                 SumItem = "SUM(" & ColumnName & ")"
                 MINItem = "MIN(" & ColumnName & ")"
                 MAXItem = "MAX(" & ColumnName & ")"
                 COUNTItem = "COUNT(Distinct " & ColumnName & ")"
+                AVGItem = "AVG(" & ColumnName & ")"
                 Select Case UCase(SelectedList)
                     Case "SELECT FIELDS"
                         If Not IsInList(lstFields, ColumnName, ItemIDX) And Not IsInList(lstFields, SumItem, ItemIDX) _
                             And Not IsInList(lstFields, MINItem, ItemIDX) And Not IsInList(lstFields, MAXItem, ItemIDX) _
-                            And Not IsInList(lstFields, COUNTItem, ItemIDX) Then
+                            And Not IsInList(lstFields, AVGItem, ItemIDX) And Not IsInList(lstFields, COUNTItem, ItemIDX) Then
                             lstFields.Items.Add(ColumnName)
                             'If Not FieldAttributes.IsInList(ColumnName) Then
                             'FieldAttributes.SelectedFields.Add(ColumnName)
@@ -1133,6 +1159,7 @@ Public Class ColumnSelect
                         TestCheckboxCondition(ColumnName, ItemIDX, "MIN", MINItem, IsMIN, MinSelected)
                         TestCheckboxCondition(ColumnName, ItemIDX, "MAX", MAXItem, IsMAX, MaxSelected)
                         TestCheckboxCondition(ColumnName, ItemIDX, "COUNT", COUNTItem, IsCOUNT, CountSelected)
+                        TestCheckboxCondition(ColumnName, ItemIDX, "AVG", AVGItem, IsAVG, AVGSelected)
                     Case "WHERE FIELDS"
                         If Not IsInCombo(cboWhereFields, ColumnText, ItemIDX) Then
                             cboWhereFields.Items.Add(ColumnText)
@@ -1349,6 +1376,14 @@ Public Class ColumnSelect
                     NewColumnName += " AS """ & ColumnText & " Count" & """"
                     IncludeGroupBy = True
                 End If
+                If tempAttribute.IsAVG Then
+                    If NewColumnName <> "" Then
+                        NewColumnName += "," & vbCrLf
+                    End If
+                    NewColumnName += " AVG(" & ColumnName & ")"
+                    NewColumnName += " AS """ & ColumnText & " AVG" & """"
+                    IncludeGroupBy = True
+                End If
             End If
             If NewColumnName = "" Then
                 NewColumnName = ColumnName & FieldAlias
@@ -1388,6 +1423,7 @@ Public Class ColumnSelect
                     If Not FieldAttributes.GetSelectedFieldSUM(ColumnName) And
                         Not FieldAttributes.GetSelectedFieldMIN(ColumnName) And
                         Not FieldAttributes.GetSelectedFieldMAX(ColumnName) And
+                        Not FieldAttributes.GetSelectedFieldAVG(ColumnName) And
                         Not FieldAttributes.GetSelectedFieldCOUNT(ColumnName) Then
                         If GroupByFields = "" Then
                             GroupByFields += ColumnName
@@ -2290,11 +2326,6 @@ Public Class ColumnSelect
             Next
             UpdateInternalConditionList()
             UpdateInternalHavingList()
-            'For Each item As String In FieldAttributes.lbConditions
-            'If Not IsNothing(item) Then
-            'lstConditions.Items.Add(item)
-            'End If
-            'Next
         Catch ex As Exception
             MsgBox("Exception Error in PopulateFromImport(): " & ex.Message)
         End Try

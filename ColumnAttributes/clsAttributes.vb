@@ -8,6 +8,7 @@ Public Class ColumnAttributes
     Private _IsMIN As Boolean
     Private _IsMAX As Boolean
     Private _HasCount As Boolean
+    Private _IsAVG As Boolean
     Private _SelectedFields As List(Of String)
     Private _SelectedAlias As List(Of String)
     Private _GroupByList As List(Of String)
@@ -214,6 +215,15 @@ Public Class ColumnAttributes
         End Set
     End Property
 
+    Public Property IsAVG As Boolean
+        Get
+            Return _IsAVG
+        End Get
+        Set(value As Boolean)
+            _IsAVG = value
+        End Set
+    End Property
+
     Public Property MyWhereCondtions As String
         Get
             Return _WhereConditions
@@ -352,6 +362,8 @@ Public Class ColumnAttributes
         FieldText = RemoveBrackets(FieldText, "COUNT(")
         FieldText = RemoveBrackets(FieldText, " Count")
         FieldText = RemoveBrackets(FieldText, "Distinct ")
+        FieldText = RemoveBrackets(FieldText, "AVG(")
+        FieldText = RemoveBrackets(FieldText, " AVG")
         Return FieldText
     End Function
 
@@ -627,6 +639,7 @@ Public Class ColumnAttributes
             Me.ChangeFieldnameAttribute_IsMIN(key, False)
             Me.ChangeFieldnameAttribute_IsMAX(key, False)
             Me.ChangeFieldnameAttribute_IsCount(key, False, True)
+            Me.ChangeFieldnameAttribute_IsAVG(key, False)
             Me.ChangeSelectedFieldnameAttribute_Position(key, Pos)
             Pos += 1
         Next
@@ -648,6 +661,7 @@ Public Class ColumnAttributes
         Me.ChangeFieldnameAttribute_IsMIN(ColumnName, False)
         Me.ChangeFieldnameAttribute_IsSUM(ColumnName, False)
         Me.ChangeFieldnameAttribute_IsCount(ColumnName, False, True)
+        Me.ChangeFieldnameAttribute_IsAVG(ColumnName, False)
         Me.ChangeFieldnameAttribute_IsSelected(ColumnName, False)
 
         Pos = 1
@@ -687,7 +701,6 @@ Public Class ColumnAttributes
         If RemoveTheBrackets Then
             Fieldname = RemoveALLBrackets(Fieldname)
         End If
-
 
         FindAttributeFieldName = False
         If Me.Dic_Attributes IsNot Nothing Then
@@ -814,6 +827,21 @@ Public Class ColumnAttributes
         If Not IsNothing(tempAttribute) Then
             If Me.FindAttributeFieldName(UpdateFieldname, True) Then
                 tempAttribute.IsMAX = IsMAX
+                Me.Dic_Attributes(UpdateFieldname) = tempAttribute
+            End If
+        End If
+
+    End Sub
+
+    Sub ChangeFieldnameAttribute_IsAVG(UpdateFieldname As String, IsAVG As Boolean)
+        Dim tempAttribute As New ColumnAttributeProperties
+
+        UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
+
+        tempAttribute = Me.Dic_Attributes(UpdateFieldname)
+        If Not IsNothing(tempAttribute) Then
+            If Me.FindAttributeFieldName(UpdateFieldname, True) Then
+                tempAttribute.IsAVG = IsAVG
                 Me.Dic_Attributes(UpdateFieldname) = tempAttribute
             End If
         End If
@@ -1050,6 +1078,23 @@ Public Class ColumnAttributes
         If tempAttribute IsNot Nothing Then
             If tempAttribute.IsSelected Then
                 Return tempAttribute.IsCount
+            End If
+        Else
+            Me.ErrMessage = "Fieldname not found"
+        End If
+    End Function
+
+    Function GetSelectedFieldAVG(Fieldname As String) As Boolean
+        Dim tempAttribute = New ColumnAttributeProperties
+
+        Fieldname = RemoveALLBrackets(Fieldname)
+
+        GetSelectedFieldAVG = False
+        Me.ErrMessage = ""
+        tempAttribute = Me.Dic_Attributes(Fieldname)
+        If tempAttribute IsNot Nothing Then
+            If tempAttribute.IsSelected Then
+                Return tempAttribute.IsAVG
             End If
         Else
             Me.ErrMessage = "Fieldname not found"

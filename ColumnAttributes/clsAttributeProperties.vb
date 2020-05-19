@@ -10,6 +10,7 @@
     Private _IsMIN As Boolean
     Private _IsMAX As Boolean
     Private _IsCount As Boolean
+    Private _IsAVG As Boolean
     Private _IsHaving As Boolean
     Private _FieldAlias As String
     Private _IsSelected As Boolean
@@ -117,6 +118,16 @@
             _IsCount = value
         End Set
     End Property
+
+    Public Property IsAVG As Boolean
+        Get
+            Return _IsAVG
+        End Get
+        Set(value As Boolean)
+            _IsAVG = value
+        End Set
+    End Property
+
     '_IsHaving
     Public Property IsHaving As Boolean
         Get
@@ -177,6 +188,7 @@
         _IsMIN = False
         _IsMAX = False
         _IsCount = False
+        _IsAVG = False
         _IsSelected = False
     End Sub
 

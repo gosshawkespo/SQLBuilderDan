@@ -23,12 +23,13 @@ Partial Class DataSetHeaderList
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DataSetHeaderList))
         Me.gbTOP = New System.Windows.Forms.GroupBox()
+        Me.btnClose = New System.Windows.Forms.Button()
+        Me.btnRefresh = New System.Windows.Forms.Button()
         Me.dgvHeaderList = New System.Windows.Forms.DataGridView()
         Me.HeaderListCRUD = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.SelectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnRefresh = New System.Windows.Forms.Button()
-        Me.btnClose = New System.Windows.Forms.Button()
         Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
         Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.gbTOP.SuspendLayout()
@@ -48,6 +49,24 @@ Partial Class DataSetHeaderList
         Me.gbTOP.Size = New System.Drawing.Size(1112, 52)
         Me.gbTOP.TabIndex = 1
         Me.gbTOP.TabStop = False
+        '
+        'btnClose
+        '
+        Me.btnClose.Location = New System.Drawing.Point(108, 19)
+        Me.btnClose.Name = "btnClose"
+        Me.btnClose.Size = New System.Drawing.Size(80, 23)
+        Me.btnClose.TabIndex = 28
+        Me.btnClose.Text = "Close"
+        Me.btnClose.UseVisualStyleBackColor = True
+        '
+        'btnRefresh
+        '
+        Me.btnRefresh.Location = New System.Drawing.Point(9, 19)
+        Me.btnRefresh.Name = "btnRefresh"
+        Me.btnRefresh.Size = New System.Drawing.Size(80, 23)
+        Me.btnRefresh.TabIndex = 27
+        Me.btnRefresh.Text = "Refresh"
+        Me.btnRefresh.UseVisualStyleBackColor = True
         '
         'dgvHeaderList
         '
@@ -73,24 +92,6 @@ Partial Class DataSetHeaderList
         Me.SelectToolStripMenuItem.Size = New System.Drawing.Size(105, 22)
         Me.SelectToolStripMenuItem.Text = "Select"
         '
-        'btnRefresh
-        '
-        Me.btnRefresh.Location = New System.Drawing.Point(9, 19)
-        Me.btnRefresh.Name = "btnRefresh"
-        Me.btnRefresh.Size = New System.Drawing.Size(80, 23)
-        Me.btnRefresh.TabIndex = 27
-        Me.btnRefresh.Text = "Refresh"
-        Me.btnRefresh.UseVisualStyleBackColor = True
-        '
-        'btnClose
-        '
-        Me.btnClose.Location = New System.Drawing.Point(108, 19)
-        Me.btnClose.Name = "btnClose"
-        Me.btnClose.Size = New System.Drawing.Size(80, 23)
-        Me.btnClose.TabIndex = 28
-        Me.btnClose.Text = "Close"
-        Me.btnClose.UseVisualStyleBackColor = True
-        '
         'stsDataSetList
         '
         Me.stsDataSetList.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsDataSetListLabel1})
@@ -113,6 +114,7 @@ Partial Class DataSetHeaderList
         Me.Controls.Add(Me.stsDataSetList)
         Me.Controls.Add(Me.dgvHeaderList)
         Me.Controls.Add(Me.gbTOP)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "DataSetHeaderList"
         Me.Text = "Data Set List"
         Me.gbTOP.ResumeLayout(False)

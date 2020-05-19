@@ -22,6 +22,7 @@ Partial Class QueryResultsDGV
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(QueryResultsDGV))
         Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
         Me.tssLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.btnRun = New System.Windows.Forms.Button()
@@ -153,6 +154,7 @@ Partial Class QueryResultsDGV
         Me.Controls.Add(Me.StatusStrip1)
         Me.Controls.Add(Me.btnRun)
         Me.Controls.Add(Me.btnClose)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "QueryResultsDGV"
         Me.Text = "Query Results"
         Me.StatusStrip1.ResumeLayout(False)

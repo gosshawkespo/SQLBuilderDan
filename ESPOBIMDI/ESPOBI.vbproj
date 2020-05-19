@@ -75,8 +75,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>SQLBuilder icon1.ICO</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ESPOCommon1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -248,6 +247,10 @@
       <Project>{86d27397-df7c-4631-b426-59b62c355f2a}</Project>
       <Name>SQLBuilder</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SQLBuilder icon1.ICO" />
+    <Content Include="SQLBuilder64.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

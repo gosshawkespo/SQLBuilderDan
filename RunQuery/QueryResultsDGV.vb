@@ -42,35 +42,6 @@ Public Class QueryResultsDGV
         End Select
     End Sub
 
-    '    Public Shared Function ExecuteMySQLQuery(SqlStatement As String) As DataTable
-    '   Dim ConnString As String
-    '  Dim ZeroDatetime As Boolean = True
-    ' Dim Server As String = "localhost"
-    'Dim DbaseName As String = "simplequerybuilder"
-    'Dim USERNAME As String = "root"
-    'Dim password As String = "root"
-    'Dim port As String = "3306"
-    '
-    '   ExecuteMySQLQuery = Nothing
-    'Try
-    '       'ConnString = setupMySQLconnection("localhost", "simplequerybuilder", "root", "root", "3306", ErrMessage)
-    '      ConnString = String.Format("server={0}; user id={1}; password={2}; database={3}; Convert Zero Datetime={4}; port={5}; pooling=false", Server, USERNAME, password, DbaseName, ZeroDatetime, port)
-    'Dim cn As New MySqlConnection(ConnString)
-    '       cn.Open()
-    'Dim cmd As New MySqlCommand
-    '       cmd.Connection = cn
-    '      cmd.CommandTimeout = 0
-    '     cmd.CommandType = CommandType.Text
-    '    cmd.CommandText = SqlStatement
-    'Dim da As New MySqlDataAdapter(cmd)
-    'Dim ds As New DataSet
-    '       da.Fill(ds)
-    'Return ds.Tables(0)
-    'Catch ex As Exception
-    '       MsgBox("DB ERROR: " & ex.Message)
-    'End Try
-    'End Function
-
     Public Shared Function ExecuteSQLQuery(ConnectString As String, SQLStatement As String) As DataTable
         '    Dim ConnectString As String
         '    ConnectString = GlobalSession.ConnectString
@@ -174,7 +145,7 @@ Public Class QueryResultsDGV
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
             ElseIf ColumnType = "L" Then
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            ElseIf ColumnType = "N" Or ColumnText = "Count" Then
+            ElseIf ColumnType = "N" Or InStr(ColumnText, "Count") > 0 Then
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
                 dgvOutput.Columns(i).DefaultCellStyle.Format = "N" & ColumnDecimals
             End If

@@ -10,7 +10,8 @@ Public Class QueryResultsDGV
     Dim GlobalSession As New ESPOParms.Session
     Dim FieldAttributes As New ColumnAttributes.ColumnAttributes
     Dim SQLStatement As String
-
+    Dim dt As DataTable
+    Dim XLName As String
 
     Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
         GlobalParms = Parms
@@ -94,7 +95,7 @@ Public Class QueryResultsDGV
     Private Sub btnRun_Click(sender As Object, e As EventArgs) Handles btnRun.Click
         Cursor = Cursors.WaitCursor
         Refresh()
-        Dim dt As New DataTable
+        'Dim dt As New DataTable
 
         Try
             dgvOutput.DataSource = Nothing
@@ -180,16 +181,26 @@ Public Class QueryResultsDGV
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles btnExportToExcel.Click
+
+
         Cursor = Cursors.WaitCursor
         Refresh()
-        Dim rsADO As ADODB.Recordset
-        If FieldAttributes.DBType = "MYSQL" Then
-            rsADO = ExecuteMySQL(GlobalSession.ConnectString, SQLStatement)
+        If dt Is Nothing Then
+            If FieldAttributes.DBType = "MYSQL" Then
+                dt = ExecuteMySQLQuery(txtSQLQuery.Text)
+                ExportToExcelWithDataTable(dt, "SQLBuilder Output")
+            Else
+                Dim rsADO As ADODB.Recordset
+                dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
+                'rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+                'ExportToExcel2("Report Title", rsADO)
+            End If
         Else
-            rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+            ExportToExcelWithDataTable(dt, "Report Title")
         End If
 
-        ExportToExcel2("Report Title", rsADO)
+
+
     End Sub
 
     Public Function ExecuteSQL(ConnectString As String, SQLStatement As String) As ADODB.Recordset
@@ -231,7 +242,7 @@ Public Class QueryResultsDGV
             'ConnString = setupMySQLconnection("localhost", "simplequerybuilder", "root", "root", "3306", ErrMessage)
             MsgBox(ConnectString)
             ConnString = String.Format("server={0}; user id={1}; password={2}; database={3}; Convert Zero Datetime={4}; port={5}; pooling=false", Server, USERNAME, password, DbaseName, ZeroDatetime, port)
-            cn.ConnectionString = ConnectString
+            cn.ConnectionString = ConnString
             cn.Open()
             cn.CommandTimeout = 0
             rs.CursorLocation = ADODB.CursorLocationEnum.adUseClient
@@ -246,7 +257,24 @@ Public Class QueryResultsDGV
         Return rs
     End Function
 
-    Private Sub ExportToExcel2(ReportName As String, rsADO As ADODB.Recordset)
+    Function GetDecimalFormat(Decimals As Integer, ColumnText As String) As String
+        Dim Output As String
+
+        Output = "#,##0"
+        If InStr(ColumnText.ToUpper, "COUNT") = 0 Then
+            If Decimals > 0 And Decimals < 2 Then
+                Output = "#,##0.0;[Red]#,##0.0"
+            ElseIf Decimals > 1 And Decimals < 3 Then
+                Output = "#,##0.00;[Red]#,##0.00"
+            ElseIf Decimals > 2 And Decimals < 4 Then
+                Output = "#,##0.000;[Red]#,##0.000"
+            End If
+        End If
+
+        GetDecimalFormat = Output
+    End Function
+
+    Sub ExportToExcelWithDataTable(dt As DataTable, ReportName As String)
         Dim xlApp As Microsoft.Office.Interop.Excel.Application
         Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook
         Dim xlWorkSheet As Microsoft.Office.Interop.Excel.Worksheet
@@ -254,6 +282,101 @@ Public Class QueryResultsDGV
         Dim i As Integer
         Dim j As Integer
         Dim XLName As String
+        Dim Col As String
+        Dim DecimalFormat As String = "#,##0"
+        Dim ColumnName As String
+        Dim ColumnText As String
+        Dim ColumnType As String
+        Dim ColumnDecimals As Integer
+        Dim dc As System.Data.DataColumn
+        Dim dr As System.Data.DataRow
+        Dim colIndex As Integer = 0
+        Dim rowIndex As Integer = 0
+
+        XLName = "P:" & Trim(ReportName) & ".xlsx"
+
+        Me.Cursor = Cursors.WaitCursor
+        xlApp = New Microsoft.Office.Interop.Excel.Application
+        xlWorkBook = xlApp.Workbooks.Add(misValue)
+        xlWorkSheet = xlWorkBook.Sheets("sheet1")
+
+        For Each dc In dt.Columns
+            colIndex = colIndex + 1
+            xlWorkSheet.Cells(1, colIndex).Font.Bold = True
+            xlWorkSheet.Cells(1, colIndex) = dc.ColumnName
+            'Format to 2dp and insert comma:
+            'xlWorkSheet.Cells.Columns("J").NumberFormat = "#,##0"
+            If colIndex <= 26 Then
+                Col = Chr(64 + colIndex)
+            Else
+                Col = "A" & Chr(64 + (colIndex - 26))
+            End If
+
+            ColumnText = dc.ColumnName
+            ColumnName = FieldAttributes.GetFieldNameFromFieldText(ColumnText)
+            ColumnType = FieldAttributes.GetSelectedFieldType(ColumnName)
+            ColumnDecimals = FieldAttributes.GetSelectedFieldDecimals(ColumnName)
+            DecimalFormat = GetDecimalFormat(ColumnDecimals, ColumnText)
+            If ColumnType = "N" Then
+                xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
+            End If
+        Next
+
+        'Export the rows to excel file
+        For Each dr In dt.Rows
+            rowIndex = rowIndex + 1
+            colIndex = 0
+            For Each dc In dt.Columns
+                colIndex = colIndex + 1
+                xlWorkSheet.Cells(rowIndex + 1, colIndex) = dr(dc.ColumnName)
+            Next
+        Next
+
+        xlWorkSheet.Range("A1:AZ1").Font.Bold = True
+        xlWorkSheet.Range("A1").AutoFilter(Field:=1)
+        xlWorkSheet.Columns.AutoFit()
+
+        xlApp.ActiveWindow.SplitColumn = 0
+        xlApp.ActiveWindow.SplitRow = 1
+        xlApp.ActiveWindow.FreezePanes = True
+
+        'xlWorkSheet.Cells.Columns("J").NumberFormat = "#,##0"
+
+        'xlWorkSheet.Cells(rsADO.RecordCount + 2, "J") = "=SUBTOTAL(9,J2:J" & rsADO.RecordCount + 1 & ")"
+        'xlWorkSheet.Cells(rsADO.RecordCount + 2, "J").Font.Bold = True
+
+        '        xlWorkSheet.SaveAs(XLName)
+        '        xlWorkBook.Close()
+        '        xlApp.Quit()
+
+        xlApp.Visible = True
+
+        'Save file in final path
+        'xlWorkBook.SaveAs(ReportName, XlFileFormat.xlWorkbookNormal, Type.Missing,
+        'Type.Missing, Type.Missing, Type.Missing, XlSaveAsAccessMode.xlExclusive,
+        'Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing)
+        'xlWorkBook.Close(False, Type.Missing, Type.Missing)
+        'Release the objects
+        Try
+            releaseObject(xlApp)
+            releaseObject(xlWorkBook)
+            releaseObject(xlWorkSheet)
+        Catch ex As Exception
+            MsgBox("Error: " & ex.ToString, MsgBoxStyle.Critical, "Error!")
+        End Try
+
+        Me.Cursor = Cursors.Default
+        Me.Refresh()
+    End Sub
+
+    Private Sub ExportToExcel2(ReportName As String, rsADO As ADODB.Recordset)
+        Dim xlApp As Microsoft.Office.Interop.Excel.Application
+        Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook
+        Dim xlWorkSheet As Microsoft.Office.Interop.Excel.Worksheet
+        Dim misValue As Object = System.Reflection.Missing.Value
+        Dim i As Integer
+        Dim j As Integer
+
 
         XLName = "P:" & Trim(ReportName) & ".xlsx"
 

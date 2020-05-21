@@ -75,7 +75,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>SQLBuilder icon1.ICO</ApplicationIcon>
+    <ApplicationIcon>SQLQuery Builder Tree Icon - text 14pt.ICO</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ESPOCommon1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -196,6 +196,15 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+    <COMReference Include="Microsoft.Office.Core">
+      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>8</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -251,6 +260,7 @@
   <ItemGroup>
     <Content Include="SQLBuilder icon1.ICO" />
     <Content Include="SQLBuilder64.ico" />
+    <Content Include="SQLQuery Builder Tree Icon - text 14pt.ICO" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

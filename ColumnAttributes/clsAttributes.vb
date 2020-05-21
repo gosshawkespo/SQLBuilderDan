@@ -881,6 +881,7 @@ Public Class ColumnAttributes
     Function GetFieldPosition(ByVal Fieldname As String) As Integer
         Dim tempAttribute As New ColumnAttributeProperties
 
+        GetFieldPosition = -1
         Fieldname = RemoveALLBrackets(Fieldname)
 
         tempAttribute = Me.Dic_Attributes(Fieldname)

@@ -22,6 +22,7 @@ Partial Class ModeSelect
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(ModeSelect))
         Me.cboMode = New System.Windows.Forms.ComboBox()
         Me.btnOK = New System.Windows.Forms.Button()
         Me.SuspendLayout()
@@ -50,6 +51,7 @@ Partial Class ModeSelect
         Me.ClientSize = New System.Drawing.Size(258, 143)
         Me.Controls.Add(Me.btnOK)
         Me.Controls.Add(Me.cboMode)
+        Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
         Me.Name = "ModeSelect"
         Me.Text = "Select Mode"
         Me.ResumeLayout(False)

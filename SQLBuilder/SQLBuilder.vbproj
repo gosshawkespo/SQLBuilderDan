@@ -52,11 +52,13 @@
     <Reference Include="ColumnAttributes">
       <HintPath>..\ColumnAttributes\bin\Debug\ColumnAttributes.dll</HintPath>
     </Reference>
-    <Reference Include="ESPOCommon1">
-      <HintPath>..\ESPOModel\bin\Debug\ESPOCommon1.dll</HintPath>
+    <Reference Include="ESPOCommon1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ESPOBIMDI\bin\Debug\ESPOCommon1.dll</HintPath>
     </Reference>
-    <Reference Include="ESPOParms">
-      <HintPath>..\ESPOModel\bin\Debug\ESPOParms.dll</HintPath>
+    <Reference Include="ESPOParms, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\ESPOBIMDI\bin\Debug\ESPOParms.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\MySql.Data.dll</HintPath>

@@ -33,7 +33,7 @@ Public Class ColumnAttributes
     Private _FetchCount As Integer
     Private _TableName As String
     Private _HavingConditions As String
-
+    Public Shared ThemeSelection As Integer
 
     Sub New()
         _SelectedFields = New List(Of String)

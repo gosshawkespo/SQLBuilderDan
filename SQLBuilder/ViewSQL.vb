@@ -17,6 +17,13 @@ Public Class ViewSQL
     Private Sub ViewSQL_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
         KeyPreview = True
+        If ColumnAttributes.ColumnAttributes.ThemeSelection = 0 Then
+            Me.BackColor = SystemColors.Control
+            txtSQLQuery.BackColor = SystemColors.Control
+        Else
+            Me.BackColor = Color.Gray
+            txtSQLQuery.BackColor = Color.Gray
+        End If
         Me.MdiParent = FromHandle(GlobalSession.MDIParentHandle)
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler

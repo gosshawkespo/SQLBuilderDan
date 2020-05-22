@@ -10,6 +10,13 @@
         '
         Me.KeyPreview = True
         Me.MdiParent = FromHandle(GlobalSession.MDIParentHandle)
+        If ColumnAttributes.ColumnAttributes.ThemeSelection = 0 Then
+            Me.BackColor = SystemColors.Control
+            dgvHeaderList.BackgroundColor = SystemColors.AppWorkspace
+        Else
+            Me.BackColor = Color.Gray
+            dgvHeaderList.BackgroundColor = Color.Gray
+        End If
         dgvHeaderList.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(245, 255, 245))
         dgvHeaderList.DefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(235, 255, 235)) 'LIGHT GREEN
         dgvHeaderList.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells

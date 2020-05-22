@@ -3,7 +3,6 @@
     Dim GlobalSession As ESPOParms.Session
     Dim p As System.Security.Principal.WindowsPrincipal = CType(System.Threading.Thread.CurrentPrincipal, System.Security.Principal.WindowsPrincipal)
     Dim userid As String = p.Identity.Name
-    Dim WhereConditions As String
 
 
     Private Sub ESPOBIMDI_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -46,7 +45,8 @@
         stsFW100Label4.Text = "    Server: " & GlobalSession.CurrentServer & "   "
         stsFW100Label5.Text = "    Environment: " & GlobalSession.CurrentMode & "   "
         stsFW100Label6.Text = String.Format("    Version {0}", My.Application.Info.Version.ToString) & "   "
-
+        NormalToolStripMenuItem.Checked = True
+        DarkToolStripMenuItem.Checked = False
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
@@ -126,5 +126,15 @@
         App.Show()
         stsFW100Label1.Text = ""
         Cursor = Cursors.Default
+    End Sub
+
+    Private Sub NormalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NormalToolStripMenuItem.Click
+        ColumnAttributes.ColumnAttributes.ThemeSelection = 0
+        DarkToolStripMenuItem.Checked = False
+    End Sub
+
+    Private Sub DarkToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DarkToolStripMenuItem.Click
+        ColumnAttributes.ColumnAttributes.ThemeSelection = 1
+        NormalToolStripMenuItem.Checked = False
     End Sub
 End Class

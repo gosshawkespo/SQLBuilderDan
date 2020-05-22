@@ -22,6 +22,25 @@ Public Class QueryResultsDGV
         '
         KeyPreview = True
         Me.MdiParent = FromHandle(GlobalSession.MDIParentHandle)
+
+        dgvOutput.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+        dgvOutput.AllowUserToOrderColumns = True
+        dgvOutput.AllowUserToResizeColumns = True
+        dgvOutput.AllowUserToAddRows = False
+        dgvOutput.AllowUserToDeleteRows = False
+        If ColumnAttributes.ColumnAttributes.ThemeSelection = 0 Then
+            Me.BackColor = SystemColors.Control
+            dgvOutput.BackgroundColor = SystemColors.AppWorkspace
+            txtSQLQuery.BackColor = SystemColors.Control
+            dgvOutput.AlternatingRowsDefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(245, 255, 245))
+            dgvOutput.DefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(235, 255, 235)) 'LIGHT GREEN
+        Else
+            Me.BackColor = Color.Gray
+            txtSQLQuery.BackColor = Color.Gray
+            dgvOutput.BackgroundColor = Color.Gray
+            dgvOutput.AlternatingRowsDefaultCellStyle.BackColor = Color.Gray
+            dgvOutput.DefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(235, 255, 235)) 'LIGHT GREEN
+        End If
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next

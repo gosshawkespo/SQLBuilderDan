@@ -38,6 +38,9 @@ Partial Class ESPOBIMDI
         Me.CloseAllToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolsToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ImportFromCSVToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ThemeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.NormalToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DarkToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.tls1 = New System.Windows.Forms.ToolStrip()
         Me.tlsbExportToExcel = New System.Windows.Forms.ToolStripButton()
         Me.stsFWMainMenu = New System.Windows.Forms.StatusStrip()
@@ -72,7 +75,7 @@ Partial Class ESPOBIMDI
         'ExitToolStripMenuItem
         '
         Me.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(92, 22)
+        Me.ExitToolStripMenuItem.Size = New System.Drawing.Size(93, 22)
         Me.ExitToolStripMenuItem.Text = "Exit"
         '
         'ViewToolStripMenuItem
@@ -99,58 +102,79 @@ Partial Class ESPOBIMDI
         'TileHorizontalToolStripMenuItem
         '
         Me.TileHorizontalToolStripMenuItem.Name = "TileHorizontalToolStripMenuItem"
-        Me.TileHorizontalToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.TileHorizontalToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.TileHorizontalToolStripMenuItem.Text = "Tile Horizontal"
         '
         'TileVerticalToolStripMenuItem
         '
         Me.TileVerticalToolStripMenuItem.Name = "TileVerticalToolStripMenuItem"
-        Me.TileVerticalToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.TileVerticalToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.TileVerticalToolStripMenuItem.Text = "Tile Vertical"
         '
         'CascadeToolStripMenuItem
         '
         Me.CascadeToolStripMenuItem.Name = "CascadeToolStripMenuItem"
-        Me.CascadeToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.CascadeToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.CascadeToolStripMenuItem.Text = "Cascade"
         '
         'ArrangeToolStripMenuItem
         '
         Me.ArrangeToolStripMenuItem.Name = "ArrangeToolStripMenuItem"
-        Me.ArrangeToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.ArrangeToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.ArrangeToolStripMenuItem.Text = "Arrange"
         '
         'MinimiseAllToolStripMenuItem
         '
         Me.MinimiseAllToolStripMenuItem.Name = "MinimiseAllToolStripMenuItem"
-        Me.MinimiseAllToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.MinimiseAllToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.MinimiseAllToolStripMenuItem.Text = "Minimise All"
         '
         'RestoreAllToolStripMenuItem
         '
         Me.RestoreAllToolStripMenuItem.Name = "RestoreAllToolStripMenuItem"
-        Me.RestoreAllToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.RestoreAllToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.RestoreAllToolStripMenuItem.Text = "Restore All"
         '
         'CloseAllToolStripMenuItem
         '
         Me.CloseAllToolStripMenuItem.Name = "CloseAllToolStripMenuItem"
-        Me.CloseAllToolStripMenuItem.Size = New System.Drawing.Size(151, 22)
+        Me.CloseAllToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
         Me.CloseAllToolStripMenuItem.Text = "Close All"
         '
         'ToolsToolStripMenuItem
         '
-        Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImportFromCSVToolStripMenuItem})
+        Me.ToolsToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ImportFromCSVToolStripMenuItem, Me.ThemeToolStripMenuItem})
         Me.ToolsToolStripMenuItem.Name = "ToolsToolStripMenuItem"
-        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(47, 20)
+        Me.ToolsToolStripMenuItem.Size = New System.Drawing.Size(46, 20)
         Me.ToolsToolStripMenuItem.Text = "Tools"
         '
         'ImportFromCSVToolStripMenuItem
         '
         Me.ImportFromCSVToolStripMenuItem.Enabled = False
         Me.ImportFromCSVToolStripMenuItem.Name = "ImportFromCSVToolStripMenuItem"
-        Me.ImportFromCSVToolStripMenuItem.Size = New System.Drawing.Size(163, 22)
+        Me.ImportFromCSVToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ImportFromCSVToolStripMenuItem.Text = "Import from CSV"
+        '
+        'ThemeToolStripMenuItem
+        '
+        Me.ThemeToolStripMenuItem.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.NormalToolStripMenuItem, Me.DarkToolStripMenuItem})
+        Me.ThemeToolStripMenuItem.Name = "ThemeToolStripMenuItem"
+        Me.ThemeToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ThemeToolStripMenuItem.Text = "Theme"
+        '
+        'NormalToolStripMenuItem
+        '
+        Me.NormalToolStripMenuItem.CheckOnClick = True
+        Me.NormalToolStripMenuItem.Name = "NormalToolStripMenuItem"
+        Me.NormalToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.NormalToolStripMenuItem.Text = "Normal"
+        '
+        'DarkToolStripMenuItem
+        '
+        Me.DarkToolStripMenuItem.CheckOnClick = True
+        Me.DarkToolStripMenuItem.Name = "DarkToolStripMenuItem"
+        Me.DarkToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.DarkToolStripMenuItem.Text = "Dark"
         '
         'tls1
         '
@@ -272,4 +296,7 @@ Partial Class ESPOBIMDI
     Friend WithEvents SQLBuilderToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ImportFromCSVToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ThemeToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents NormalToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DarkToolStripMenuItem As ToolStripMenuItem
 End Class

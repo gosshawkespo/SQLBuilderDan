@@ -9,7 +9,7 @@ Public Class ColumnSelect
     Dim GlobalSession As New ESPOParms.Session
     Dim dtWhere As DataTable
     'Public Shared myWhereConditions As New myGlobals
-    Public Shared FieldAttributes As New columnattributes.columnattributes
+    Public Shared FieldAttributes As New ColumnAttributes.ColumnAttributes
 
     'SQLBuilder_KeyDown KEYS: CTRL+S = Show Query, RETURN = ADD CONDITION, CTRL+SHIFT+C = CLOSE FORM
     '
@@ -22,6 +22,11 @@ Public Class ColumnSelect
         '
         Me.KeyPreview = True
         Me.MdiParent = FromHandle(GlobalSession.MDIParentHandle)
+        If ColumnAttributes.ColumnAttributes.ThemeSelection = 0 Then
+            Me.BackColor = SystemColors.Control
+        Else
+            Me.BackColor = Color.Gray
+        End If
         dgvFieldSelection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
         dgvFieldSelection.AllowUserToOrderColumns = True
         dgvFieldSelection.AllowUserToResizeColumns = True

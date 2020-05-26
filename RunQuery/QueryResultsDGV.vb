@@ -204,21 +204,15 @@ Public Class QueryResultsDGV
 
         Cursor = Cursors.WaitCursor
         Refresh()
-        If dt Is Nothing Then
-            If FieldAttributes.DBType = "MYSQL" Then
-                dt = ExecuteMySQLQuery(txtSQLQuery.Text)
-                ExportToExcelWithDataTable(dt, "SQLBuilder Output")
-            Else
-                Dim rsADO As ADODB.Recordset
-                dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
-                'rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
-                'ExportToExcel2("Report Title", rsADO)
-            End If
+        If FieldAttributes.DBType = "MYSQL" Then
+            dt = ExecuteMySQLQuery(txtSQLQuery.Text)
+            ExportToExcelWithDataTable(dt, "SQLBuilder Output")
         Else
-            ExportToExcelWithDataTable(dt, "Report Title")
+            Dim rsADO As ADODB.Recordset
+            'dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
+            rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+            ExportToExcel2("Report Title", rsADO)
         End If
-
-
 
     End Sub
 
@@ -293,10 +287,20 @@ Public Class QueryResultsDGV
         GetDecimalFormat = Output
     End Function
 
+    'EXCEL VBA code:
+    'Dim Destination As Range
+    'Set Destination = Range("K1")
+    'Destination.Resize(UBound(Arr, 1), UBound(Arr, 2)).Value = Arr
+    'transpose the array when writing to the worksheet: 
+
+    'Set Destination = Range("K1")
+    'Destination.Resize(UBound(Arr, 2), UBound(Arr, 1)).Value = Application.Transpose(Arr)
+
     Sub ExportToExcelWithDataTable(dt As DataTable, ReportName As String)
         Dim xlApp As Microsoft.Office.Interop.Excel.Application
         Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook
         Dim xlWorkSheet As Microsoft.Office.Interop.Excel.Worksheet
+        Dim dest As Microsoft.Office.Interop.Excel.Range
         Dim misValue As Object = System.Reflection.Missing.Value
         Dim i As Integer
         Dim j As Integer
@@ -311,6 +315,10 @@ Public Class QueryResultsDGV
         Dim dr As System.Data.DataRow
         Dim colIndex As Integer = 0
         Dim rowIndex As Integer = 0
+        Dim Arr(,) As String
+
+        'Set Destination = Range("K1")
+        'Destination.Resize(UBound(Arr, 1), UBound(Arr, 2)).Value = Arr
 
         XLName = "P:" & Trim(ReportName) & ".xlsx"
 
@@ -340,6 +348,16 @@ Public Class QueryResultsDGV
                 xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
             End If
         Next
+        'ReDim Arr(dt.Columns.Count + 1, dt.Rows.Count + 1)
+        ReDim Arr(dt.Rows.Count - 1, dt.Columns.Count - 1)
+        'Export the rows to excel file
+        'For ii As Integer = 0 To dt.Rows.Count - 1
+        'For jj As Integer = 0 To dt.Columns.Count - 1
+        'Arr(ii, jj) = dt.Rows(ii)(jj)
+        'Next
+        'Next
+        'dest.Resize(UBound(Arr, 2), UBound(Arr, 1)).Value = xlApp.Transpose(Arr)
+        'dest.Resize(UBound(Arr, 2), UBound(Arr, 1)).Value = Arr
 
         'Export the rows to excel file
         For Each dr In dt.Rows
@@ -395,7 +413,12 @@ Public Class QueryResultsDGV
         Dim misValue As Object = System.Reflection.Missing.Value
         Dim i As Integer
         Dim j As Integer
-
+        Dim ColumnText As String
+        Dim ColumnName As String
+        Dim ColumnType As String
+        Dim ColumnDecimals As Integer
+        Dim DecimalFormat As String
+        Dim Col As String
 
         XLName = "P:" & Trim(ReportName) & ".xlsx"
 
@@ -407,6 +430,20 @@ Public Class QueryResultsDGV
         For lngCount = 1 To rsADO.Fields.Count
             xlWorkSheet.Cells(1, lngCount).Font.Bold = True
             xlWorkSheet.Cells(1, lngCount) = rsADO.Fields.Item(lngCount - 1).Name
+
+            If lngCount <= 26 Then
+                Col = Chr(64 + lngCount)
+            Else
+                Col = "A" & Chr(64 + (lngCount - 26))
+            End If
+            ColumnText = rsADO.Fields.Item(lngCount - 1).Name
+            ColumnName = FieldAttributes.GetFieldNameFromFieldText(ColumnText)
+            ColumnType = FieldAttributes.GetSelectedFieldType(ColumnName)
+            ColumnDecimals = FieldAttributes.GetSelectedFieldDecimals(ColumnName)
+            DecimalFormat = GetDecimalFormat(ColumnDecimals, ColumnText)
+            If ColumnType = "N" Then
+                xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
+            End If
         Next lngCount
 
         'Need condition to check if Excel is open: getting exception error here that operation cannot be performed if closed.

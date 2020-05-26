@@ -34,6 +34,7 @@ Public Class ColumnSelect
         dgvFieldSelection.AllowUserToDeleteRows = False
         dgvFieldSelection.MultiSelect = True
         dgvFieldSelection.SelectionMode = DataGridViewSelectionMode.FullRowSelect
+        dgvFieldSelection.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right Or AnchorStyles.Bottom
         FieldAttributes.DeleteConditions()
         FieldAttributes.ClearConditionsList()
         FieldAttributes.LastOperator = ""

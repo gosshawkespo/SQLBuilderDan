@@ -131,7 +131,7 @@ Partial Class ColumnSelect
         Me.dgvFieldSelection.Location = New System.Drawing.Point(6, 80)
         Me.dgvFieldSelection.MinimumSize = New System.Drawing.Size(0, 170)
         Me.dgvFieldSelection.Name = "dgvFieldSelection"
-        Me.dgvFieldSelection.Size = New System.Drawing.Size(469, 614)
+        Me.dgvFieldSelection.Size = New System.Drawing.Size(470, 614)
         Me.dgvFieldSelection.TabIndex = 7
         '
         'btnClear
@@ -764,7 +764,7 @@ Partial Class ColumnSelect
         Me.txtPath.Location = New System.Drawing.Point(45, 48)
         Me.txtPath.Name = "txtPath"
         Me.txtPath.ReadOnly = True
-        Me.txtPath.Size = New System.Drawing.Size(737, 20)
+        Me.txtPath.Size = New System.Drawing.Size(736, 20)
         Me.txtPath.TabIndex = 34
         '
         'SplitContainer1
@@ -774,6 +774,7 @@ Partial Class ColumnSelect
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SplitContainer1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.SplitContainer1.Location = New System.Drawing.Point(6, 6)
+        Me.SplitContainer1.MinimumSize = New System.Drawing.Size(100, 100)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
@@ -805,7 +806,7 @@ Partial Class ColumnSelect
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbSortResults)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbFilterRecords)
         Me.SplitContainer1.Size = New System.Drawing.Size(1305, 713)
-        Me.SplitContainer1.SplitterDistance = 495
+        Me.SplitContainer1.SplitterDistance = 496
         Me.SplitContainer1.SplitterWidth = 10
         Me.SplitContainer1.TabIndex = 35
         '

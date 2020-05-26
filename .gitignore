@@ -6,8 +6,8 @@
 *.user
 *.userosscache
 *.sln.docstates
-!espobimdi/bin/
-!**espobimdi/bin/*
+!espobimdi/
+!**espobimdi/*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 

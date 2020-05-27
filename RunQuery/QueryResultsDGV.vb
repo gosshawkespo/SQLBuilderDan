@@ -161,6 +161,9 @@ Public Class QueryResultsDGV
             ColumnName = FieldAttributes.GetFieldNameFromFieldText(ColumnText)
             ColumnType = FieldAttributes.GetSelectedFieldType(ColumnName)
             ColumnDecimals = CStr(FieldAttributes.GetSelectedFieldDecimals(ColumnName))
+            If InStr(ColumnText.ToUpper, "COUNT") > 0 Then
+                ColumnDecimals = "0"
+            End If
             If ColumnType = "A" Then
                 dgvOutput.Columns(i).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
             ElseIf ColumnType = "L" Then
@@ -319,7 +322,7 @@ Public Class QueryResultsDGV
 
         'Set Destination = Range("K1")
         'Destination.Resize(UBound(Arr, 1), UBound(Arr, 2)).Value = Arr
-
+        'connDB.Open ConnectionString:="Provider = Microsoft.ACE.OLEDB.12.0; data source=" & strDB
         XLName = "P:" & Trim(ReportName) & ".xlsx"
 
         Me.Cursor = Cursors.WaitCursor
@@ -419,14 +422,25 @@ Public Class QueryResultsDGV
         Dim ColumnDecimals As Integer
         Dim DecimalFormat As String
         Dim Col As String
+        Dim percentage As Double
+        Dim qt As Microsoft.Office.Interop.Excel.QueryTable
 
         XLName = "P:" & Trim(ReportName) & ".xlsx"
 
         Me.Cursor = Cursors.WaitCursor
+        tssLabel1.Text = "Getting Data..."
         xlApp = New Microsoft.Office.Interop.Excel.Application
         xlWorkBook = xlApp.Workbooks.Add(misValue)
         xlWorkSheet = xlWorkBook.Sheets("sheet1")
 
+
+
+        'Need condition to check if Excel is open: getting exception error here that operation cannot be performed if closed.
+        ' - If error has occured already before - it seems to trigger this.
+        'xlWorkSheet.Cells(2, 1).CopyFromRecordset(rsADO)
+        qt = xlWorkSheet.QueryTables.Add(rsADO, xlWorkSheet.Cells(1, 1))
+        qt.Refresh()
+        tssLabel1.Text = "Formatting..."
         For lngCount = 1 To rsADO.Fields.Count
             xlWorkSheet.Cells(1, lngCount).Font.Bold = True
             xlWorkSheet.Cells(1, lngCount) = rsADO.Fields.Item(lngCount - 1).Name
@@ -444,11 +458,10 @@ Public Class QueryResultsDGV
             If ColumnType = "N" Then
                 xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
             End If
+            'percentage = (lngCount / rsADO.Fields.Count) * 100
+            'tssLabel1.Text = "Processing... " & CStr(percentage) & "%"
+            tssLabel1.Text = "Processing... "
         Next lngCount
-
-        'Need condition to check if Excel is open: getting exception error here that operation cannot be performed if closed.
-        ' - If error has occured already before - it seems to trigger this.
-        xlWorkSheet.Cells(2, 1).CopyFromRecordset(rsADO)
 
         xlWorkSheet.Range("A1:AZ1").Font.Bold = True
         xlWorkSheet.Range("A1").AutoFilter(Field:=1)
@@ -468,7 +481,7 @@ Public Class QueryResultsDGV
         '        xlApp.Quit()
 
         xlApp.Visible = True
-
+        tssLabel1.Text = "Cleanup..."
         Try
             releaseObject(xlApp)
             releaseObject(xlWorkBook)
@@ -476,11 +489,15 @@ Public Class QueryResultsDGV
         Catch ex As Exception
             MsgBox("Error: " & ex.ToString, MsgBoxStyle.Critical, "Error!")
         End Try
-
+        tssLabel1.Text = "Completed."
         Me.Cursor = Cursors.Default
         Me.Refresh()
 
     End Sub
+
+    'QT = ActiveSheet.QueryTables.Add(rs, ActiveSheet.Cells(2, 1))
+
+
     Private Sub releaseObject(ByVal obj As Object)
         Try
             System.Runtime.InteropServices.Marshal.ReleaseComObject(obj)

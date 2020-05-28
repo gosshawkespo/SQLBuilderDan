@@ -277,13 +277,15 @@ Public Class QueryResultsDGV
         Dim Output As String
 
         Output = "#,##0"
+        '"#,##0.00_ ;-#,##0.00 "
+        '"#,##0.00;[Red]#,##0.00"
         If InStr(ColumnText.ToUpper, "COUNT") = 0 Then
             If Decimals > 0 And Decimals < 2 Then
-                Output = "#,##0.0;[Red]#,##0.0"
+                Output = "#,##0.0"
             ElseIf Decimals > 1 And Decimals < 3 Then
-                Output = "#,##0.00;[Red]#,##0.00"
+                Output = "#,##0.00"
             ElseIf Decimals > 2 And Decimals < 4 Then
-                Output = "#,##0.000;[Red]#,##0.000"
+                Output = "#,##0.000"
             End If
         End If
 

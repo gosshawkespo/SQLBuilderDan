@@ -381,7 +381,42 @@ Public Class ColumnSelect
 
             End If
         Next
+        For i As Integer = 0 To FieldAttributes.SelectedFields.Count - 1
+            strFieldname = FieldAttributes.SelectedFields.Item(i)
+            strFieldText = FieldAttributes.SelectedAlias.Item(i)
+            tempAttribute = New ColumnAttributes.ColumnAttributeProperties
+            If InStr(strFieldname.ToUpper, "COUNT(*)") > 0 Then
+                strFieldType = "N"
+                strDecimals = "0"
+                strFieldLength = "0"
+                tempAttribute.IsCount = True
+                tempAttribute.IsSelected = True
+                FieldAttributes.HasCount = True
+            End If
 
+            tempAttribute.SelectedFieldPos = i + 1
+            tempAttribute.SelectedFieldname = strFieldname
+            tempAttribute.SelectedFieldText = strFieldText
+            tempAttribute.SelectedFieldType = strFieldType
+            tempAttribute.SelectedFieldLength = CInt(strFieldLength)
+            tempAttribute.SelectedDecimals = CInt(strDecimals)
+            tempAttribute.IsSUM = False
+            tempAttribute.IsMIN = False
+            tempAttribute.IsMAX = False
+            tempAttribute.IsAVG = False
+            tempAttribute.Attributes = strFieldType & ";" & strFieldLength & ";" & strDecimals & ";"
+            tempAttribute.Attributes += CStr(intSUM) & ";" & CStr(intMIN) & ";" & CStr(intMAX) & ";" & CStr(intCOUNT) & ";" & CStr(intAVG)
+            If Not FieldAttributes.Dic_Attributes.exists(strFieldname) Then
+                FieldAttributes.Dic_Attributes(strFieldname) = tempAttribute
+            End If
+            If Not FieldAttributes.Dic_FieldAlias.exists(strFieldname) Then
+                FieldAttributes.Dic_FieldAlias(strFieldname) = strFieldText
+            End If
+            If Not FieldAttributes.Dic_Types.exists(strFieldname) Then
+                FieldAttributes.Dic_Types(strFieldname) = strFieldType
+                FieldAttributes.Dic_Types(strFieldText) = strFieldType
+            End If
+        Next
     End Sub
 
     Sub TestGetAttributes()
@@ -1351,7 +1386,11 @@ Public Class ColumnSelect
             tempAttribute = FieldAttributes.Dic_Attributes(ColumnName) 'EXTRACT THE MATCHING SELECTED FIELD FROM OBJECT.
             If Not IsNothing(tempAttribute) Then
                 ColumnText = tempAttribute.SelectedFieldText
-                FieldAlias = " AS """ & ColumnText & """"
+                If InStr(ColumnText, Chr(34)) > 0 Then
+                    FieldAlias = " AS " & ColumnText
+                Else
+                    FieldAlias = " AS """ & ColumnText & """"
+                End If
 
                 If tempAttribute.IsSUM Then
                     NewColumnName += "SUM(" & ColumnName & ")"
@@ -1374,7 +1413,7 @@ Public Class ColumnSelect
                     NewColumnName += " AS """ & ColumnText & " MAX" & """"
                     IncludeGroupBy = True
                 End If
-                If tempAttribute.IsCount Then
+                If tempAttribute.IsCount And InStr(ColumnName.ToUpper, "COUNT(*)") = 0 Then
                     If NewColumnName <> "" Then
                         NewColumnName += "," & vbCrLf
                     End If

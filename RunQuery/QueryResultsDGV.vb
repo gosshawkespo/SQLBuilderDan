@@ -349,7 +349,7 @@ Public Class QueryResultsDGV
             ColumnType = FieldAttributes.GetSelectedFieldType(ColumnName)
             ColumnDecimals = FieldAttributes.GetSelectedFieldDecimals(ColumnName)
             DecimalFormat = GetDecimalFormat(ColumnDecimals, ColumnText)
-            If ColumnType = "N" Then
+            If ColumnType = "N" Or InStr(ColumnText.ToUpper, "COUNT") > 0 Then
                 xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
             End If
         Next
@@ -457,7 +457,7 @@ Public Class QueryResultsDGV
             ColumnType = FieldAttributes.GetSelectedFieldType(ColumnName)
             ColumnDecimals = FieldAttributes.GetSelectedFieldDecimals(ColumnName)
             DecimalFormat = GetDecimalFormat(ColumnDecimals, ColumnText)
-            If ColumnType = "N" Then
+            If ColumnType = "N" Or InStr(ColumnText.ToUpper, "COUNT") > 0 Then
                 xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
             End If
             'percentage = (lngCount / rsADO.Fields.Count) * 100

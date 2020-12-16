@@ -47,10 +47,16 @@
         stsFW100Label6.Text = String.Format("    Version {0}", My.Application.Info.Version.ToString) & "   "
         NormalToolStripMenuItem.Checked = True
         DarkToolStripMenuItem.Checked = False
+        MYSQLToolStripMenuItem.Checked = False
+        IBMToolStripMenuItem.Checked = True
+        DBToolStripMenuItem.Text = "IBM"
+        SQLBuilder.DataSetHeaderList.DBVersion = "IBM"
+        ShowHeaderForm()
+
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
-        SQLBuilderToolStripMenuItem.PerformClick()
+        'SQLBuilderToolStripMenuItem.PerformClick()
     End Sub
 
     Private Sub TileHorizontalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles TileHorizontalToolStripMenuItem.Click
@@ -96,8 +102,7 @@
         End Select
     End Sub
 
-    Private Sub SQLBuilderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SQLBuilderToolStripMenuItem.Click
-
+    Sub ShowHeaderForm()
         Cursor = Cursors.Default
         stsFW100Label1.Text = "Loading List......"
         Cursor = Cursors.WaitCursor
@@ -110,6 +115,11 @@
         App.Show()
         stsFW100Label1.Text = ""
         Cursor = Cursors.Default
+    End Sub
+
+    Private Sub SQLBuilderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SQLBuilderToolStripMenuItem.Click
+        ShowHeaderForm()
+
     End Sub
 
     Private Sub ImportFromCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFromCSVToolStripMenuItem.Click
@@ -137,4 +147,18 @@
         ColumnAttributes.ColumnAttributes.ThemeSelection = 1
         NormalToolStripMenuItem.Checked = False
     End Sub
+
+    Private Sub IBMToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles IBMToolStripMenuItem.Click
+        SQLBuilder.DataSetHeaderList.DBVersion = "IBM"
+        DBToolStripMenuItem.Text = "IBM"
+        MYSQLToolStripMenuItem.Checked = False
+    End Sub
+
+    Private Sub MYSQLToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MYSQLToolStripMenuItem.Click
+        SQLBuilder.DataSetHeaderList.DBVersion = "MYSQL"
+        DBToolStripMenuItem.Text = "MYSQL"
+        IBMToolStripMenuItem.Checked = False
+    End Sub
+
+
 End Class

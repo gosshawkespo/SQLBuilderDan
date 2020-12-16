@@ -33,6 +33,7 @@ Partial Class QueryResultsDGV
         Me.TabPage1 = New System.Windows.Forms.TabPage()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.btnExportToExcel = New System.Windows.Forms.Button()
+        Me.btnSQLUpdate = New System.Windows.Forms.Button()
         Me.StatusStrip1.SuspendLayout()
         CType(Me.dgvOutput, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.TabControl1.SuspendLayout()
@@ -42,6 +43,7 @@ Partial Class QueryResultsDGV
         '
         'StatusStrip1
         '
+        Me.StatusStrip1.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.tssLabel1})
         Me.StatusStrip1.Location = New System.Drawing.Point(0, 517)
         Me.StatusStrip1.Name = "StatusStrip1"
@@ -74,6 +76,7 @@ Partial Class QueryResultsDGV
         Me.dgvOutput.Location = New System.Drawing.Point(3, 3)
         Me.dgvOutput.Name = "dgvOutput"
         Me.dgvOutput.ReadOnly = True
+        Me.dgvOutput.RowHeadersWidth = 62
         Me.dgvOutput.Size = New System.Drawing.Size(888, 428)
         Me.dgvOutput.TabIndex = 21
         '
@@ -95,7 +98,6 @@ Partial Class QueryResultsDGV
         Me.txtSQLQuery.Location = New System.Drawing.Point(6, 6)
         Me.txtSQLQuery.Multiline = True
         Me.txtSQLQuery.Name = "txtSQLQuery"
-        Me.txtSQLQuery.ReadOnly = True
         Me.txtSQLQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.txtSQLQuery.Size = New System.Drawing.Size(882, 425)
         Me.txtSQLQuery.TabIndex = 18
@@ -118,7 +120,7 @@ Partial Class QueryResultsDGV
         Me.TabPage1.Controls.Add(Me.dgvOutput)
         Me.TabPage1.Location = New System.Drawing.Point(4, 22)
         Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3, 3, 3, 3)
         Me.TabPage1.Size = New System.Drawing.Size(894, 437)
         Me.TabPage1.TabIndex = 0
         Me.TabPage1.Text = "Query Results"
@@ -129,7 +131,7 @@ Partial Class QueryResultsDGV
         Me.TabPage2.Controls.Add(Me.txtSQLQuery)
         Me.TabPage2.Location = New System.Drawing.Point(4, 22)
         Me.TabPage2.Name = "TabPage2"
-        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage2.Padding = New System.Windows.Forms.Padding(3, 3, 3, 3)
         Me.TabPage2.Size = New System.Drawing.Size(894, 437)
         Me.TabPage2.TabIndex = 1
         Me.TabPage2.Text = "SQL Statement"
@@ -144,11 +146,21 @@ Partial Class QueryResultsDGV
         Me.btnExportToExcel.Text = "Export to Excel"
         Me.btnExportToExcel.UseVisualStyleBackColor = True
         '
+        'btnSQLUpdate
+        '
+        Me.btnSQLUpdate.Location = New System.Drawing.Point(237, 12)
+        Me.btnSQLUpdate.Name = "btnSQLUpdate"
+        Me.btnSQLUpdate.Size = New System.Drawing.Size(91, 23)
+        Me.btnSQLUpdate.TabIndex = 26
+        Me.btnSQLUpdate.Text = "Update SQL"
+        Me.btnSQLUpdate.UseVisualStyleBackColor = True
+        '
         'QueryResultsDGV
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(929, 539)
+        Me.Controls.Add(Me.btnSQLUpdate)
         Me.Controls.Add(Me.btnExportToExcel)
         Me.Controls.Add(Me.TabControl1)
         Me.Controls.Add(Me.StatusStrip1)
@@ -178,4 +190,5 @@ Partial Class QueryResultsDGV
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents TabPage2 As TabPage
     Friend WithEvents btnExportToExcel As Button
+    Friend WithEvents btnSQLUpdate As Button
 End Class

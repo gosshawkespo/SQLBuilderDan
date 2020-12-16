@@ -775,16 +775,17 @@ Public Class ColumnAttributes
     Sub ChangeFieldnameAttribute_IsCount(UpdateFieldname As String, IsCount As Boolean, RemoveTheBrackets As Boolean)
         Dim tempAttribute As New ColumnAttributeProperties
 
-        If RemoveTheBrackets Then
-            UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
-        End If
-        tempAttribute = Me.Dic_Attributes(UpdateFieldname)
-        If Not IsNothing(tempAttribute) Then
-            If Me.FindAttributeFieldName(UpdateFieldname, True) Then
-                tempAttribute.IsCount = IsCount
-                Me.Dic_Attributes(UpdateFieldname) = tempAttribute
-            End If
-        End If
+        'If RemoveTheBrackets Then
+        'UpdateFieldname = RemoveALLBrackets(UpdateFieldname)
+        'End If
+        'tempAttribute = Me.Dic_Attributes(UpdateFieldname)
+        'If Not IsNothing(tempAttribute) Then
+        'If Me.FindAttributeFieldName(UpdateFieldname, True) Then
+        tempAttribute.IsCount = IsCount
+        '        Me.Dic_Attributes(UpdateFieldname) = tempAttribute
+        'End If
+        'End If
+
 
     End Sub
 

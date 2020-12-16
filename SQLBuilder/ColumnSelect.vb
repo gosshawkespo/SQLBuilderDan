@@ -27,7 +27,7 @@ Public Class ColumnSelect
         Else
             Me.BackColor = Color.Gray
         End If
-        dgvFieldSelection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+        dgvFieldSelection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells
         dgvFieldSelection.AllowUserToOrderColumns = True
         dgvFieldSelection.AllowUserToResizeColumns = True
         dgvFieldSelection.AllowUserToAddRows = False
@@ -164,9 +164,9 @@ Public Class ColumnSelect
             'IndexCol.SetOrdinal(0)
 
             If DataSetHeaderList.DBVersion = "IBM" Then
-                dt = myDAL.GetColumns(GlobalSession.ConnectString, DataSetID)
+                dt = myDAL.GetColumns(GlobalSession.ConnectString, DataSetID, "", "")
             Else
-                dt = myDAL.GetColumnsMYSQL(DataSetID)
+                dt = myDAL.GetColumnsMYSQL(DataSetID, SQLBuilder.DataSetHeaderList.DBName, "", "")
             End If
             cbAudioClick.Checked = False
             dgvFieldSelection.DataSource = Nothing
@@ -503,7 +503,7 @@ Public Class ColumnSelect
             lblValue2.Visible = False
             txtValue2.Visible = False
             txtINvalues.Visible = False
-            If FieldAttributes.Dic_Types(Fieldname) = "L" Then
+            If FieldAttributes.Dic_Types(Fieldname) = "L" Or FieldAttributes.Dic_Types(Fieldname) = "ND" Then
                 dtp1.Visible = True
                 dtp2.Visible = False
             Else
@@ -511,7 +511,7 @@ Public Class ColumnSelect
                 dtp2.Visible = False
             End If
         ElseIf UCase(PosType) = "IN" Then
-            If FieldAttributes.Dic_Types(Fieldname) = "L" Then
+            If FieldAttributes.Dic_Types(Fieldname) = "L" Or FieldAttributes.Dic_Types(Fieldname) = "ND" Then
                 'cboOperators.SelectedValue = "="
                 SetControls("SINGLE", Fieldname)
             Else
@@ -529,7 +529,7 @@ Public Class ColumnSelect
             txtValue.Visible = True
             txtValue.Text = ""
             txtValue2.Text = ""
-            If FieldAttributes.Dic_Types(Fieldname) = "L" Then
+            If FieldAttributes.Dic_Types(Fieldname) = "L" Or FieldAttributes.Dic_Types(Fieldname) = "ND" Then
                 dtp1.Visible = True
                 dtp2.Visible = True
             Else
@@ -571,6 +571,21 @@ Public Class ColumnSelect
         End If
     End Sub
 
+    Function ConvertDateToInteger(EntryDate As Date) As Integer
+        Dim intDate As Integer
+        Dim intYear As Integer
+
+        intDate = 0
+        intYear = Year(EntryDate)
+        If intYear > 1999 Then
+            intDate = intYear - 1900
+        Else
+            intDate = 1900 - intYear
+        End If
+        intDate = (intDate * 10000) + (Month(EntryDate) * 100) + DateAndTime.Day(EntryDate)
+        Return intDate
+    End Function
+
     Function AddCondition() As String
         '****************************************************** Add Condition to list: *****************************************************
         Dim strCondition As String
@@ -590,6 +605,10 @@ Public Class ColumnSelect
         Dim ExcludeUPPER As Boolean
         Dim strWhereColumnText As String
         Dim isAggregate As Boolean = False
+        Dim dtNumericDate As Date
+        Dim dtNumericDate2 As Date
+        Dim intNumericDate As Integer
+        Dim intNumericDate2 As Integer
 
         strValue = ""
         AddCondition = ""
@@ -630,8 +649,17 @@ Public Class ColumnSelect
             ElseIf FieldType = "L" Then
                 Quote = "'"
                 ExcludeUPPER = True
-                txtValue.Text = dtp1.Value.ToString("dd/MM/yyyy")
-                txtValue2.Text = dtp2.Value.ToString("dd/MM/yyyy")
+                'txtValue.Text = dtp1.Value.ToString("dd/MM/yyyy")
+                txtValue.Text = dtp1.Value.ToString("yyyy-MM-dd")
+                txtValue2.Text = dtp2.Value.ToString("yyyy-MM-dd")
+            ElseIf FieldType = "ND" Then
+                Quote = "'"
+                ExcludeUPPER = True
+                dtNumericDate = dtp1.Value
+                dtNumericDate2 = dtp2.Value
+                txtValue.Text = dtNumericDate.ToString("yyyy-MM-dd HH:mm:ss")
+                txtValue2.Text = dtNumericDate2.ToString("yyyy-MM-dd HH:mm:ss")
+
             ElseIf FieldType = "N" Then
                 'txtValue.Text = ""
                 'txtValue2.Text = ""
@@ -655,8 +683,17 @@ Public Class ColumnSelect
                                 txtValue.Text = dtp1.Value
                                 txtValue2.Text = dtp2.Value
                                 strValue = Quote & CDate(txtValue.Text).ToString("yyyy-MM-dd") & Quote & " AND " & Quote & CDate(txtValue2.Text).ToString("yyyy-MM-dd") & Quote
+                                If FieldType = "L" Then
+                                    strWhereField1 = "Date(" & strWhereField1 & ")"
+                                End If
+                                If FieldType = "ND" Then
+                                    intNumericDate = ConvertDateToInteger(dtp1.Value)
+                                    intNumericDate2 = ConvertDateToInteger(dtp2.Value)
+                                    strValue = CStr(intNumericDate) & " AND " & CStr(intNumericDate2)
+                                    'strWhereField1 = "CAST(SUBSTR(" & strWhereField1 & "+ 19000000, 1, 4) CONCAT '-' CONCAT SUBSTR(" & strWhereField1 & "+19000000,5,2) CONCAT '-' CONCAT SUBSTR(" & strWhereField1 & "+19000000,7,2) AS DATE) "
+                                End If
                             End If
-                        Else
+                            Else
                             strValue = Quote & txtValue.Text & Quote & " AND " & Quote & txtValue2.Text & Quote
                         End If
                     Else
@@ -665,7 +702,7 @@ Public Class ColumnSelect
                     End If
                     'End If
                 ElseIf UCase(strOperator) = "IN" Or UCase(strOperator) = "NOT IN" Then
-                    If FieldType = "L" Then
+                    If FieldType = "L" Or FieldType = "ND" Then
                         MsgBox("Date fields cannot be used with IN operator.")
                         cboOperators.SelectedValue = "="
                         Exit Function
@@ -704,6 +741,15 @@ Public Class ColumnSelect
                     ColumnSelect.FieldAttributes.LastOperator = strOperator
                 Else
                     '=, >, <, >=, <=, <> 
+                    If FieldType = "L" Then
+                        strValue = Quote & CDate(txtValue.Text).ToString("yyyy-MM-dd") & Quote
+                        strWhereField1 = "Date(" & strWhereField1 & ")"
+                    End If
+                    If FieldType = "ND" Then
+                        intNumericDate = ConvertDateToInteger(dtp1.Value)
+                        'intNumericDate2 = ConvertDateToInteger(dtp2.Value)
+                        strValue = CStr(intNumericDate)
+                    End If
                 End If
 
                 If txtValue.Text = "" And strValue = "" Then
@@ -1033,7 +1079,7 @@ Public Class ColumnSelect
         If InStr(ColumnName, "MAX") > 0 Then
             FieldAttributes.ChangeFieldnameAttribute_IsMAX(ColumnName, ItemIsTicked)
         End If
-        If InStr(ColumnName, "COUNT") > 0 Then
+        If InStr(ColumnName, "COUNT", CompareMethod.Text) > 0 Then
             FieldAttributes.ChangeFieldnameAttribute_IsCount(ColumnName, ItemIsTicked, True)
         End If
         If InStr(ColumnName, "AVG") > 0 Then
@@ -1392,6 +1438,17 @@ Public Class ColumnSelect
                     FieldAlias = " AS """ & ColumnText & """"
                 End If
 
+                'Deal with Numeric Date formatting:
+                'CAST(SUBSTR(datefield+19000000,1,4) CONCAT '-' CONCAT SUBSTR(datefield+19000000,5,2) CONCAT '-' CONCAT SUBSTR(datefield+19000000,7,2) AS DATE) AS ""date field"",
+                'SUBSTR(DIGITS(timefield),1,2) CONCAT ':' CONCAT SUBSTR(DIGITS(timefield),3,2) AS ""time field""
+                'Need to out where and when to apply this format - if the field is already "L" - this indicates a proper DATETIME field in the database - no need for the above format.
+                If tempAttribute.SelectedFieldType.ToUpper = "ND" Then
+                    NewColumnName = "CAST(SUBSTR(" & ColumnName & "+ 19000000, 1, 4) CONCAT '-' CONCAT SUBSTR(" & ColumnName & "+19000000,5,2) CONCAT '-' CONCAT SUBSTR(" & ColumnName & "+19000000,7,2) AS DATE) " & FieldAlias
+                End If
+                If tempAttribute.SelectedFieldType.ToUpper = "NT" Then
+                    NewColumnName += "SUBSTR(DIGITS(" & ColumnName & "), 1, 2) CONCAT ':' CONCAT SUBSTR(DIGITS(" & ColumnName & "),3,2) " & FieldAlias
+                End If
+
                 If tempAttribute.IsSUM Then
                     NewColumnName += "SUM(" & ColumnName & ")"
                     NewColumnName += " AS """ & ColumnText & " SUM" & """"
@@ -1495,22 +1552,22 @@ Public Class ColumnSelect
             Next
         End If
 
-        SelectPart += FieldsSelected & vbCrLf & "FROM " & TableName
+        SelectPart += FieldsSelected & vbCrLf & "FROM " & TableName & " "
         If FieldAttributes.MyWhereCondtions <> "" Then
             If InStr(FieldAttributes.MyWhereCondtions, "WHERE") = 0 Then
-                SelectPart += vbCrLf & "WHERE " & FieldAttributes.MyWhereCondtions
+                SelectPart += vbCrLf & " WHERE " & FieldAttributes.MyWhereCondtions
             Else
                 SelectPart += vbCrLf & FieldAttributes.MyWhereCondtions
             End If
         End If
         'GROUPBY:
         If GroupByFields <> "" Then
-            SelectPart += vbCrLf & "GROUP BY " & GroupByFields
+            SelectPart += vbCrLf & " GROUP BY " & GroupByFields
         End If
         'HAVING:
         If FieldAttributes.HavingConditions <> "" Then
             If InStr(FieldAttributes.HavingConditions, "HAVING") = 0 Then
-                SelectPart += vbCrLf & "HAVING " & FieldAttributes.HavingConditions
+                SelectPart += vbCrLf & " HAVING " & FieldAttributes.HavingConditions
             Else
                 SelectPart += vbCrLf & FieldAttributes.HavingConditions
             End If
@@ -1518,16 +1575,16 @@ Public Class ColumnSelect
         End If
         'ORDERBY:
         If OrderByFields <> "" Then
-            SelectPart += vbCrLf & "ORDER BY " & OrderByFields
+            SelectPart += vbCrLf & " ORDER BY " & OrderByFields
         End If
         'FETCH RECORDS / LIMIT:
         If IsNumeric(txtFirstRows.Text) Then
             FirstRows = CLng(txtFirstRows.Text)
             If FirstRows > 0 Then
                 If DataSetHeaderList.DBVersion = "IBM" Then
-                    SelectPart += vbCrLf & "FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
+                    SelectPart += vbCrLf & " FETCH FIRST " & CStr(FirstRows) & " ROWS ONLY"
                 Else
-                    SelectPart += vbCrLf & "LIMIT " & CStr(FirstRows)
+                    SelectPart += vbCrLf & " LIMIT " & CStr(FirstRows)
                 End If
             End If
         End If
@@ -2276,11 +2333,11 @@ Public Class ColumnSelect
         GetFinalQuery = ""
         If SaveOnly = False Then
             If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
-                If FieldAttributes.HasCount = False Then
-                    MsgBox("No Fields or Count Selected")
+                'If FieldAttributes.HasCount = False Then
+                MsgBox("No Fields or Count Selected")
                     Cursor = Cursors.Default
                     Exit Function
-                End If
+                'End If
             End If
             If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
                 Entry = 0

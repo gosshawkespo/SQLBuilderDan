@@ -2,6 +2,7 @@
     Dim GlobalParms As New ESPOParms.Framework
     Dim GlobalSession As New ESPOParms.Session
     Public Shared DBVersion As String
+    Public Shared DBName As String
     Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
         GlobalParms = Parms
         GlobalSession = Session
@@ -46,18 +47,17 @@
         Dim myDAL As New SQLBuilderDAL
         Dim dt As DataTable
         Dim Tablename As String
+        Dim DatasetID As Integer
 
         Me.Text = "Data Set List"
         stsDataSetListLabel1.Text = "Records: 0"
         Try
             dgvHeaderList.Columns.Clear()
             dgvHeaderList.DataSource = Nothing
-            'DBVersion = "MYSQL"
-            DBVersion = "IBM"
             If DBVersion = "MYSQL" Then
-                dt = myDAL.GetHeaderListMYSQL()
+                dt = myDAL.GetHeaderListMYSQL(SQLBuilder.DataSetHeaderList.DBName, "", DatasetID)
             Else
-                dt = myDAL.GetHeaderList(GlobalSession.ConnectString)
+                dt = myDAL.GetHeaderList(GlobalSession.ConnectString, "", DatasetID)
             End If
             If dt IsNot Nothing Then
                 If dt.Rows.Count > 0 Then
@@ -174,4 +174,90 @@
         Close()
 
     End Sub
+
+    Private Sub btnAddTable_Click(sender As Object, e As EventArgs) Handles btnAddTable.Click
+        Dim Tablename As String
+        Dim App As New SQLBuilder.Form_AddTable
+
+        Cursor = Cursors.Default
+
+        'stsFW100Label1.Text = "Loading List......"
+        Cursor = Cursors.WaitCursor
+        Refresh()
+
+        App.Visible = False
+        App.GetParms(GlobalSession, GlobalParms)
+        'App.PopulateForm(DataSetID, True)
+        Tablename = ""
+        App.btnSaveColumnData.Visible = False
+
+        App.PopulateForm(Tablename, False)
+        App.Text = "Add New Table"
+        App.Visible = True
+        App.Show()
+        'App.btnRefresh.PerformClick()
+        Cursor = Cursors.Default
+    End Sub
+
+    Private Sub btnEditTable_Click(sender As Object, e As EventArgs) Handles btnEditTable.Click
+        'Throw up the Add Table form- this time when table entered - display form with existing table details:
+        Dim App As New SQLBuilder.Form_AddTable
+        Dim Tablename As String
+        Dim MinY As Integer
+
+        Cursor = Cursors.Default
+        'stsFW100Label1.Text = "Loading List......"
+        Cursor = Cursors.WaitCursor
+        Refresh()
+
+        App.Visible = False
+        App.GetParms(GlobalSession, GlobalParms)
+        'Get the correct row from the grid and its details:
+        'Just the tablename ?
+        If Not IsDBNull(dgvHeaderList.CurrentRow.Cells("Tablename").Value) Then
+            Tablename = dgvHeaderList.CurrentRow.Cells("Tablename").Value
+        Else
+            Tablename = ""
+        End If
+        '183-178 = 5, 234-178 = 56
+        App.btnSaveColumnData.Visible = False
+        App.PopulateForm(Tablename, True)
+        App.Text = "Edit Table " & Tablename
+        App.Visible = True
+        App.Show()
+        'App.btnRefresh.PerformClick()
+        Cursor = Cursors.Default
+    End Sub
+
+    Private Sub RemoveTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveTableToolStripMenuItem.Click
+        Dim Tablename As String
+        Dim DatasetID As String
+        Dim Answer As Integer
+        Dim myDAL As New SQLBuilderDAL
+        Dim DeletedOK As Boolean
+        Dim DeletedOK2 As Boolean
+
+        If Not IsDBNull(dgvHeaderList.CurrentRow.Cells("Tablename").Value) Then
+            Tablename = dgvHeaderList.CurrentRow.Cells("Tablename").Value
+        Else
+            Tablename = ""
+        End If
+
+        If Not IsDBNull(dgvHeaderList.CurrentRow.Cells("DatasetID").Value) Then
+            DatasetID = dgvHeaderList.CurrentRow.Cells("DatasetID").Value
+        Else
+            DatasetID = ""
+        End If
+
+
+        Answer = MsgBox("Are You Sure You Wish To Remove This Table ?", vbYesNoCancel, "Remove Table: " & Tablename & " ???")
+        If Answer = vbYes Then
+            DeletedOK = myDAL.DeleteDatasetHeader(GlobalSession.ConnectString, 0, Tablename)
+            DeletedOK2 = myDAL.DeleteDatasetColumns(GlobalSession.ConnectString, 0, Tablename)
+            If DeletedOK And DeletedOK2 Then
+                MsgBox("OK Table: " & Tablename & " Has been removed.")
+            End If
+        End If
+    End Sub
+
 End Class

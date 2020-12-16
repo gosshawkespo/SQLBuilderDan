@@ -113,7 +113,6 @@ Partial Class ColumnSelect
         '
         Me.txtTablename.Location = New System.Drawing.Point(308, 13)
         Me.txtTablename.Name = "txtTablename"
-        Me.txtTablename.ReadOnly = True
         Me.txtTablename.Size = New System.Drawing.Size(169, 20)
         Me.txtTablename.TabIndex = 2
         Me.txtTablename.Text = "ECM4120V20"
@@ -131,7 +130,8 @@ Partial Class ColumnSelect
         Me.dgvFieldSelection.Location = New System.Drawing.Point(6, 80)
         Me.dgvFieldSelection.MinimumSize = New System.Drawing.Size(0, 170)
         Me.dgvFieldSelection.Name = "dgvFieldSelection"
-        Me.dgvFieldSelection.Size = New System.Drawing.Size(470, 614)
+        Me.dgvFieldSelection.RowHeadersWidth = 62
+        Me.dgvFieldSelection.Size = New System.Drawing.Size(469, 614)
         Me.dgvFieldSelection.TabIndex = 7
         '
         'btnClear
@@ -168,6 +168,7 @@ Partial Class ColumnSelect
         Me.lstFields.FormattingEnabled = True
         Me.lstFields.Location = New System.Drawing.Point(164, 34)
         Me.lstFields.MinimumSize = New System.Drawing.Size(165, 140)
+        Me.lstFields.MultiColumn = True
         Me.lstFields.Name = "lstFields"
         Me.lstFields.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
         Me.lstFields.Size = New System.Drawing.Size(169, 134)
@@ -208,10 +209,11 @@ Partial Class ColumnSelect
         '
         'stsQueryBuilder
         '
+        Me.stsQueryBuilder.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.stsQueryBuilder.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsQueryBuilderLabel1, Me.stsQueryBuilderLabel2})
         Me.stsQueryBuilder.Location = New System.Drawing.Point(0, 733)
         Me.stsQueryBuilder.Name = "stsQueryBuilder"
-        Me.stsQueryBuilder.Size = New System.Drawing.Size(1323, 22)
+        Me.stsQueryBuilder.Size = New System.Drawing.Size(1283, 22)
         Me.stsQueryBuilder.TabIndex = 22
         Me.stsQueryBuilder.Text = "StatusStrip1"
         '
@@ -276,6 +278,7 @@ Partial Class ColumnSelect
         Me.chklstOrderBY.FormattingEnabled = True
         Me.chklstOrderBY.Location = New System.Drawing.Point(164, 34)
         Me.chklstOrderBY.MinimumSize = New System.Drawing.Size(165, 140)
+        Me.chklstOrderBY.MultiColumn = True
         Me.chklstOrderBY.Name = "chklstOrderBY"
         Me.chklstOrderBY.Size = New System.Drawing.Size(169, 139)
         Me.chklstOrderBY.TabIndex = 13
@@ -507,7 +510,7 @@ Partial Class ColumnSelect
         '
         'btnAddCondition
         '
-        Me.btnAddCondition.Location = New System.Drawing.Point(483, 109)
+        Me.btnAddCondition.Location = New System.Drawing.Point(483, 110)
         Me.btnAddCondition.Name = "btnAddCondition"
         Me.btnAddCondition.Size = New System.Drawing.Size(120, 24)
         Me.btnAddCondition.TabIndex = 22
@@ -764,7 +767,7 @@ Partial Class ColumnSelect
         Me.txtPath.Location = New System.Drawing.Point(45, 48)
         Me.txtPath.Name = "txtPath"
         Me.txtPath.ReadOnly = True
-        Me.txtPath.Size = New System.Drawing.Size(736, 20)
+        Me.txtPath.Size = New System.Drawing.Size(711, 20)
         Me.txtPath.TabIndex = 34
         '
         'SplitContainer1
@@ -806,7 +809,7 @@ Partial Class ColumnSelect
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbSortResults)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbFilterRecords)
         Me.SplitContainer1.Size = New System.Drawing.Size(1305, 713)
-        Me.SplitContainer1.SplitterDistance = 496
+        Me.SplitContainer1.SplitterDistance = 495
         Me.SplitContainer1.SplitterWidth = 10
         Me.SplitContainer1.TabIndex = 35
         '
@@ -815,12 +818,12 @@ Partial Class ColumnSelect
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(1323, 755)
+        Me.ClientSize = New System.Drawing.Size(1283, 755)
         Me.Controls.Add(Me.SplitContainer1)
         Me.Controls.Add(Me.lblMessage)
         Me.Controls.Add(Me.stsQueryBuilder)
         Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
-        Me.MinimumSize = New System.Drawing.Size(580, 515)
+        Me.MinimumSize = New System.Drawing.Size(578, 454)
         Me.Name = "ColumnSelect"
         Me.Text = "SQL Builder"
         CType(Me.dgvFieldSelection, System.ComponentModel.ISupportInitialize).EndInit()

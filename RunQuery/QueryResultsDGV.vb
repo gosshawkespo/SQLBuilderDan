@@ -23,7 +23,7 @@ Public Class QueryResultsDGV
         KeyPreview = True
         Me.MdiParent = FromHandle(GlobalSession.MDIParentHandle)
 
-        dgvOutput.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
+        dgvOutput.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells
         dgvOutput.AllowUserToOrderColumns = True
         dgvOutput.AllowUserToResizeColumns = True
         dgvOutput.AllowUserToAddRows = False
@@ -138,7 +138,7 @@ Public Class QueryResultsDGV
                     tssLabel1.Text = "Formatting Grid"
                     Refresh()
                     FormatGrid()
-                    dgvOutput.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells
+                    dgvOutput.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.DisplayedCells
                     tssLabel1.Text = "Records:" & dt.Rows.Count
                 End If
             End If
@@ -218,6 +218,10 @@ Public Class QueryResultsDGV
         End If
 
     End Sub
+
+    Public Function ExecuteSQL_ReturnDatatable(ConnectString As String, SQLStatement As String) As DataTable
+
+    End Function
 
     Public Function ExecuteSQL(ConnectString As String, SQLStatement As String) As ADODB.Recordset
         Dim rs As New ADODB.Recordset
@@ -350,7 +354,7 @@ Public Class QueryResultsDGV
             ColumnDecimals = FieldAttributes.GetSelectedFieldDecimals(ColumnName)
             DecimalFormat = GetDecimalFormat(ColumnDecimals, ColumnText)
             If ColumnType = "N" Or InStr(ColumnText.ToUpper, "COUNT") > 0 Then
-                xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
+                'xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
             End If
         Next
         'ReDim Arr(dt.Columns.Count + 1, dt.Rows.Count + 1)
@@ -424,6 +428,7 @@ Public Class QueryResultsDGV
         Dim ColumnDecimals As Integer
         Dim DecimalFormat As String
         Dim Col As String
+        Dim TotalCol As Integer
         Dim percentage As Double
         Dim qt As Microsoft.Office.Interop.Excel.QueryTable
 
@@ -436,17 +441,27 @@ Public Class QueryResultsDGV
         xlWorkSheet = xlWorkBook.Sheets("sheet1")
 
 
-
         'Need condition to check if Excel is open: getting exception error here that operation cannot be performed if closed.
         ' - If error has occured already before - it seems to trigger this.
         'xlWorkSheet.Cells(2, 1).CopyFromRecordset(rsADO)
         qt = xlWorkSheet.QueryTables.Add(rsADO, xlWorkSheet.Cells(1, 1))
         qt.Refresh()
         tssLabel1.Text = "Formatting..."
+        TotalCol = rsADO.Fields.Count
+        'For Each dr In dt.Rows
+        'rowIndex = rowIndex + 1
+        'colIndex = 0
+        'For Each dc In dt.Columns
+        'colIndex = colIndex + 1
+        'xlWorkSheet.Cells(rowIndex + 1, colIndex) = dr(dc.ColumnName)
+        'Next
+        'Next
         For lngCount = 1 To rsADO.Fields.Count
             xlWorkSheet.Cells(1, lngCount).Font.Bold = True
             xlWorkSheet.Cells(1, lngCount) = rsADO.Fields.Item(lngCount - 1).Name
-
+            'Need to get correct EXCEL reference when more than 52 columns are present !
+            'Cols: 1-26 = "A-Z", 27-52 = "AA-AZ", 53-78 = "BA-BZ", 79-104 = "CA-CZ", 105-130 = "DA-DZ", 131-156 = "EA-EZ", 157-182 = "FA-FZ", 183-208 = "GA-GZ"
+            'Cols: 677-702 = "ZA-ZZ", 703-728 = "AAA-AAZ", 729-754 = "ABA-ABZ", 755- = "ACA-ACZ"
             If lngCount <= 26 Then
                 Col = Chr(64 + lngCount)
             Else
@@ -458,7 +473,7 @@ Public Class QueryResultsDGV
             ColumnDecimals = FieldAttributes.GetSelectedFieldDecimals(ColumnName)
             DecimalFormat = GetDecimalFormat(ColumnDecimals, ColumnText)
             If ColumnType = "N" Or InStr(ColumnText.ToUpper, "COUNT") > 0 Then
-                xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
+                'xlWorkSheet.Cells.Columns(Col).NumberFormat = DecimalFormat
             End If
             'percentage = (lngCount / rsADO.Fields.Count) * 100
             'tssLabel1.Text = "Processing... " & CStr(percentage) & "%"
@@ -513,5 +528,10 @@ Public Class QueryResultsDGV
 
     Private Sub TabPage1_Click(sender As Object, e As EventArgs) Handles TabPage1.Click
 
+    End Sub
+
+    Private Sub btnSQLUpdate_Click(sender As Object, e As EventArgs) Handles btnSQLUpdate.Click
+
+        'txtSQLQuery.Text
     End Sub
 End Class

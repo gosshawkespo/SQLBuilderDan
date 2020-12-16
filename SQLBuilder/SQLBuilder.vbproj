@@ -54,11 +54,11 @@
     </Reference>
     <Reference Include="ESPOCommon1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ESPOBIMDI\bin\Debug\ESPOCommon1.dll</HintPath>
+      <HintPath>..\ESPOBIMDI\ESPOCommon1.dll</HintPath>
     </Reference>
     <Reference Include="ESPOParms, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ESPOBIMDI\bin\Debug\ESPOParms.dll</HintPath>
+      <HintPath>..\ESPOBIMDI\ESPOParms.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
       <HintPath>..\MySql.Data.dll</HintPath>
@@ -100,16 +100,29 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsFieldDetails.vb" />
     <Compile Include="DataSetHeaderList.Designer.vb">
       <DependentUpon>DataSetHeaderList.vb</DependentUpon>
     </Compile>
     <Compile Include="DataSetHeaderList.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Form_AddTable.Designer.vb">
+      <DependentUpon>Form_AddTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Form_AddTable.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ImportfromCSV.Designer.vb">
       <DependentUpon>ImportfromCSV.vb</DependentUpon>
     </Compile>
     <Compile Include="ImportfromCSV.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InsertNewTable.Designer.vb">
+      <DependentUpon>InsertNewTable.vb</DependentUpon>
+    </Compile>
+    <Compile Include="InsertNewTable.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -145,8 +158,14 @@
     <EmbeddedResource Include="DataSetHeaderList.resx">
       <DependentUpon>DataSetHeaderList.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Form_AddTable.resx">
+      <DependentUpon>Form_AddTable.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImportfromCSV.resx">
       <DependentUpon>ImportfromCSV.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InsertNewTable.resx">
+      <DependentUpon>InsertNewTable.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>

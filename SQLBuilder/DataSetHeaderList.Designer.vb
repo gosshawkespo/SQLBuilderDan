@@ -25,6 +25,8 @@ Partial Class DataSetHeaderList
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DataSetHeaderList))
         Me.gbTOP = New System.Windows.Forms.GroupBox()
+        Me.btnEditTable = New System.Windows.Forms.Button()
+        Me.btnAddTable = New System.Windows.Forms.Button()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.btnRefresh = New System.Windows.Forms.Button()
         Me.dgvHeaderList = New System.Windows.Forms.DataGridView()
@@ -32,6 +34,8 @@ Partial Class DataSetHeaderList
         Me.SelectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
         Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.RemoveTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.gbTOP.SuspendLayout()
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.HeaderListCRUD.SuspendLayout()
@@ -42,17 +46,38 @@ Partial Class DataSetHeaderList
         '
         Me.gbTOP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbTOP.Controls.Add(Me.btnEditTable)
+        Me.gbTOP.Controls.Add(Me.btnAddTable)
         Me.gbTOP.Controls.Add(Me.btnClose)
         Me.gbTOP.Controls.Add(Me.btnRefresh)
         Me.gbTOP.Location = New System.Drawing.Point(3, 2)
         Me.gbTOP.Name = "gbTOP"
-        Me.gbTOP.Size = New System.Drawing.Size(1112, 52)
+        Me.gbTOP.Size = New System.Drawing.Size(877, 52)
         Me.gbTOP.TabIndex = 1
         Me.gbTOP.TabStop = False
         '
+        'btnEditTable
+        '
+        Me.btnEditTable.Location = New System.Drawing.Point(181, 19)
+        Me.btnEditTable.Name = "btnEditTable"
+        Me.btnEditTable.Size = New System.Drawing.Size(80, 23)
+        Me.btnEditTable.TabIndex = 30
+        Me.btnEditTable.Text = "Edit Table"
+        Me.btnEditTable.UseVisualStyleBackColor = True
+        '
+        'btnAddTable
+        '
+        Me.btnAddTable.Location = New System.Drawing.Point(95, 19)
+        Me.btnAddTable.Name = "btnAddTable"
+        Me.btnAddTable.Size = New System.Drawing.Size(80, 23)
+        Me.btnAddTable.TabIndex = 29
+        Me.btnAddTable.Text = "Add Table"
+        Me.btnAddTable.UseVisualStyleBackColor = True
+        '
         'btnClose
         '
-        Me.btnClose.Location = New System.Drawing.Point(108, 19)
+        Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClose.Location = New System.Drawing.Point(791, 19)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(80, 23)
         Me.btnClose.TabIndex = 28
@@ -77,19 +102,19 @@ Partial Class DataSetHeaderList
         Me.dgvHeaderList.Location = New System.Drawing.Point(3, 60)
         Me.dgvHeaderList.Name = "dgvHeaderList"
         Me.dgvHeaderList.ReadOnly = True
-        Me.dgvHeaderList.Size = New System.Drawing.Size(1112, 468)
+        Me.dgvHeaderList.Size = New System.Drawing.Size(877, 468)
         Me.dgvHeaderList.TabIndex = 12
         '
         'HeaderListCRUD
         '
-        Me.HeaderListCRUD.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectToolStripMenuItem})
+        Me.HeaderListCRUD.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectToolStripMenuItem, Me.ToolStripMenuItem1, Me.RemoveTableToolStripMenuItem})
         Me.HeaderListCRUD.Name = "HeaderListCRUD"
-        Me.HeaderListCRUD.Size = New System.Drawing.Size(106, 26)
+        Me.HeaderListCRUD.Size = New System.Drawing.Size(181, 76)
         '
         'SelectToolStripMenuItem
         '
         Me.SelectToolStripMenuItem.Name = "SelectToolStripMenuItem"
-        Me.SelectToolStripMenuItem.Size = New System.Drawing.Size(105, 22)
+        Me.SelectToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.SelectToolStripMenuItem.Text = "Select"
         '
         'stsDataSetList
@@ -97,7 +122,7 @@ Partial Class DataSetHeaderList
         Me.stsDataSetList.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsDataSetListLabel1})
         Me.stsDataSetList.Location = New System.Drawing.Point(0, 512)
         Me.stsDataSetList.Name = "stsDataSetList"
-        Me.stsDataSetList.Size = New System.Drawing.Size(1127, 22)
+        Me.stsDataSetList.Size = New System.Drawing.Size(892, 22)
         Me.stsDataSetList.TabIndex = 13
         Me.stsDataSetList.Text = "StatusStrip1"
         '
@@ -106,11 +131,22 @@ Partial Class DataSetHeaderList
         Me.stsDataSetListLabel1.Name = "stsDataSetListLabel1"
         Me.stsDataSetListLabel1.Size = New System.Drawing.Size(0, 17)
         '
+        'ToolStripMenuItem1
+        '
+        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(177, 6)
+        '
+        'RemoveTableToolStripMenuItem
+        '
+        Me.RemoveTableToolStripMenuItem.Name = "RemoveTableToolStripMenuItem"
+        Me.RemoveTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.RemoveTableToolStripMenuItem.Text = "Remove Table"
+        '
         'DataSetHeaderList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1127, 534)
+        Me.ClientSize = New System.Drawing.Size(892, 534)
         Me.Controls.Add(Me.stsDataSetList)
         Me.Controls.Add(Me.dgvHeaderList)
         Me.Controls.Add(Me.gbTOP)
@@ -135,4 +171,8 @@ Partial Class DataSetHeaderList
     Friend WithEvents btnRefresh As Button
     Friend WithEvents stsDataSetList As StatusStrip
     Friend WithEvents stsDataSetListLabel1 As ToolStripStatusLabel
+    Friend WithEvents btnEditTable As Button
+    Friend WithEvents btnAddTable As Button
+    Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
+    Friend WithEvents RemoveTableToolStripMenuItem As ToolStripMenuItem
 End Class

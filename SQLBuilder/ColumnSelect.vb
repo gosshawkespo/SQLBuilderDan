@@ -27,6 +27,10 @@ Public Class ColumnSelect
         Else
             Me.BackColor = Color.Gray
         End If
+
+        Me.Left = 5
+        Me.Top = 5
+
         dgvFieldSelection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells
         dgvFieldSelection.AllowUserToOrderColumns = True
         dgvFieldSelection.AllowUserToResizeColumns = True
@@ -114,7 +118,7 @@ Public Class ColumnSelect
         Dim IndexCol As DataColumn
 
         Try
-            Me.Text = "SQL Builder"
+            Me.Text = "SQL Builder: " & txtTablename.Text
             Me.TheDataSetID = DataSetID
             dgvFieldSelection.Columns.Clear()
             If lstFields.Items.Count > 0 Then
@@ -2377,6 +2381,7 @@ Public Class ColumnSelect
         If FinalQuery <> "" Then
             Dim RQ As New RunQuery.QueryResultsDGV
             RQ.GetParms(GlobalSession, GlobalParms)
+            RQ.Tablename = txtTablename.Text
             RQ.PopulateForm(FinalQuery, FieldAttributes)
             RQ.Show()
         End If

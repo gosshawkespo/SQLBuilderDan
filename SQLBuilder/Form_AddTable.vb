@@ -273,11 +273,8 @@ Public Class Form_AddTable
         End If
         StartSequence = 0
 
-
         dgvTableDetails.Columns.Clear()
         dgvTableDetails.DataSource = Nothing
-
-
 
         If Not IsNothing(dtGetFieldsForGrid) Then
             dgvTableDetails.DataSource = dtGetFieldsForGrid
@@ -653,6 +650,7 @@ Public Class Form_AddTable
         Dim Message As String
         Dim watch As Stopwatch = Stopwatch.StartNew()
         Dim intDatasetID As Integer
+        Dim intNewDatasetID As Integer
         Dim intColumnID As Integer
         Dim intSequence As Integer
         Dim intResultHeader As Integer
@@ -679,24 +677,58 @@ Public Class Form_AddTable
         Try
             NumRowsUpdated = 0
             strAuthFlag = "0"
+            intNewDatasetID = 0
+            strTableName = txtTablename.Text
+            If txtTablename.Text = "" Then
+                MsgBox("UpdateDBfromGridDan: Table Name cannot be blank")
+                Return False
+            End If
             For col As Integer = 0 To dgvTableDetails.Columns.Count - 1
                 If dgvTableDetails.Columns(col).HeaderText = "Auth Flag" Then
                     AuthFlagInGrid = True
                 End If
             Next
+            'Create Header:
+            If Not IsDBNull(dgvTableDetails.Rows(0).Cells("Dataset ID").Value) Then
+                If dgvTableDetails.Rows(0).Cells("Dataset ID").Value = Nothing Then
+                    intDatasetID = 0
+                Else
+                    intDatasetID = Trim(dgvTableDetails.Rows(0).Cells("Dataset ID").Value)
+                End If
+            Else
+                intDatasetID = 0
+            End If
+
+            If Not IsDBNull(dgvTableDetails.Rows(0).Cells("Dataset Name").Value) Then
+                If dgvTableDetails.Rows(0).Cells("Dataset Name").Value = Nothing Then
+                    strDatasetName = txtDatasetName.Text
+                Else
+                    strDatasetName = Trim(dgvTableDetails.Rows(0).Cells("Dataset Name").Value.ToString)
+                End If
+            Else
+                strDatasetName = txtDatasetName.Text
+            End If
+
+            If Not IsDBNull(dgvTableDetails.Rows(0).Cells("Dataset Header Text").Value) Then
+                If dgvTableDetails.Rows(0).Cells("Dataset Header Text").Value = Nothing Then
+                    strDatasetHeaderText = txtDatasetHeaderText.Text
+                Else
+                    strDatasetHeaderText = Trim(dgvTableDetails.Rows(0).Cells("Dataset Header Text").Value.ToString)
+                End If
+            Else
+                strDatasetHeaderText = txtDatasetHeaderText.Text
+            End If
+
+            intResultHeader = myDAL.Update_DatasetHeader(GlobalSession.ConnectString, intNewDatasetID, strDatasetName, strDatasetHeaderText,
+                           strTableName, strAuthFlag, GlobalSession.CurrentUserShort, GlobalSession.CurrentUserShort)
+            If intDatasetID = 0 Then
+                intDatasetID = intNewDatasetID
+            End If
             For i As Integer = 0 To dgvTableDetails.Rows.Count - 1
                 'If dgvTableDetails.Rows(i).Cells("UPDATED").Value = True Then
                 intResultHeader = 0
                 intResultColumns = 0
-                If Not IsDBNull(dgvTableDetails.Rows(i).Cells("Dataset ID").Value) Then
-                    If dgvTableDetails.Rows(i).Cells("Dataset ID").Value = Nothing Then
-                        intDatasetID = 0
-                    Else
-                        intDatasetID = Trim(dgvTableDetails.Rows(i).Cells("Dataset ID").Value)
-                    End If
-                Else
-                    intDatasetID = 0
-                End If
+
                 If AuthFlagInGrid Then
                     If Not IsDBNull(dgvTableDetails.Rows(i).Cells("Auth Flag").Value) Then
                         If dgvTableDetails.Rows(i).Cells("Auth Flag").Value = Nothing Then
@@ -721,18 +753,10 @@ Public Class Form_AddTable
                 Else
                     intColumnID = 0
                 End If
-                If Not IsDBNull(dgvTableDetails.Rows(i).Cells("Dataset Name").Value) Then
-                    If dgvTableDetails.Rows(i).Cells("Dataset Name").Value = Nothing Then
-                        strDatasetName = txtDatasetName.Text
-                    Else
-                        strDatasetName = Trim(dgvTableDetails.Rows(i).Cells("Dataset Name").Value.ToString)
-                    End If
-                Else
-                    strDatasetName = txtDatasetName.Text
-                End If
+
                 'strDatasetName = txtDatasetName.Text
                 'strDatasetHeaderText = txtDatasetHeaderText.Text
-                strTableName = txtTablename.Text
+
                 'If Not IsDBNull(dgvTableDetails.Rows(i).Cells("Dataset Header Text").Value) Then
                 'If dgvTableDetails.Rows(i).Cells("Dataset Header Text").Value = Nothing Then
                 'strDatasetHeaderText = ""
@@ -807,14 +831,11 @@ Public Class Form_AddTable
                 If strColumnName <> "" Then
 
                     If ALL Then
-                        intResultHeader = myDAL.Update_DatasetHeader(GlobalSession.ConnectString, intDatasetID, strDatasetName, strDatasetHeaderText,
-                           strTableName, strAuthFlag, GlobalSession.CurrentUserShort, GlobalSession.CurrentUserShort)
+
                         intResultColumns = myDAL.Update_DatasetColumns(GlobalSession.ConnectString, intDatasetID, strDatasetName, intSequence, strTableName,
                                         strColumnName, strColumnText, strColumnType, intColumnLength, intColumnDecimals, intColumnID)
                     Else
                         If dgvTableDetails.Rows(i).Cells("UPDATED").Value = True Then
-                            intResultHeader = myDAL.Update_DatasetHeader(GlobalSession.ConnectString, intDatasetID, strDatasetName, strDatasetHeaderText,
-                                strTableName, strAuthFlag, GlobalSession.CurrentUserShort, GlobalSession.CurrentUserShort)
                             intResultColumns = myDAL.Update_DatasetColumns(GlobalSession.ConnectString, intDatasetID, strDatasetName, intSequence, strTableName,
                                         strColumnName, strColumnText, strColumnType, intColumnLength, intColumnDecimals, intColumnID)
                         End If

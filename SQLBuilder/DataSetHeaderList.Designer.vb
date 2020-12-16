@@ -32,10 +32,13 @@ Partial Class DataSetHeaderList
         Me.dgvHeaderList = New System.Windows.Forms.DataGridView()
         Me.HeaderListCRUD = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.SelectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
-        Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
         Me.RemoveTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.AddTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.EditTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
+        Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.gbTOP.SuspendLayout()
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.HeaderListCRUD.SuspendLayout()
@@ -107,15 +110,38 @@ Partial Class DataSetHeaderList
         '
         'HeaderListCRUD
         '
-        Me.HeaderListCRUD.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectToolStripMenuItem, Me.ToolStripMenuItem1, Me.RemoveTableToolStripMenuItem})
+        Me.HeaderListCRUD.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectToolStripMenuItem, Me.ToolStripMenuItem1, Me.AddTableToolStripMenuItem, Me.EditTableToolStripMenuItem, Me.ToolStripSeparator1, Me.RemoveTableToolStripMenuItem})
         Me.HeaderListCRUD.Name = "HeaderListCRUD"
-        Me.HeaderListCRUD.Size = New System.Drawing.Size(181, 76)
+        Me.HeaderListCRUD.Size = New System.Drawing.Size(181, 126)
         '
         'SelectToolStripMenuItem
         '
         Me.SelectToolStripMenuItem.Name = "SelectToolStripMenuItem"
         Me.SelectToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.SelectToolStripMenuItem.Text = "Select"
+        '
+        'ToolStripMenuItem1
+        '
+        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(177, 6)
+        '
+        'RemoveTableToolStripMenuItem
+        '
+        Me.RemoveTableToolStripMenuItem.Name = "RemoveTableToolStripMenuItem"
+        Me.RemoveTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.RemoveTableToolStripMenuItem.Text = "Remove Table"
+        '
+        'AddTableToolStripMenuItem
+        '
+        Me.AddTableToolStripMenuItem.Name = "AddTableToolStripMenuItem"
+        Me.AddTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AddTableToolStripMenuItem.Text = "Add Table"
+        '
+        'EditTableToolStripMenuItem
+        '
+        Me.EditTableToolStripMenuItem.Name = "EditTableToolStripMenuItem"
+        Me.EditTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EditTableToolStripMenuItem.Text = "Edit Table"
         '
         'stsDataSetList
         '
@@ -131,16 +157,10 @@ Partial Class DataSetHeaderList
         Me.stsDataSetListLabel1.Name = "stsDataSetListLabel1"
         Me.stsDataSetListLabel1.Size = New System.Drawing.Size(0, 17)
         '
-        'ToolStripMenuItem1
+        'ToolStripSeparator1
         '
-        Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(177, 6)
-        '
-        'RemoveTableToolStripMenuItem
-        '
-        Me.RemoveTableToolStripMenuItem.Name = "RemoveTableToolStripMenuItem"
-        Me.RemoveTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.RemoveTableToolStripMenuItem.Text = "Remove Table"
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(177, 6)
         '
         'DataSetHeaderList
         '
@@ -175,4 +195,7 @@ Partial Class DataSetHeaderList
     Friend WithEvents btnAddTable As Button
     Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
     Friend WithEvents RemoveTableToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents AddTableToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EditTableToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
 End Class

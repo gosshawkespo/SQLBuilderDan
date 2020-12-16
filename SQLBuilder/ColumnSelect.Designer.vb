@@ -131,7 +131,7 @@ Partial Class ColumnSelect
         Me.dgvFieldSelection.MinimumSize = New System.Drawing.Size(0, 170)
         Me.dgvFieldSelection.Name = "dgvFieldSelection"
         Me.dgvFieldSelection.RowHeadersWidth = 62
-        Me.dgvFieldSelection.Size = New System.Drawing.Size(469, 614)
+        Me.dgvFieldSelection.Size = New System.Drawing.Size(462, 616)
         Me.dgvFieldSelection.TabIndex = 7
         '
         'btnClear
@@ -168,11 +168,11 @@ Partial Class ColumnSelect
         Me.lstFields.FormattingEnabled = True
         Me.lstFields.Location = New System.Drawing.Point(164, 34)
         Me.lstFields.MinimumSize = New System.Drawing.Size(165, 140)
-        Me.lstFields.MultiColumn = True
         Me.lstFields.Name = "lstFields"
         Me.lstFields.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
         Me.lstFields.Size = New System.Drawing.Size(169, 134)
         Me.lstFields.TabIndex = 8
+        Me.lstFields.TabStop = False
         '
         'btnMoveSelectFieldsUP
         '
@@ -213,7 +213,7 @@ Partial Class ColumnSelect
         Me.stsQueryBuilder.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsQueryBuilderLabel1, Me.stsQueryBuilderLabel2})
         Me.stsQueryBuilder.Location = New System.Drawing.Point(0, 733)
         Me.stsQueryBuilder.Name = "stsQueryBuilder"
-        Me.stsQueryBuilder.Size = New System.Drawing.Size(1283, 22)
+        Me.stsQueryBuilder.Size = New System.Drawing.Size(1266, 22)
         Me.stsQueryBuilder.TabIndex = 22
         Me.stsQueryBuilder.Text = "StatusStrip1"
         '
@@ -546,7 +546,7 @@ Partial Class ColumnSelect
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(264, 133)
+        Me.Label7.Location = New System.Drawing.Point(181, 133)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(34, 13)
         Me.Label7.TabIndex = 30
@@ -554,7 +554,7 @@ Partial Class ColumnSelect
         '
         'txtFirstRows
         '
-        Me.txtFirstRows.Location = New System.Drawing.Point(181, 130)
+        Me.txtFirstRows.Location = New System.Drawing.Point(98, 130)
         Me.txtFirstRows.Name = "txtFirstRows"
         Me.txtFirstRows.Size = New System.Drawing.Size(70, 20)
         Me.txtFirstRows.TabIndex = 26
@@ -564,7 +564,7 @@ Partial Class ColumnSelect
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(100, 133)
+        Me.Label6.Location = New System.Drawing.Point(17, 133)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(61, 13)
         Me.Label6.TabIndex = 28
@@ -767,7 +767,7 @@ Partial Class ColumnSelect
         Me.txtPath.Location = New System.Drawing.Point(45, 48)
         Me.txtPath.Name = "txtPath"
         Me.txtPath.ReadOnly = True
-        Me.txtPath.Size = New System.Drawing.Size(711, 20)
+        Me.txtPath.Size = New System.Drawing.Size(702, 20)
         Me.txtPath.TabIndex = 34
         '
         'SplitContainer1
@@ -808,8 +808,8 @@ Partial Class ColumnSelect
         Me.SplitContainer1.Panel2.Controls.Add(Me.txtPath)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbSortResults)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbFilterRecords)
-        Me.SplitContainer1.Size = New System.Drawing.Size(1305, 713)
-        Me.SplitContainer1.SplitterDistance = 495
+        Me.SplitContainer1.Size = New System.Drawing.Size(1288, 713)
+        Me.SplitContainer1.SplitterDistance = 488
         Me.SplitContainer1.SplitterWidth = 10
         Me.SplitContainer1.TabIndex = 35
         '
@@ -818,7 +818,7 @@ Partial Class ColumnSelect
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.SystemColors.Control
-        Me.ClientSize = New System.Drawing.Size(1283, 755)
+        Me.ClientSize = New System.Drawing.Size(1266, 755)
         Me.Controls.Add(Me.SplitContainer1)
         Me.Controls.Add(Me.lblMessage)
         Me.Controls.Add(Me.stsQueryBuilder)

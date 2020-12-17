@@ -664,7 +664,7 @@ Public Class ColumnSelect
                 txtValue.Text = dtNumericDate.ToString("yyyy-MM-dd HH:mm:ss")
                 txtValue2.Text = dtNumericDate2.ToString("yyyy-MM-dd HH:mm:ss")
 
-            ElseIf FieldType = "N" Then
+            ElseIf FieldType = "N" Or FieldType = "P" Or FieldType = "S" Then
                 'txtValue.Text = ""
                 'txtValue2.Text = ""
                 Quote = ""
@@ -971,7 +971,7 @@ Public Class ColumnSelect
         ElseIf e.KeyValue = Keys.F7 Then
             UndockChild()
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
-            btnAddCondition.PerformClick()
+            'btnAddCondition.PerformClick()
         ElseIf (e.Control AndAlso (e.KeyCode = Keys.S)) Then
             btnShowSQLQuery.PerformClick()
         ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then

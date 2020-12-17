@@ -697,7 +697,7 @@ Public Class ColumnSelect
                                     'strWhereField1 = "CAST(SUBSTR(" & strWhereField1 & "+ 19000000, 1, 4) CONCAT '-' CONCAT SUBSTR(" & strWhereField1 & "+19000000,5,2) CONCAT '-' CONCAT SUBSTR(" & strWhereField1 & "+19000000,7,2) AS DATE) "
                                 End If
                             End If
-                            Else
+                        Else
                             strValue = Quote & txtValue.Text & Quote & " AND " & Quote & txtValue2.Text & Quote
                         End If
                     Else
@@ -2339,8 +2339,8 @@ Public Class ColumnSelect
             If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
                 'If FieldAttributes.HasCount = False Then
                 MsgBox("No Fields or Count Selected")
-                    Cursor = Cursors.Default
-                    Exit Function
+                Cursor = Cursors.Default
+                Exit Function
                 'End If
             End If
             If Not Int32.TryParse(txtFirstRows.Text, Entry) Then

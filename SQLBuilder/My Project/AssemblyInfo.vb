@@ -8,11 +8,11 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("QueryBuilder")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("QueryBuilder")>
-<Assembly: AssemblyCopyright("Copyright ©  2020")>
+<Assembly: AssemblyTitle("SQLBuilder")>
+<Assembly: AssemblyDescription("SQLBuilder for ESPO SQL Builder Application")>
+<Assembly: AssemblyCompany("Eastern Shires Purchasing Organisation")>
+<Assembly: AssemblyProduct("SQLBuilder")>
+<Assembly: AssemblyCopyright("Copyright ©  Eastern Shires Purchasing Organisation (ESPO) 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("1.0.9.0")>
-<Assembly: AssemblyFileVersion("1.0.9.0")>
+<Assembly: AssemblyVersion("1.0.9.1")>
+<Assembly: AssemblyFileVersion("1.0.9.1")>

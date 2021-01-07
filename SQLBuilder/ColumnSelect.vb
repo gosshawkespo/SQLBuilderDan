@@ -118,6 +118,8 @@ Public Class ColumnSelect
         Dim IndexCol As DataColumn
 
         Try
+            Me.StartPosition = FormStartPosition.Manual
+            Me.Location = New Point(1, 1)
             Me.Text = "SQL Builder: " & txtTablename.Text
             Me.TheDataSetID = DataSetID
             dgvFieldSelection.Columns.Clear()
@@ -971,11 +973,13 @@ Public Class ColumnSelect
         ElseIf e.KeyValue = Keys.F7 Then
             UndockChild()
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
-            'btnAddCondition.PerformClick()
+            If txtOperator.Text.ToUpper <> "IN" And txtOperator.Text.ToUpper <> "NOT IN" Then
+                btnAddCondition.PerformClick()
+            End If
         ElseIf (e.Control AndAlso (e.KeyCode = Keys.S)) Then
-            btnShowSQLQuery.PerformClick()
-        ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
-            btnClose.PerformClick()
+                btnShowSQLQuery.PerformClick()
+            ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
+                btnClose.PerformClick()
         End If
     End Sub
 
@@ -1546,9 +1550,10 @@ Public Class ColumnSelect
                 ColumnName = chklstOrderBY.Items(i)
                 IsChecked = chklstOrderBY.GetItemChecked(i)
                 If OrderByFields = "" Then
-                    OrderByFields += Trim(ColumnName)
+                    'OrderByFields += Trim(ColumnName)
+                    OrderByFields += "'" & Trim(ColumnName) & "'"
                 Else
-                    OrderByFields += "," & Trim(ColumnName)
+                    OrderByFields += "," & "'" & Trim(ColumnName) & "'"
                 End If
                 If IsChecked Then
                     OrderByFields += " DESC"
@@ -2264,8 +2269,8 @@ Public Class ColumnSelect
 
         dlgLOAD.Title = "Select SQL text file"
         'dlgLOAD.InitialDirectory = Application.StartupPath
-        If txtPath.Text <> "" Then
-            dlgLOAD.InitialDirectory = txtPath.Text
+        If txtFilePath.Text <> "" Then
+            dlgLOAD.InitialDirectory = txtFilePath.Text
         Else
             dlgLOAD.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         End If
@@ -2280,7 +2285,7 @@ Public Class ColumnSelect
             'MsgBox("Chars: " & Len(SQLStatement) & vbCrLf & SQLStatement)
             path = IO.Path.GetDirectoryName(dlgLOAD.FileName)
             Filename = IO.Path.GetFileName(dlgLOAD.FileName)
-            txtPath.Text = path
+            txtFilePath.Text = path
             txtFilename.Text = Filename
         Else
             Exit Sub
@@ -2305,14 +2310,14 @@ Public Class ColumnSelect
         savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         savedlg.FilterIndex = 1
         savedlg.RestoreDirectory = False
-        If txtPath.Text <> "" Then
-            savedlg.InitialDirectory = txtPath.Text
+        If txtFilePath.Text <> "" Then
+            savedlg.InitialDirectory = txtFilePath.Text
         Else
             savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         End If
         'savedlg.InitialDirectory = Application.StartupPath
-        If txtPath.Text <> "" Then
-            Filename = txtPath.Text & "\" & txtFilename.Text
+        If txtFilePath.Text <> "" Then
+            Filename = txtFilePath.Text & "\" & txtFilename.Text
         End If
         savedlg.FileName = Filename
 
@@ -2320,7 +2325,7 @@ Public Class ColumnSelect
             mySQLFile = File.CreateText(savedlg.FileName)
             path = IO.Path.GetDirectoryName(savedlg.FileName)
             Filename = IO.Path.GetFileName(savedlg.FileName)
-            txtPath.Text = path
+            txtFilePath.Text = path
             txtFilename.Text = Filename
             mySQLFile.WriteLine(SQLQuery)
             mySQLFile.Close()
@@ -2412,5 +2417,17 @@ Public Class ColumnSelect
 
     Private Sub btnImportSQL_Click(sender As Object, e As EventArgs)
 
+    End Sub
+
+    Private Sub btnEditQuery_Click(sender As Object, e As EventArgs) Handles btnEditQuery.Click
+        Dim Document As String
+
+        'Document = Application.StartupPath & "\School Closure Dates V2 - User Guide.pdf"
+        Document = Trim(txtFilePath.Text) & "\" & Trim(txtFilename.Text)
+        Try
+            Process.Start(Document)
+        Catch ex As Exception
+            MsgBox(Document & " Could not be opened. Check it exists.")
+        End Try
     End Sub
 End Class

@@ -49,10 +49,12 @@ Public Class QueryResultsDGV
             dgvOutput.AlternatingRowsDefaultCellStyle.BackColor = Color.Gray
             dgvOutput.DefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(235, 255, 235)) 'LIGHT GREEN
         End If
+        Me.StartPosition = FormStartPosition.Manual
+        Me.Location = New Point(1, 1)
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
-        'btnRun.PerformClick()
+        btnRun.PerformClick()
     End Sub
 
     Sub PopulateForm(SQLQuery As String, objFieldAttributes As Object)
@@ -61,6 +63,7 @@ Public Class QueryResultsDGV
         txtSQLQuery.Text = SQLStatement
         txtSQLQuery.Focus()
         Me.Text = "SQL Query: " & Me.Tablename
+        'btnRun.PerformClick()
 
     End Sub
 
@@ -153,7 +156,7 @@ Public Class QueryResultsDGV
             End If
 
         Catch ex As Exception
-            MsgBox("Output Error: " & ex.Message)
+            MsgBox("btnRun_Click(): Output Error: " & ex.Message)
         End Try
         Cursor = Cursors.Default
         Refresh()
@@ -222,7 +225,8 @@ Public Class QueryResultsDGV
         Else
             Dim rsADO As ADODB.Recordset
             'dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
-            rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+            'rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+            rsADO = ExecuteSQL(GlobalSession.ConnectString, txtSQLQuery.Text)
             ExportToExcel_GL("Report Title", rsADO)
         End If
 
@@ -597,7 +601,6 @@ Public Class QueryResultsDGV
     End Sub
 
     Private Sub btnSQLUpdate_Click(sender As Object, e As EventArgs) Handles btnSQLUpdate.Click
-
-        'txtSQLQuery.Text
+        SQLStatement = txtSQLQuery.Text
     End Sub
 End Class

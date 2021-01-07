@@ -78,6 +78,7 @@ Partial Class ColumnSelect
         Me.btnRefresh = New System.Windows.Forms.Button()
         Me.btnHideColumns = New System.Windows.Forms.Button()
         Me.gbExecutionAndSaveOptions = New System.Windows.Forms.GroupBox()
+        Me.btnEditQuery = New System.Windows.Forms.Button()
         Me.btnRunSQLQuery = New System.Windows.Forms.Button()
         Me.btnSaveQuery = New System.Windows.Forms.Button()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -86,7 +87,7 @@ Partial Class ColumnSelect
         Me.lblFilename = New System.Windows.Forms.Label()
         Me.txtFilename = New System.Windows.Forms.TextBox()
         Me.lblPath = New System.Windows.Forms.Label()
-        Me.txtPath = New System.Windows.Forms.TextBox()
+        Me.txtFilePath = New System.Windows.Forms.TextBox()
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         CType(Me.dgvFieldSelection, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsQueryBuilder.SuspendLayout()
@@ -546,7 +547,7 @@ Partial Class ColumnSelect
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(181, 133)
+        Me.Label7.Location = New System.Drawing.Point(172, 137)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(34, 13)
         Me.Label7.TabIndex = 30
@@ -554,7 +555,7 @@ Partial Class ColumnSelect
         '
         'txtFirstRows
         '
-        Me.txtFirstRows.Location = New System.Drawing.Point(98, 130)
+        Me.txtFirstRows.Location = New System.Drawing.Point(89, 134)
         Me.txtFirstRows.Name = "txtFirstRows"
         Me.txtFirstRows.Size = New System.Drawing.Size(70, 20)
         Me.txtFirstRows.TabIndex = 26
@@ -564,7 +565,7 @@ Partial Class ColumnSelect
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(17, 133)
+        Me.Label6.Location = New System.Drawing.Point(8, 137)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(61, 13)
         Me.Label6.TabIndex = 28
@@ -665,6 +666,7 @@ Partial Class ColumnSelect
         '
         'gbExecutionAndSaveOptions
         '
+        Me.gbExecutionAndSaveOptions.Controls.Add(Me.btnEditQuery)
         Me.gbExecutionAndSaveOptions.Controls.Add(Me.btnRunSQLQuery)
         Me.gbExecutionAndSaveOptions.Controls.Add(Me.Label7)
         Me.gbExecutionAndSaveOptions.Controls.Add(Me.btnSaveQuery)
@@ -673,16 +675,27 @@ Partial Class ColumnSelect
         Me.gbExecutionAndSaveOptions.Controls.Add(Me.Label9)
         Me.gbExecutionAndSaveOptions.Controls.Add(Me.btnShowSQLQuery)
         Me.gbExecutionAndSaveOptions.Controls.Add(Me.btnLoadQuery)
-        Me.gbExecutionAndSaveOptions.Location = New System.Drawing.Point(459, 76)
+        Me.gbExecutionAndSaveOptions.Location = New System.Drawing.Point(443, 76)
         Me.gbExecutionAndSaveOptions.Name = "gbExecutionAndSaveOptions"
-        Me.gbExecutionAndSaveOptions.Size = New System.Drawing.Size(331, 210)
+        Me.gbExecutionAndSaveOptions.Size = New System.Drawing.Size(306, 210)
         Me.gbExecutionAndSaveOptions.TabIndex = 30
         Me.gbExecutionAndSaveOptions.TabStop = False
+        '
+        'btnEditQuery
+        '
+        Me.btnEditQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnEditQuery.Location = New System.Drawing.Point(160, 36)
+        Me.btnEditQuery.MinimumSize = New System.Drawing.Size(140, 0)
+        Me.btnEditQuery.Name = "btnEditQuery"
+        Me.btnEditQuery.Size = New System.Drawing.Size(140, 23)
+        Me.btnEditQuery.TabIndex = 31
+        Me.btnEditQuery.Text = "Edit Query"
+        Me.btnEditQuery.UseVisualStyleBackColor = True
         '
         'btnRunSQLQuery
         '
         Me.btnRunSQLQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnRunSQLQuery.Location = New System.Drawing.Point(14, 94)
+        Me.btnRunSQLQuery.Location = New System.Drawing.Point(19, 94)
         Me.btnRunSQLQuery.MinimumSize = New System.Drawing.Size(140, 0)
         Me.btnRunSQLQuery.Name = "btnRunSQLQuery"
         Me.btnRunSQLQuery.Size = New System.Drawing.Size(140, 23)
@@ -693,7 +706,7 @@ Partial Class ColumnSelect
         'btnSaveQuery
         '
         Me.btnSaveQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnSaveQuery.Location = New System.Drawing.Point(14, 64)
+        Me.btnSaveQuery.Location = New System.Drawing.Point(19, 65)
         Me.btnSaveQuery.MinimumSize = New System.Drawing.Size(140, 0)
         Me.btnSaveQuery.Name = "btnSaveQuery"
         Me.btnSaveQuery.Size = New System.Drawing.Size(140, 23)
@@ -706,7 +719,7 @@ Partial Class ColumnSelect
         Me.Label9.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.Label9.AutoSize = True
         Me.Label9.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label9.Location = New System.Drawing.Point(2, 12)
+        Me.Label9.Location = New System.Drawing.Point(16, 13)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(168, 13)
         Me.Label9.TabIndex = 8
@@ -715,7 +728,7 @@ Partial Class ColumnSelect
         'btnShowSQLQuery
         '
         Me.btnShowSQLQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnShowSQLQuery.Location = New System.Drawing.Point(14, 172)
+        Me.btnShowSQLQuery.Location = New System.Drawing.Point(28, 173)
         Me.btnShowSQLQuery.MinimumSize = New System.Drawing.Size(140, 0)
         Me.btnShowSQLQuery.Name = "btnShowSQLQuery"
         Me.btnShowSQLQuery.Size = New System.Drawing.Size(140, 23)
@@ -726,7 +739,7 @@ Partial Class ColumnSelect
         'btnLoadQuery
         '
         Me.btnLoadQuery.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnLoadQuery.Location = New System.Drawing.Point(14, 34)
+        Me.btnLoadQuery.Location = New System.Drawing.Point(19, 36)
         Me.btnLoadQuery.MinimumSize = New System.Drawing.Size(140, 0)
         Me.btnLoadQuery.Name = "btnLoadQuery"
         Me.btnLoadQuery.Size = New System.Drawing.Size(140, 23)
@@ -760,15 +773,15 @@ Partial Class ColumnSelect
         Me.lblPath.TabIndex = 33
         Me.lblPath.Text = "Path:"
         '
-        'txtPath
+        'txtFilePath
         '
-        Me.txtPath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
+        Me.txtFilePath.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.txtPath.Location = New System.Drawing.Point(45, 48)
-        Me.txtPath.Name = "txtPath"
-        Me.txtPath.ReadOnly = True
-        Me.txtPath.Size = New System.Drawing.Size(702, 20)
-        Me.txtPath.TabIndex = 34
+        Me.txtFilePath.Location = New System.Drawing.Point(45, 48)
+        Me.txtFilePath.Name = "txtFilePath"
+        Me.txtFilePath.ReadOnly = True
+        Me.txtFilePath.Size = New System.Drawing.Size(698, 20)
+        Me.txtFilePath.TabIndex = 34
         '
         'SplitContainer1
         '
@@ -805,7 +818,7 @@ Partial Class ColumnSelect
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbDisplayElements)
         Me.SplitContainer1.Panel2.Controls.Add(Me.btnClose)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbExecutionAndSaveOptions)
-        Me.SplitContainer1.Panel2.Controls.Add(Me.txtPath)
+        Me.SplitContainer1.Panel2.Controls.Add(Me.txtFilePath)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbSortResults)
         Me.SplitContainer1.Panel2.Controls.Add(Me.gbFilterRecords)
         Me.SplitContainer1.Size = New System.Drawing.Size(1288, 713)
@@ -910,6 +923,7 @@ Partial Class ColumnSelect
     Friend WithEvents lblFilename As Label
     Friend WithEvents txtFilename As TextBox
     Friend WithEvents lblPath As Label
-    Friend WithEvents txtPath As TextBox
+    Friend WithEvents txtFilePath As TextBox
     Friend WithEvents SplitContainer1 As SplitContainer
+    Friend WithEvents btnEditQuery As Button
 End Class

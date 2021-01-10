@@ -33,12 +33,16 @@ Partial Class DataSetHeaderList
         Me.HeaderListCRUD = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.SelectToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.RemoveTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AddTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.EditTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.RemoveTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
         Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.txtUser = New System.Windows.Forms.TextBox()
+        Me.Label6 = New System.Windows.Forms.Label()
+        Me.txtDataSet = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.gbTOP.SuspendLayout()
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.HeaderListCRUD.SuspendLayout()
@@ -49,6 +53,10 @@ Partial Class DataSetHeaderList
         '
         Me.gbTOP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbTOP.Controls.Add(Me.txtDataSet)
+        Me.gbTOP.Controls.Add(Me.Label1)
+        Me.gbTOP.Controls.Add(Me.txtUser)
+        Me.gbTOP.Controls.Add(Me.Label6)
         Me.gbTOP.Controls.Add(Me.btnEditTable)
         Me.gbTOP.Controls.Add(Me.btnAddTable)
         Me.gbTOP.Controls.Add(Me.btnClose)
@@ -112,36 +120,41 @@ Partial Class DataSetHeaderList
         '
         Me.HeaderListCRUD.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.SelectToolStripMenuItem, Me.ToolStripMenuItem1, Me.AddTableToolStripMenuItem, Me.EditTableToolStripMenuItem, Me.ToolStripSeparator1, Me.RemoveTableToolStripMenuItem})
         Me.HeaderListCRUD.Name = "HeaderListCRUD"
-        Me.HeaderListCRUD.Size = New System.Drawing.Size(181, 126)
+        Me.HeaderListCRUD.Size = New System.Drawing.Size(148, 104)
         '
         'SelectToolStripMenuItem
         '
         Me.SelectToolStripMenuItem.Name = "SelectToolStripMenuItem"
-        Me.SelectToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.SelectToolStripMenuItem.Size = New System.Drawing.Size(147, 22)
         Me.SelectToolStripMenuItem.Text = "Select"
         '
         'ToolStripMenuItem1
         '
         Me.ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(177, 6)
-        '
-        'RemoveTableToolStripMenuItem
-        '
-        Me.RemoveTableToolStripMenuItem.Name = "RemoveTableToolStripMenuItem"
-        Me.RemoveTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
-        Me.RemoveTableToolStripMenuItem.Text = "Remove Table"
+        Me.ToolStripMenuItem1.Size = New System.Drawing.Size(144, 6)
         '
         'AddTableToolStripMenuItem
         '
         Me.AddTableToolStripMenuItem.Name = "AddTableToolStripMenuItem"
-        Me.AddTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.AddTableToolStripMenuItem.Size = New System.Drawing.Size(147, 22)
         Me.AddTableToolStripMenuItem.Text = "Add Table"
         '
         'EditTableToolStripMenuItem
         '
         Me.EditTableToolStripMenuItem.Name = "EditTableToolStripMenuItem"
-        Me.EditTableToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.EditTableToolStripMenuItem.Size = New System.Drawing.Size(147, 22)
         Me.EditTableToolStripMenuItem.Text = "Edit Table"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(144, 6)
+        '
+        'RemoveTableToolStripMenuItem
+        '
+        Me.RemoveTableToolStripMenuItem.Name = "RemoveTableToolStripMenuItem"
+        Me.RemoveTableToolStripMenuItem.Size = New System.Drawing.Size(147, 22)
+        Me.RemoveTableToolStripMenuItem.Text = "Remove Table"
         '
         'stsDataSetList
         '
@@ -157,10 +170,37 @@ Partial Class DataSetHeaderList
         Me.stsDataSetListLabel1.Name = "stsDataSetListLabel1"
         Me.stsDataSetListLabel1.Size = New System.Drawing.Size(0, 17)
         '
-        'ToolStripSeparator1
+        'txtUser
         '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(177, 6)
+        Me.txtUser.Location = New System.Drawing.Point(656, 20)
+        Me.txtUser.Name = "txtUser"
+        Me.txtUser.Size = New System.Drawing.Size(70, 20)
+        Me.txtUser.TabIndex = 31
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(621, 24)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(29, 13)
+        Me.Label6.TabIndex = 32
+        Me.Label6.Text = "User"
+        '
+        'txtDataSet
+        '
+        Me.txtDataSet.Location = New System.Drawing.Point(441, 20)
+        Me.txtDataSet.Name = "txtDataSet"
+        Me.txtDataSet.Size = New System.Drawing.Size(70, 20)
+        Me.txtDataSet.TabIndex = 33
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(386, 24)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(49, 13)
+        Me.Label1.TabIndex = 34
+        Me.Label1.Text = "Data Set"
         '
         'DataSetHeaderList
         '
@@ -174,6 +214,7 @@ Partial Class DataSetHeaderList
         Me.Name = "DataSetHeaderList"
         Me.Text = "Data Set List"
         Me.gbTOP.ResumeLayout(False)
+        Me.gbTOP.PerformLayout()
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).EndInit()
         Me.HeaderListCRUD.ResumeLayout(False)
         Me.stsDataSetList.ResumeLayout(False)
@@ -198,4 +239,8 @@ Partial Class DataSetHeaderList
     Friend WithEvents AddTableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents EditTableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents txtUser As TextBox
+    Friend WithEvents Label6 As Label
+    Friend WithEvents txtDataSet As TextBox
+    Friend WithEvents Label1 As Label
 End Class

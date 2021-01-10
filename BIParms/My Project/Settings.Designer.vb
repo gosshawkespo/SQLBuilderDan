@@ -64,9 +64,9 @@ Namespace My
     Friend Module MySettingsProperty
         
         <Global.System.ComponentModel.Design.HelpKeywordAttribute("My.Settings")>  _
-        Friend ReadOnly Property Settings() As Global.ESPOBI.My.MySettings
+        Friend ReadOnly Property Settings() As Global.ESPOBIParms.My.MySettings
             Get
-                Return Global.ESPOBI.My.MySettings.Default
+                Return Global.ESPOBIParms.My.MySettings.Default
             End Get
         End Property
     End Module

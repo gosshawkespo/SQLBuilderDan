@@ -6,10 +6,32 @@ Imports MySql.Data
 Imports MySql.Data.MySqlClient
 Public Class SQLBuilderDAL
 
-    Function GetHeaderList(ConnectString As String, Tablename As String, ByRef DatasetID As Integer) As DataTable
+    Function GetHeaderList(ConnectString As String, Tablename As String, ByRef DatasetID As Integer, UserID As String, DataSet As String) As DataTable
         Dim cn As New OdbcConnection(ConnectString)
         Dim SQLStatement As String
+        Dim SQLWhere As String
         Dim dt As DataTable
+
+        If Tablename <> "" Then
+            SQLWhere = " WHERE Tablename='" & Tablename & "' "
+        End If
+
+        If UserID <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " CrtUserID ='" & UserID & "' "
+        End If
+        If DataSet <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " DataSetName like '" & DataSet & "%' "
+        End If
 
         GetHeaderList = Nothing
         DatasetID = 0
@@ -23,10 +45,8 @@ Public Class SQLBuilderDAL
             "UPDUserID as ""UPD UserID"", " &
             "UPDTimestamp as ""UPD Timestamp"", " &
             "DatasetID " &
-            "FROM ebi7020t "
-        If Tablename <> "" Then
-            SQLStatement += " WHERE Tablename='" & Tablename & "' "
-        End If
+            "FROM ebi7020t " &
+        SQLWhere
         SQLStatement += "ORDER BY DatasetName"
         Try
             cn.Open()

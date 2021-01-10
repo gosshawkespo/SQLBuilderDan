@@ -14,14 +14,15 @@ Public Class QueryResultsDGV
     End Property
     'ViewSQL_KeyDown KEYS: CTRL+R = RUN QUERY, CTRL+SHIFT+C = CLOSE FORM
 
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Dim FieldAttributes As New ColumnAttributes.ColumnAttributes
     Dim SQLStatement As String
+    Dim OutputType As Char
     Dim dt As DataTable
     Dim XLName As String
 
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub
@@ -54,10 +55,16 @@ Public Class QueryResultsDGV
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
-        btnRun.PerformClick()
+        If OutputType = "D" Then
+            btnRun.PerformClick()
+        ElseIf OutputType = "X" Then
+            btnExportToExcel.PerformClick()
+            Close()
+        End If
     End Sub
 
-    Sub PopulateForm(SQLQuery As String, objFieldAttributes As Object)
+    Sub PopulateForm(SQLQuery As String, objFieldAttributes As Object, Output As Char)
+        OutputType = Output
         FieldAttributes = objFieldAttributes
         SQLStatement = SQLQuery
         txtSQLQuery.Text = SQLStatement

@@ -5,7 +5,7 @@ Public Class ColumnSelect
     Private _DataSetID As Integer
     Private _WhereConditions As String
     Private _WhereField As String
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Dim dtWhere As DataTable
     'Public Shared myWhereConditions As New myGlobals
@@ -13,7 +13,7 @@ Public Class ColumnSelect
 
     'SQLBuilder_KeyDown KEYS: CTRL+S = Show Query, RETURN = ADD CONDITION, CTRL+SHIFT+C = CLOSE FORM
     '
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub
@@ -49,7 +49,7 @@ Public Class ColumnSelect
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
         'Me.Height = 584
-
+        txtFilePath.Text = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
     End Sub
 
     Private Sub ClickHandler(sender As Object, e As MouseEventArgs) Handles MyBase.MouseClick
@@ -1648,7 +1648,8 @@ Public Class ColumnSelect
 
         App.Visible = False
         'App.GetParms(GlobalSession, GlobalParms)
-        App.PopulateForm(FinalQuery)
+        'App.PopulateForm(FinalQuery)
+        App.PopulateForm(GlobalParms.SQLStatement)
         App.Show()
         'App.Visible = True
         stsQueryBuilderLabel1.Text = ""
@@ -2380,14 +2381,19 @@ Public Class ColumnSelect
         Dim Answer As Integer
         Dim Entry As Integer
         Dim FinalQuery As String
-
+        Dim Output As Char
+        If radDisplay.Checked Then
+            Output = "D"
+        ElseIf radExcel.Checked Then
+            Output = "X"
+        End If
         FinalQuery = GetFinalQuery(False)
 
         If FinalQuery <> "" Then
             Dim RQ As New RunQuery.QueryResultsDGV
             RQ.GetParms(GlobalSession, GlobalParms)
             RQ.Tablename = txtTablename.Text
-            RQ.PopulateForm(FinalQuery, FieldAttributes)
+            RQ.PopulateForm(FinalQuery, FieldAttributes, Output)
             RQ.Show()
         End If
 
@@ -2429,5 +2435,10 @@ Public Class ColumnSelect
         Catch ex As Exception
             MsgBox(Document & " Could not be opened. Check it exists.")
         End Try
+    End Sub
+
+    Private Sub btnGenerateSQL_Click(sender As Object, e As EventArgs) Handles btnGenerateSQL.Click
+        GlobalParms.SQLStatement = BuildQueryFromSelection()
+        MsgBox(GlobalParms.SQLStatement)
     End Sub
 End Class

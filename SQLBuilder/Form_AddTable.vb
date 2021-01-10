@@ -2,7 +2,7 @@
 Imports System.IO
 
 Public Class Form_AddTable
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Private _FirstEntry As String
     Private _LastEntry As String
@@ -88,7 +88,7 @@ Public Class Form_AddTable
         End Set
     End Property
 
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub
@@ -159,7 +159,7 @@ Public Class Form_AddTable
             _IsTableUpdated = False
             pnlDatasetEntry.Visible = True
             'Get details:
-            dt = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename, DatasetID)
+            dt = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename, DatasetID, "", "")
             If Not IsNothing(dt) Then
                 strDatasetID = dt.Rows(0)("DatasetID")
                 strDatasetName = dt.Rows(0)("Dataset Name")
@@ -242,7 +242,7 @@ Public Class Form_AddTable
             End If
             'Need to insert the table if not already in EBI7020T ???
             'NO - just extract the fields for the GRID.
-            dtCheckHeader = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename.ToUpper, DatasetID)
+            dtCheckHeader = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename.ToUpper, DatasetID, "", "")
             If IsNothing(dtCheckHeader) Then
                 'INSERT NEW COLUMNS INTO HEADER:
                 'Status = myDAL.Update_DatasetHeader(GlobalSession.ConnectString, DatasetID, strDatasetName.ToUpper, strDatasetDesc,

@@ -423,12 +423,13 @@ Public Class SQLBuilderDAL
         Dim da As New OdbcDataAdapter(cm)
         Dim ds As New DataSet
         da.Fill(ds)
+        '            "DatasetName='" & DatasetName.ToUpper & "', " &
+        '"DatasetName, " &
         If ds.Tables(0).Rows.Count > 0 Then
             SQLStatement =
             "Update " & DatasetTable & " " &
             "set " &
             "DatasetID=" & DatasetID & ", " &
-            "DatasetName='" & DatasetName.ToUpper & "', " &
             "SEQUENCE=" & Sequence & ", " &
             "Tablename='" & Tablename.ToUpper & "', " &
             "ColumnName='" & ColumnName.ToUpper & "', " &
@@ -443,7 +444,6 @@ Public Class SQLBuilderDAL
             SQLStatement =
             "Insert into " & DatasetTable & " ( " &
             "DatasetID, " &
-            "DatasetName, " &
             "SEQUENCE, " &
             "Tablename, " &
             "ColumnName, " &

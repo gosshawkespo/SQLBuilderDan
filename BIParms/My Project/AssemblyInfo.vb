@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("SQLBuilder")>
-<Assembly: AssemblyDescription("SQLBuilder for ESPO SQL Builder Application")>
+<Assembly: AssemblyTitle("ESPOBIParms")>
+<Assembly: AssemblyDescription("ColumnAttributes project for SQLBuilder")>
 <Assembly: AssemblyCompany("Eastern Shires Purchasing Organisation")>
-<Assembly: AssemblyProduct("SQLBuilder")>
-<Assembly: AssemblyCopyright("Copyright ©  Eastern Shires Purchasing Organisation (ESPO) 2020")>
+<Assembly: AssemblyProduct("ESPOBIParms")>
+<Assembly: AssemblyCopyright("Copyright © Eastern Shires Purchasing Organisation (ESPO) 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("7f0423e9-721d-48f2-ba33-d7bb31c73df2")>
+<Assembly: Guid("8c87d8dc-49ba-4880-8b86-412fa0d65420")>
 
 ' Version information for an assembly consists of the following four values:
 '

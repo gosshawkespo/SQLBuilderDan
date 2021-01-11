@@ -6,10 +6,32 @@ Imports MySql.Data
 Imports MySql.Data.MySqlClient
 Public Class SQLBuilderDAL
 
-    Function GetHeaderList(ConnectString As String, Tablename As String, ByRef DatasetID As Integer) As DataTable
+    Function GetHeaderList(ConnectString As String, Tablename As String, ByRef DatasetID As Integer, UserID As String, DataSet As String) As DataTable
         Dim cn As New OdbcConnection(ConnectString)
         Dim SQLStatement As String
+        Dim SQLWhere As String = ""
         Dim dt As DataTable
+
+        If Tablename <> "" Then
+            SQLWhere = " WHERE Tablename='" & Tablename & "' "
+        End If
+
+        If UserID <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " upper(CrtUserID) ='" & UserID.ToUpper & "' "
+        End If
+        If DataSet <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " upper(DataSetName) like '" & DataSet.ToUpper & "%' "
+        End If
 
         GetHeaderList = Nothing
         DatasetID = 0
@@ -17,16 +39,16 @@ Public Class SQLBuilderDAL
             "trim(DatasetName) as ""DataSet Name"", " &
             "trim(DataSetHeaderText) as ""DataSet Header Text"", " &
             "trim(Tablename) as ""Tablename"", " &
+            "trim(Libraryname) as ""Library"", " &
+            "trim(S21ApplicationCode) as ""App"", " &
             "trim(AuthorityFlag) as ""Authority Flag"", " &
             "trim(CRTuserID) as ""CRT userID"", " &
             "CRTTIMESTAMP as ""CRT Timestamp"", " &
             "UPDUserID as ""UPD UserID"", " &
             "UPDTimestamp as ""UPD Timestamp"", " &
             "DatasetID " &
-            "FROM ebi7020t "
-        If Tablename <> "" Then
-            SQLStatement += " WHERE Tablename='" & Tablename & "' "
-        End If
+            "FROM ebi7020t " &
+        SQLWhere
         SQLStatement += "ORDER BY DatasetName"
         Try
             cn.Open()
@@ -403,12 +425,13 @@ Public Class SQLBuilderDAL
         Dim da As New OdbcDataAdapter(cm)
         Dim ds As New DataSet
         da.Fill(ds)
+        '            "DatasetName='" & DatasetName.ToUpper & "', " &
+        '"DatasetName, " &
         If ds.Tables(0).Rows.Count > 0 Then
             SQLStatement =
             "Update " & DatasetTable & " " &
             "set " &
             "DatasetID=" & DatasetID & ", " &
-            "DatasetName='" & DatasetName.ToUpper & "', " &
             "SEQUENCE=" & Sequence & ", " &
             "Tablename='" & Tablename.ToUpper & "', " &
             "ColumnName='" & ColumnName.ToUpper & "', " &
@@ -423,7 +446,6 @@ Public Class SQLBuilderDAL
             SQLStatement =
             "Insert into " & DatasetTable & " ( " &
             "DatasetID, " &
-            "DatasetName, " &
             "SEQUENCE, " &
             "Tablename, " &
             "ColumnName, " &

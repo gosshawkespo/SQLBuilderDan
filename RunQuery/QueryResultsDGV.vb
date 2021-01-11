@@ -3,17 +3,26 @@ Imports System.Data.Odbc
 Imports MySql.Data.MySqlClient
 Imports System.IO
 Public Class QueryResultsDGV
-
+    Private _Tablename As String
+    Property Tablename As String
+        Get
+            Return _Tablename
+        End Get
+        Set(value As String)
+            _Tablename = value
+        End Set
+    End Property
     'ViewSQL_KeyDown KEYS: CTRL+R = RUN QUERY, CTRL+SHIFT+C = CLOSE FORM
 
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Dim FieldAttributes As New ColumnAttributes.ColumnAttributes
     Dim SQLStatement As String
+    Dim OutputType As Char
     Dim dt As DataTable
     Dim XLName As String
 
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub
@@ -41,17 +50,27 @@ Public Class QueryResultsDGV
             dgvOutput.AlternatingRowsDefaultCellStyle.BackColor = Color.Gray
             dgvOutput.DefaultCellStyle.BackColor = ColorTranslator.FromWin32(RGB(235, 255, 235)) 'LIGHT GREEN
         End If
+        Me.StartPosition = FormStartPosition.Manual
+        Me.Location = New Point(1, 1)
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
-        'btnRun.PerformClick()
+        If OutputType = "D" Then
+            btnRun.PerformClick()
+        ElseIf OutputType = "X" Then
+            btnExportToExcel.PerformClick()
+            Close()
+        End If
     End Sub
 
-    Sub PopulateForm(SQLQuery As String, objFieldAttributes As Object)
+    Sub PopulateForm(SQLQuery As String, objFieldAttributes As Object, Output As Char)
+        OutputType = Output
         FieldAttributes = objFieldAttributes
         SQLStatement = SQLQuery
         txtSQLQuery.Text = SQLStatement
         txtSQLQuery.Focus()
+        Me.Text = "SQL Query: " & Me.Tablename
+        'btnRun.PerformClick()
 
     End Sub
 
@@ -144,7 +163,7 @@ Public Class QueryResultsDGV
             End If
 
         Catch ex As Exception
-            MsgBox("Output Error: " & ex.Message)
+            MsgBox("btnRun_Click(): Output Error: " & ex.Message)
         End Try
         Cursor = Cursors.Default
         Refresh()
@@ -213,8 +232,9 @@ Public Class QueryResultsDGV
         Else
             Dim rsADO As ADODB.Recordset
             'dt = ExecuteSQLQuery(GlobalSession.ConnectString, txtSQLQuery.Text)
-            rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
-            ExportToExcel2("Report Title", rsADO)
+            'rsADO = ExecuteSQL(GlobalSession.ConnectString, SQLStatement)
+            rsADO = ExecuteSQL(GlobalSession.ConnectString, txtSQLQuery.Text)
+            ExportToExcel_GL("Report Title", rsADO)
         End If
 
     End Sub
@@ -415,6 +435,63 @@ Public Class QueryResultsDGV
         Me.Refresh()
     End Sub
 
+    Private Sub ExportToExcel_GL(ReportName As String, rsADO As ADODB.Recordset)
+        Dim xlApp As Microsoft.Office.Interop.Excel.Application
+        Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook
+        Dim xlWorkSheet As Microsoft.Office.Interop.Excel.Worksheet
+        Dim misValue As Object = System.Reflection.Missing.Value
+        Dim i As Integer
+        Dim j As Integer
+        Dim XLName As String
+
+        XLName = "P:" & Trim(ReportName) & ".xlsx"
+
+        Me.Cursor = Cursors.WaitCursor
+        xlApp = New Microsoft.Office.Interop.Excel.Application
+        xlWorkBook = xlApp.Workbooks.Add(misValue)
+        xlWorkSheet = xlWorkBook.Sheets("sheet1")
+
+        For lngCount = 1 To rsADO.Fields.Count
+            xlWorkSheet.Cells(1, lngCount).Font.Bold = True
+            xlWorkSheet.Cells(1, lngCount) = rsADO.Fields.Item(lngCount - 1).Name
+        Next lngCount
+
+
+        xlWorkSheet.Cells(2, 1).CopyFromRecordset(rsADO)
+
+        xlWorkSheet.Range("A1:AZ1").Font.Bold = True
+        xlWorkSheet.Range("A1").AutoFilter(Field:=1)
+        xlWorkSheet.Columns.AutoFit()
+
+        xlApp.ActiveWindow.SplitColumn = 0
+        xlApp.ActiveWindow.SplitRow = 1
+        xlApp.ActiveWindow.FreezePanes = True
+
+        '        xlWorkSheet.SaveAs(XLName)
+        '        xlWorkBook.Close()
+        '        xlApp.Quit()
+
+        xlApp.Visible = True
+
+        Try
+            releaseObject(xlApp)
+            releaseObject(xlWorkBook)
+            releaseObject(xlWorkSheet)
+        Catch ex As Exception
+            MsgBox("Error: " & ex.ToString, MsgBoxStyle.Critical, "Error!")
+        End Try
+
+        Me.Cursor = Cursors.Default
+
+        'Process.Start(XLName)
+
+        'ToolStripStatusLabel1.Text = "Ready"
+        Me.Refresh()
+
+    End Sub
+
+
+
     Private Sub ExportToExcel2(ReportName As String, rsADO As ADODB.Recordset)
         Dim xlApp As Microsoft.Office.Interop.Excel.Application
         Dim xlWorkBook As Microsoft.Office.Interop.Excel.Workbook
@@ -531,7 +608,6 @@ Public Class QueryResultsDGV
     End Sub
 
     Private Sub btnSQLUpdate_Click(sender As Object, e As EventArgs) Handles btnSQLUpdate.Click
-
-        'txtSQLQuery.Text
+        SQLStatement = txtSQLQuery.Text
     End Sub
 End Class

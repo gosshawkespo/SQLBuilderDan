@@ -48,7 +48,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DocumentationFile>ESPOBI.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
@@ -78,13 +78,12 @@
     <ApplicationIcon>SQLQuery Builder Tree Icon - text 14pt.ICO</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ESPOCommon1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\ESPOCommon1.dll</HintPath>
+    <Reference Include="ESPOCommon">
+      <HintPath>..\..\Common\ESPOCommon\ESPOCommon\bin\Debug\ESPOCommon.dll</HintPath>
     </Reference>
     <Reference Include="ESPOParms, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\ESPOParms.dll</HintPath>
+      <HintPath>..\..\Common\ESPOParms\bin\Debug\ESPOParms.dll</HintPath>
     </Reference>
     <Reference Include="IBM.Data.DB2.iSeries, Version=12.0.0.0, Culture=neutral, PublicKeyToken=9cdb2ebfb1f93a26, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -137,6 +136,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="My Project\Resources.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -196,15 +196,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>8</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Excel">
       <Guid>{00020813-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -252,6 +243,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BIParms\ESPOBIParms.vbproj">
+      <Project>{f460bc83-f08a-4c05-bbca-2b6dd6d5389a}</Project>
+      <Name>ESPOBIParms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ColumnAttributes\ColumnAttributes.vbproj">
       <Project>{7b0fbb75-1dfd-48e0-b9e1-131413ee662d}</Project>
       <Name>ColumnAttributes</Name>

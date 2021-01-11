@@ -92,7 +92,7 @@ Partial Class ESPOBIMDI
         'SQLBuilderToolStripMenuItem
         '
         Me.SQLBuilderToolStripMenuItem.Name = "SQLBuilderToolStripMenuItem"
-        Me.SQLBuilderToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
+        Me.SQLBuilderToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.SQLBuilderToolStripMenuItem.Text = "SQL Builder"
         '
         'WindowToolStripMenuItem
@@ -106,43 +106,43 @@ Partial Class ESPOBIMDI
         'TileHorizontalToolStripMenuItem
         '
         Me.TileHorizontalToolStripMenuItem.Name = "TileHorizontalToolStripMenuItem"
-        Me.TileHorizontalToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.TileHorizontalToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.TileHorizontalToolStripMenuItem.Text = "Tile Horizontal"
         '
         'TileVerticalToolStripMenuItem
         '
         Me.TileVerticalToolStripMenuItem.Name = "TileVerticalToolStripMenuItem"
-        Me.TileVerticalToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.TileVerticalToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.TileVerticalToolStripMenuItem.Text = "Tile Vertical"
         '
         'CascadeToolStripMenuItem
         '
         Me.CascadeToolStripMenuItem.Name = "CascadeToolStripMenuItem"
-        Me.CascadeToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.CascadeToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CascadeToolStripMenuItem.Text = "Cascade"
         '
         'ArrangeToolStripMenuItem
         '
         Me.ArrangeToolStripMenuItem.Name = "ArrangeToolStripMenuItem"
-        Me.ArrangeToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.ArrangeToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.ArrangeToolStripMenuItem.Text = "Arrange"
         '
         'MinimiseAllToolStripMenuItem
         '
         Me.MinimiseAllToolStripMenuItem.Name = "MinimiseAllToolStripMenuItem"
-        Me.MinimiseAllToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.MinimiseAllToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.MinimiseAllToolStripMenuItem.Text = "Minimise All"
         '
         'RestoreAllToolStripMenuItem
         '
         Me.RestoreAllToolStripMenuItem.Name = "RestoreAllToolStripMenuItem"
-        Me.RestoreAllToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.RestoreAllToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.RestoreAllToolStripMenuItem.Text = "Restore All"
         '
         'CloseAllToolStripMenuItem
         '
         Me.CloseAllToolStripMenuItem.Name = "CloseAllToolStripMenuItem"
-        Me.CloseAllToolStripMenuItem.Size = New System.Drawing.Size(150, 22)
+        Me.CloseAllToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.CloseAllToolStripMenuItem.Text = "Close All"
         '
         'ToolsToolStripMenuItem
@@ -154,7 +154,6 @@ Partial Class ESPOBIMDI
         '
         'ImportFromCSVToolStripMenuItem
         '
-        Me.ImportFromCSVToolStripMenuItem.Enabled = False
         Me.ImportFromCSVToolStripMenuItem.Name = "ImportFromCSVToolStripMenuItem"
         Me.ImportFromCSVToolStripMenuItem.Size = New System.Drawing.Size(163, 22)
         Me.ImportFromCSVToolStripMenuItem.Text = "Import from CSV"

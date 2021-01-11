@@ -1,14 +1,16 @@
 ﻿Public Class DataSetHeaderList
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Public Shared DBVersion As String
     Public Shared DBName As String
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub
     Private Sub DataSetHeaderList_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
+        txtUser.Text = GlobalSession.CurrentUserShort
+        PopulateForm()
         Me.KeyPreview = True
         Me.MdiParent = FromHandle(GlobalSession.MDIParentHandle)
         If ColumnAttributes.ColumnAttributes.ThemeSelection = 0 Then
@@ -31,6 +33,7 @@
         For Each c As Control In Controls
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
+        AcceptButton = btnRefresh
 
     End Sub
 
@@ -57,7 +60,7 @@
             If DBVersion = "MYSQL" Then
                 dt = myDAL.GetHeaderListMYSQL(SQLBuilder.DataSetHeaderList.DBName, "", DatasetID)
             Else
-                dt = myDAL.GetHeaderList(GlobalSession.ConnectString, "", DatasetID)
+                dt = myDAL.GetHeaderList(GlobalSession.ConnectString, "", DatasetID, txtUser.Text, txtDataSet.Text)
             End If
             If dt IsNot Nothing Then
                 If dt.Rows.Count > 0 Then
@@ -120,6 +123,7 @@
         App.TheDataSetID = DataSetID
         App.txtTablename.Text = Tablename
         App.txtDatasetName.Text = DataSetName
+        App.Text = "SQLBuilder " & Tablename
         App.Show()
         App.btnRefresh.PerformClick()
         Cursor = Cursors.Default
@@ -166,20 +170,16 @@
     End Sub
 
     Private Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
-        'Refresh form:
         PopulateForm()
     End Sub
 
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         Close()
-
     End Sub
 
-    Private Sub btnAddTable_Click(sender As Object, e As EventArgs) Handles btnAddTable.Click
+    Sub AddNewTable()
         Dim Tablename As String
         Dim App As New SQLBuilder.Form_AddTable
-
-        Cursor = Cursors.Default
 
         'stsFW100Label1.Text = "Loading List......"
         Cursor = Cursors.WaitCursor
@@ -195,11 +195,14 @@
         App.Text = "Add New Table"
         App.Visible = True
         App.Show()
-        'App.btnRefresh.PerformClick()
         Cursor = Cursors.Default
     End Sub
 
-    Private Sub btnEditTable_Click(sender As Object, e As EventArgs) Handles btnEditTable.Click
+    Private Sub btnAddTable_Click(sender As Object, e As EventArgs) Handles btnAddTable.Click
+        AddNewTable()
+    End Sub
+
+    Sub EditTable()
         'Throw up the Add Table form- this time when table entered - display form with existing table details:
         Dim App As New SQLBuilder.Form_AddTable
         Dim Tablename As String
@@ -227,6 +230,10 @@
         App.Show()
         'App.btnRefresh.PerformClick()
         Cursor = Cursors.Default
+    End Sub
+
+    Private Sub btnEditTable_Click(sender As Object, e As EventArgs) Handles btnEditTable.Click
+        EditTable()
     End Sub
 
     Private Sub RemoveTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveTableToolStripMenuItem.Click
@@ -260,4 +267,12 @@
         End If
     End Sub
 
+    Private Sub AddTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddTableToolStripMenuItem.Click
+        'CALL ADD TABLE procedure:
+        AddNewTable()
+    End Sub
+
+    Private Sub EditTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EditTableToolStripMenuItem.Click
+        EditTable()
+    End Sub
 End Class

@@ -5,7 +5,7 @@ Public Class ColumnSelect
     Private _DataSetID As Integer
     Private _WhereConditions As String
     Private _WhereField As String
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Dim dtWhere As DataTable
     'Public Shared myWhereConditions As New myGlobals
@@ -13,7 +13,7 @@ Public Class ColumnSelect
 
     'SQLBuilder_KeyDown KEYS: CTRL+S = Show Query, RETURN = ADD CONDITION, CTRL+SHIFT+C = CLOSE FORM
     '
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub
@@ -27,6 +27,10 @@ Public Class ColumnSelect
         Else
             Me.BackColor = Color.Gray
         End If
+
+        Me.Left = 5
+        Me.Top = 5
+
         dgvFieldSelection.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells
         dgvFieldSelection.AllowUserToOrderColumns = True
         dgvFieldSelection.AllowUserToResizeColumns = True
@@ -45,7 +49,7 @@ Public Class ColumnSelect
             AddHandler c.MouseClick, AddressOf ClickHandler
         Next
         'Me.Height = 584
-
+        txtFilePath.Text = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
     End Sub
 
     Private Sub ClickHandler(sender As Object, e As MouseEventArgs) Handles MyBase.MouseClick
@@ -114,7 +118,9 @@ Public Class ColumnSelect
         Dim IndexCol As DataColumn
 
         Try
-            Me.Text = "SQL Builder"
+            Me.StartPosition = FormStartPosition.Manual
+            Me.Location = New Point(1, 1)
+            Me.Text = "SQL Builder: " & txtTablename.Text
             Me.TheDataSetID = DataSetID
             dgvFieldSelection.Columns.Clear()
             If lstFields.Items.Count > 0 Then
@@ -660,7 +666,7 @@ Public Class ColumnSelect
                 txtValue.Text = dtNumericDate.ToString("yyyy-MM-dd HH:mm:ss")
                 txtValue2.Text = dtNumericDate2.ToString("yyyy-MM-dd HH:mm:ss")
 
-            ElseIf FieldType = "N" Then
+            ElseIf FieldType = "N" Or FieldType = "P" Or FieldType = "S" Then
                 'txtValue.Text = ""
                 'txtValue2.Text = ""
                 Quote = ""
@@ -693,7 +699,7 @@ Public Class ColumnSelect
                                     'strWhereField1 = "CAST(SUBSTR(" & strWhereField1 & "+ 19000000, 1, 4) CONCAT '-' CONCAT SUBSTR(" & strWhereField1 & "+19000000,5,2) CONCAT '-' CONCAT SUBSTR(" & strWhereField1 & "+19000000,7,2) AS DATE) "
                                 End If
                             End If
-                            Else
+                        Else
                             strValue = Quote & txtValue.Text & Quote & " AND " & Quote & txtValue2.Text & Quote
                         End If
                     Else
@@ -967,11 +973,13 @@ Public Class ColumnSelect
         ElseIf e.KeyValue = Keys.F7 Then
             UndockChild()
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
-            btnAddCondition.PerformClick()
+            If txtOperator.Text.ToUpper <> "IN" And txtOperator.Text.ToUpper <> "NOT IN" Then
+                btnAddCondition.PerformClick()
+            End If
         ElseIf (e.Control AndAlso (e.KeyCode = Keys.S)) Then
-            btnShowSQLQuery.PerformClick()
-        ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
-            btnClose.PerformClick()
+                btnShowSQLQuery.PerformClick()
+            ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
+                btnClose.PerformClick()
         End If
     End Sub
 
@@ -1543,7 +1551,9 @@ Public Class ColumnSelect
                 IsChecked = chklstOrderBY.GetItemChecked(i)
                 If OrderByFields = "" Then
                     OrderByFields += Trim(ColumnName)
+                    'OrderByFields += "'" & Trim(ColumnName) & "'"
                 Else
+                    'OrderByFields += "," & "'" & Trim(ColumnName) & "'"
                     OrderByFields += "," & Trim(ColumnName)
                 End If
                 If IsChecked Then
@@ -1639,7 +1649,8 @@ Public Class ColumnSelect
 
         App.Visible = False
         'App.GetParms(GlobalSession, GlobalParms)
-        App.PopulateForm(FinalQuery)
+        'App.PopulateForm(FinalQuery)
+        App.PopulateForm(GlobalParms.SQLStatement)
         App.Show()
         'App.Visible = True
         stsQueryBuilderLabel1.Text = ""
@@ -2261,8 +2272,8 @@ Public Class ColumnSelect
 
         dlgLOAD.Title = "Select SQL text file"
         'dlgLOAD.InitialDirectory = Application.StartupPath
-        If txtPath.Text <> "" Then
-            dlgLOAD.InitialDirectory = txtPath.Text
+        If txtFilePath.Text <> "" Then
+            dlgLOAD.InitialDirectory = txtFilePath.Text
         Else
             dlgLOAD.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         End If
@@ -2277,7 +2288,7 @@ Public Class ColumnSelect
             'MsgBox("Chars: " & Len(SQLStatement) & vbCrLf & SQLStatement)
             path = IO.Path.GetDirectoryName(dlgLOAD.FileName)
             Filename = IO.Path.GetFileName(dlgLOAD.FileName)
-            txtPath.Text = path
+            txtFilePath.Text = path
             txtFilename.Text = Filename
         Else
             Exit Sub
@@ -2302,14 +2313,14 @@ Public Class ColumnSelect
         savedlg.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
         savedlg.FilterIndex = 1
         savedlg.RestoreDirectory = False
-        If txtPath.Text <> "" Then
-            savedlg.InitialDirectory = txtPath.Text
+        If txtFilePath.Text <> "" Then
+            savedlg.InitialDirectory = txtFilePath.Text
         Else
             savedlg.InitialDirectory = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         End If
         'savedlg.InitialDirectory = Application.StartupPath
-        If txtPath.Text <> "" Then
-            Filename = txtPath.Text & "\" & txtFilename.Text
+        If txtFilePath.Text <> "" Then
+            Filename = txtFilePath.Text & "\" & txtFilename.Text
         End If
         savedlg.FileName = Filename
 
@@ -2317,7 +2328,7 @@ Public Class ColumnSelect
             mySQLFile = File.CreateText(savedlg.FileName)
             path = IO.Path.GetDirectoryName(savedlg.FileName)
             Filename = IO.Path.GetFileName(savedlg.FileName)
-            txtPath.Text = path
+            txtFilePath.Text = path
             txtFilename.Text = Filename
             mySQLFile.WriteLine(SQLQuery)
             mySQLFile.Close()
@@ -2336,8 +2347,8 @@ Public Class ColumnSelect
             If lstFields.Items.Count = 0 And FieldAttributes.GetFullQuery = "" Then
                 'If FieldAttributes.HasCount = False Then
                 MsgBox("No Fields or Count Selected")
-                    Cursor = Cursors.Default
-                    Exit Function
+                Cursor = Cursors.Default
+                Exit Function
                 'End If
             End If
             If Not Int32.TryParse(txtFirstRows.Text, Entry) Then
@@ -2372,13 +2383,19 @@ Public Class ColumnSelect
         Dim Answer As Integer
         Dim Entry As Integer
         Dim FinalQuery As String
-
+        Dim Output As Char
+        If radDisplay.Checked Then
+            Output = "D"
+        ElseIf radExcel.Checked Then
+            Output = "X"
+        End If
         FinalQuery = GetFinalQuery(False)
 
         If FinalQuery <> "" Then
             Dim RQ As New RunQuery.QueryResultsDGV
             RQ.GetParms(GlobalSession, GlobalParms)
-            RQ.PopulateForm(FinalQuery, FieldAttributes)
+            RQ.Tablename = txtTablename.Text
+            RQ.PopulateForm(FinalQuery, FieldAttributes, Output)
             RQ.Show()
         End If
 
@@ -2408,5 +2425,22 @@ Public Class ColumnSelect
 
     Private Sub btnImportSQL_Click(sender As Object, e As EventArgs)
 
+    End Sub
+
+    Private Sub btnEditQuery_Click(sender As Object, e As EventArgs) Handles btnEditQuery.Click
+        Dim Document As String
+
+        'Document = Application.StartupPath & "\School Closure Dates V2 - User Guide.pdf"
+        Document = Trim(txtFilePath.Text) & "\" & Trim(txtFilename.Text)
+        Try
+            Process.Start(Document)
+        Catch ex As Exception
+            MsgBox(Document & " Could not be opened. Check it exists.")
+        End Try
+    End Sub
+
+    Private Sub btnGenerateSQL_Click(sender As Object, e As EventArgs) Handles btnGenerateSQL.Click
+        GlobalParms.SQLStatement = BuildQueryFromSelection()
+        MsgBox(GlobalParms.SQLStatement)
     End Sub
 End Class

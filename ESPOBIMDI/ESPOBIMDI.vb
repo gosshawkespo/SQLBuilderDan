@@ -1,5 +1,5 @@
 ﻿Public Class ESPOBIMDI
-    Dim GlobalParms As ESPOParms.Framework
+    Dim GlobalParms As ESPOBIParms.BIParms
     Dim GlobalSession As ESPOParms.Session
     Dim p As System.Security.Principal.WindowsPrincipal = CType(System.Threading.Thread.CurrentPrincipal, System.Security.Principal.WindowsPrincipal)
     Dim userid As String = p.Identity.Name
@@ -7,7 +7,7 @@
 
     Private Sub ESPOBIMDI_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         GlobalSession = New ESPOParms.Session
-        GlobalParms = New ESPOParms.Framework
+        GlobalParms = New ESPOBIParms.BIParms
         GlobalSession.CurrentUser = userid
         GlobalSession.CurrentUserShort = GlobalSession.CurrentUser.Split("\")(1)
 
@@ -36,7 +36,7 @@
             End If
 
         End Try
-        Dim espoConnect As New ESPOCommon1.ESPOConnect
+        Dim espoConnect As New ESPOCommon.ESPOConnect
         GlobalSession.ConnectString = espoConnect.GetConnectString(GlobalSession.CurrentMode, GlobalSession.CurrentServer)
         GlobalSession.MDIParentHandle = Me.Handle
 
@@ -111,7 +111,7 @@
 
         App.Visible = False
         App.GetParms(GlobalSession, GlobalParms)
-        App.PopulateForm()
+        'App.PopulateForm()
         App.Show()
         stsFW100Label1.Text = ""
         Cursor = Cursors.Default

@@ -9,10 +9,10 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 
 <Assembly: AssemblyTitle("ColumnAttributes")>
-<Assembly: AssemblyDescription("")>
-<Assembly: AssemblyCompany("")>
+<Assembly: AssemblyDescription("ColumnAttributes project for SQLBuilder")>
+<Assembly: AssemblyCompany("Eastern Shires Purchasing Organisation")>
 <Assembly: AssemblyProduct("ColumnAttributes")>
-<Assembly: AssemblyCopyright("Copyright ©  2020")>
+<Assembly: AssemblyCopyright("Copyright © Eastern Shires Purchasing Organisation (ESPO) 2020")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
@@ -31,5 +31,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")>
 
-<Assembly: AssemblyVersion("1.0.0.6")>
-<Assembly: AssemblyFileVersion("1.0.0.6")>
+<Assembly: AssemblyVersion("1.0.10.3")>
+<Assembly: AssemblyFileVersion("1.0.10.3")>

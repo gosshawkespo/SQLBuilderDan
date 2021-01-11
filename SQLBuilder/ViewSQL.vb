@@ -6,10 +6,10 @@ Public Class ViewSQL
 
     'ViewSQL_KeyDown KEYS: CTRL+R = RUN QUERY, CTRL+SHIFT+C = CLOSE FORM
 
-    Dim GlobalParms As New ESPOParms.Framework
+    Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
 
-    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOParms.Framework)
+    Public Sub GetParms(Session As ESPOParms.Session, Parms As ESPOBIParms.BIParms)
         GlobalParms = Parms
         GlobalSession = Session
     End Sub

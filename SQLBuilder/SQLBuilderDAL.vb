@@ -9,7 +9,7 @@ Public Class SQLBuilderDAL
     Function GetHeaderList(ConnectString As String, Tablename As String, ByRef DatasetID As Integer, UserID As String, DataSet As String) As DataTable
         Dim cn As New OdbcConnection(ConnectString)
         Dim SQLStatement As String
-        Dim SQLWhere As String
+        Dim SQLWhere As String = ""
         Dim dt As DataTable
 
         If Tablename <> "" Then
@@ -22,7 +22,7 @@ Public Class SQLBuilderDAL
             Else
                 SQLWhere += "And "
             End If
-            SQLWhere += " CrtUserID ='" & UserID & "' "
+            SQLWhere += " upper(CrtUserID) ='" & UserID.ToUpper & "' "
         End If
         If DataSet <> "" Then
             If SQLWhere = "" Then
@@ -30,7 +30,7 @@ Public Class SQLBuilderDAL
             Else
                 SQLWhere += "And "
             End If
-            SQLWhere += " DataSetName like '" & DataSet & "%' "
+            SQLWhere += " upper(DataSetName) like '" & DataSet.ToUpper & "%' "
         End If
 
         GetHeaderList = Nothing
@@ -39,6 +39,8 @@ Public Class SQLBuilderDAL
             "trim(DatasetName) as ""DataSet Name"", " &
             "trim(DataSetHeaderText) as ""DataSet Header Text"", " &
             "trim(Tablename) as ""Tablename"", " &
+            "trim(Libraryname) as ""Library"", " &
+            "trim(S21ApplicationCode) as ""App"", " &
             "trim(AuthorityFlag) as ""Authority Flag"", " &
             "trim(CRTuserID) as ""CRT userID"", " &
             "CRTTIMESTAMP as ""CRT Timestamp"", " &

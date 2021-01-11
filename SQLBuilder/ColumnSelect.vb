@@ -1550,10 +1550,11 @@ Public Class ColumnSelect
                 ColumnName = chklstOrderBY.Items(i)
                 IsChecked = chklstOrderBY.GetItemChecked(i)
                 If OrderByFields = "" Then
-                    'OrderByFields += Trim(ColumnName)
-                    OrderByFields += "'" & Trim(ColumnName) & "'"
+                    OrderByFields += Trim(ColumnName)
+                    'OrderByFields += "'" & Trim(ColumnName) & "'"
                 Else
-                    OrderByFields += "," & "'" & Trim(ColumnName) & "'"
+                    'OrderByFields += "," & "'" & Trim(ColumnName) & "'"
+                    OrderByFields += "," & Trim(ColumnName)
                 End If
                 If IsChecked Then
                     OrderByFields += " DESC"

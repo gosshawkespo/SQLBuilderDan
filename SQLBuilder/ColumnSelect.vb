@@ -1949,6 +1949,7 @@ Public Class ColumnSelect
         Dim blnHavingBetweenMode As Boolean = False
         Dim blnWhereMode As Boolean = False
         Dim blnWhereBetweenMode As Boolean = False
+        Dim blnWhereInMode As Boolean = False
         Dim blnGroupByMode As Boolean = False
         Dim blnOrderByMode As Boolean = False
         Dim blnFetchMode As Boolean = False

@@ -25,6 +25,10 @@ Partial Class DataSetHeaderList
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DataSetHeaderList))
         Me.gbTOP = New System.Windows.Forms.GroupBox()
+        Me.txtDataSet = New System.Windows.Forms.TextBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtUser = New System.Windows.Forms.TextBox()
+        Me.Label6 = New System.Windows.Forms.Label()
         Me.btnEditTable = New System.Windows.Forms.Button()
         Me.btnAddTable = New System.Windows.Forms.Button()
         Me.btnClose = New System.Windows.Forms.Button()
@@ -39,10 +43,9 @@ Partial Class DataSetHeaderList
         Me.RemoveTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
         Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.txtUser = New System.Windows.Forms.TextBox()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.txtDataSet = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtTableName = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
+        Me.btnClear = New System.Windows.Forms.Button()
         Me.gbTOP.SuspendLayout()
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.HeaderListCRUD.SuspendLayout()
@@ -53,6 +56,9 @@ Partial Class DataSetHeaderList
         '
         Me.gbTOP.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.gbTOP.Controls.Add(Me.btnClear)
+        Me.gbTOP.Controls.Add(Me.txtTableName)
+        Me.gbTOP.Controls.Add(Me.Label2)
         Me.gbTOP.Controls.Add(Me.txtDataSet)
         Me.gbTOP.Controls.Add(Me.Label1)
         Me.gbTOP.Controls.Add(Me.txtUser)
@@ -63,9 +69,41 @@ Partial Class DataSetHeaderList
         Me.gbTOP.Controls.Add(Me.btnRefresh)
         Me.gbTOP.Location = New System.Drawing.Point(3, 2)
         Me.gbTOP.Name = "gbTOP"
-        Me.gbTOP.Size = New System.Drawing.Size(877, 52)
+        Me.gbTOP.Size = New System.Drawing.Size(1032, 52)
         Me.gbTOP.TabIndex = 1
         Me.gbTOP.TabStop = False
+        '
+        'txtDataSet
+        '
+        Me.txtDataSet.Location = New System.Drawing.Point(335, 20)
+        Me.txtDataSet.Name = "txtDataSet"
+        Me.txtDataSet.Size = New System.Drawing.Size(70, 20)
+        Me.txtDataSet.TabIndex = 0
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(280, 24)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(49, 13)
+        Me.Label1.TabIndex = 34
+        Me.Label1.Text = "Data Set"
+        '
+        'txtUser
+        '
+        Me.txtUser.Location = New System.Drawing.Point(620, 20)
+        Me.txtUser.Name = "txtUser"
+        Me.txtUser.Size = New System.Drawing.Size(70, 20)
+        Me.txtUser.TabIndex = 2
+        '
+        'Label6
+        '
+        Me.Label6.AutoSize = True
+        Me.Label6.Location = New System.Drawing.Point(585, 24)
+        Me.Label6.Name = "Label6"
+        Me.Label6.Size = New System.Drawing.Size(29, 13)
+        Me.Label6.TabIndex = 32
+        Me.Label6.Text = "User"
         '
         'btnEditTable
         '
@@ -88,7 +126,7 @@ Partial Class DataSetHeaderList
         'btnClose
         '
         Me.btnClose.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClose.Location = New System.Drawing.Point(791, 19)
+        Me.btnClose.Location = New System.Drawing.Point(946, 19)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.Size = New System.Drawing.Size(80, 23)
         Me.btnClose.TabIndex = 28
@@ -113,7 +151,7 @@ Partial Class DataSetHeaderList
         Me.dgvHeaderList.Location = New System.Drawing.Point(3, 60)
         Me.dgvHeaderList.Name = "dgvHeaderList"
         Me.dgvHeaderList.ReadOnly = True
-        Me.dgvHeaderList.Size = New System.Drawing.Size(877, 468)
+        Me.dgvHeaderList.Size = New System.Drawing.Size(1032, 486)
         Me.dgvHeaderList.TabIndex = 12
         '
         'HeaderListCRUD
@@ -159,9 +197,9 @@ Partial Class DataSetHeaderList
         'stsDataSetList
         '
         Me.stsDataSetList.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsDataSetListLabel1})
-        Me.stsDataSetList.Location = New System.Drawing.Point(0, 512)
+        Me.stsDataSetList.Location = New System.Drawing.Point(0, 530)
         Me.stsDataSetList.Name = "stsDataSetList"
-        Me.stsDataSetList.Size = New System.Drawing.Size(892, 22)
+        Me.stsDataSetList.Size = New System.Drawing.Size(1047, 22)
         Me.stsDataSetList.TabIndex = 13
         Me.stsDataSetList.Text = "StatusStrip1"
         '
@@ -170,43 +208,37 @@ Partial Class DataSetHeaderList
         Me.stsDataSetListLabel1.Name = "stsDataSetListLabel1"
         Me.stsDataSetListLabel1.Size = New System.Drawing.Size(0, 17)
         '
-        'txtUser
+        'txtTableName
         '
-        Me.txtUser.Location = New System.Drawing.Point(656, 20)
-        Me.txtUser.Name = "txtUser"
-        Me.txtUser.Size = New System.Drawing.Size(70, 20)
-        Me.txtUser.TabIndex = 31
+        Me.txtTableName.Location = New System.Drawing.Point(484, 20)
+        Me.txtTableName.Name = "txtTableName"
+        Me.txtTableName.Size = New System.Drawing.Size(70, 20)
+        Me.txtTableName.TabIndex = 1
         '
-        'Label6
+        'Label2
         '
-        Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(621, 24)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(29, 13)
-        Me.Label6.TabIndex = 32
-        Me.Label6.Text = "User"
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(444, 24)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(34, 13)
+        Me.Label2.TabIndex = 36
+        Me.Label2.Text = "Table"
         '
-        'txtDataSet
+        'btnClear
         '
-        Me.txtDataSet.Location = New System.Drawing.Point(441, 20)
-        Me.txtDataSet.Name = "txtDataSet"
-        Me.txtDataSet.Size = New System.Drawing.Size(70, 20)
-        Me.txtDataSet.TabIndex = 33
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(386, 24)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(49, 13)
-        Me.Label1.TabIndex = 34
-        Me.Label1.Text = "Data Set"
+        Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClear.Location = New System.Drawing.Point(714, 19)
+        Me.btnClear.Name = "btnClear"
+        Me.btnClear.Size = New System.Drawing.Size(80, 23)
+        Me.btnClear.TabIndex = 37
+        Me.btnClear.Text = "Clear"
+        Me.btnClear.UseVisualStyleBackColor = True
         '
         'DataSetHeaderList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(892, 534)
+        Me.ClientSize = New System.Drawing.Size(1047, 552)
         Me.Controls.Add(Me.stsDataSetList)
         Me.Controls.Add(Me.dgvHeaderList)
         Me.Controls.Add(Me.gbTOP)
@@ -243,4 +275,7 @@ Partial Class DataSetHeaderList
     Friend WithEvents Label6 As Label
     Friend WithEvents txtDataSet As TextBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents txtTableName As TextBox
+    Friend WithEvents Label2 As Label
+    Friend WithEvents btnClear As Button
 End Class

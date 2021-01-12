@@ -13,7 +13,7 @@ Public Class SQLBuilderDAL
         Dim dt As DataTable
 
         If Tablename <> "" Then
-            SQLWhere = " WHERE Tablename='" & Tablename & "' "
+            SQLWhere = " WHERE upper(Tablename) like '" & Trim(Tablename.ToUpper) & "%' "
         End If
 
         If UserID <> "" Then
@@ -200,7 +200,7 @@ Public Class SQLBuilderDAL
 
     End Function
 
-    Function GetLastID(ConnectString As String, Tablename As String, PrimaryField As String) As Integer
+    Function GetLastID(ConnectString As String, Tablename As String) As Integer
         Dim cn As New OdbcConnection(ConnectString)
         Dim SQLStatement As String
         Dim dt As DataTable
@@ -210,8 +210,10 @@ Public Class SQLBuilderDAL
         LastID = 0
         Try
             cn.Open()
-            SQLStatement = "SELECT MAX(" & PrimaryField & ") AS ""MAX"" " &
-            "FROM " & Tablename
+            SQLStatement =
+                "SELECT DataSetID " &
+            "FROM EBI7020T " &
+            "Where TableName='" & Tablename & "' "
 
             Dim cm As OdbcCommand = cn.CreateCommand 'Create a command object via the connection
             cm.CommandTimeout = 0
@@ -221,8 +223,8 @@ Public Class SQLBuilderDAL
             Dim ds As New DataSet
             da.Fill(ds)
             dt = ds.Tables(0)
-            If Not IsDBNull(dt.Rows(0)("MAX")) Then
-                LastID = dt.Rows(0)("MAX")
+            If Not IsDBNull(dt.Rows(0)("DataSetID")) Then
+                LastID = dt.Rows(0)("DataSetID")
             Else
                 LastID = 0
             End If
@@ -230,7 +232,7 @@ Public Class SQLBuilderDAL
             Return LastID
 
         Catch ex As Exception
-            MsgBox("DB ERROR in GetLastID: " & ex.Message)
+            MsgBox("DB Error In GetLastID: " & ex.Message)
         End Try
     End Function
 
@@ -309,7 +311,7 @@ Public Class SQLBuilderDAL
         Dim Result As Integer
         Dim UpdTimestamp As String = Now().ToString("yyyy-MM-dd-HH.mm.ss")
         Dim CrtTimestamp As String = Now().ToString("yyyy-MM-dd-HH.mm.ss")
-        Dim DatasetTable As String = "EBI7020T"
+        'Dim DatasetTable As String = "EBI7020T"
         Dim dtTest As DataTable
 
         If Tablename = "" Then
@@ -321,7 +323,7 @@ Public Class SQLBuilderDAL
         Result = 0
         SQLStatement =
         "Select DatasetID  " &
-        "From " & DatasetTable
+        "From EBI7020T "
         If DatasetID > 0 Then
             SQLStatement = SQLStatement & " Where DatasetID =" & DatasetID & " "
         Else
@@ -336,7 +338,7 @@ Public Class SQLBuilderDAL
         da.Fill(ds)
         If ds.Tables(0).Rows.Count > 0 Then
             SQLStatement =
-            "Update " & DatasetTable & " " &
+            "Update EBI7020T " &
             "set " &
             "DatasetName='" & DatasetName.ToUpper & "', " &
             "DatasetHeaderText='" & DatasetHeaderText & "', " &
@@ -348,7 +350,7 @@ Public Class SQLBuilderDAL
             Result = 2
         Else
             SQLStatement =
-            "Insert into " & DatasetTable & " (" &
+            "Insert into EBI7020T (" &
             "DatasetName, " &
             "DatasetHeaderText, " &
             "Tablename, " &
@@ -378,7 +380,7 @@ Public Class SQLBuilderDAL
             da1.Fill(ds1)
             'dtTest = ds1.Tables(0)
             If Result = 1 Then
-                DatasetID = GetLastID(ConnectString, DatasetTable, "DatasetID")
+                DatasetID = GetLastID(ConnectString, Tablename)
             End If
 
         Catch ex As Exception
@@ -386,6 +388,7 @@ Public Class SQLBuilderDAL
             SQLOK = False
             MsgBox("Error in Update_DatasetHeader: " & ex.Message)
         End Try
+
         Return (Result)
     End Function
 
@@ -432,40 +435,36 @@ Public Class SQLBuilderDAL
             "Update " & DatasetTable & " " &
             "set " &
             "DatasetID=" & DatasetID & ", " &
-            "SEQUENCE=" & Sequence & ", " &
+            "Sequence=" & Sequence & ", " &
             "Tablename='" & Tablename.ToUpper & "', " &
             "ColumnName='" & ColumnName.ToUpper & "', " &
             "ColumnText='" & ColumnText & "', " &
             "ColumnType='" & ColumnType.ToUpper & "', " &
             "ColumnLength=" & ColumnLength & ", " &
-            "ColumnDecimals=" & ColumnDecimals & ", " &
-            "ColumnID=" & ColumnID & " " &
+            "ColumnDecimals=" & ColumnDecimals & " " &
             "Where Tablename ='" & Tablename.ToUpper & "' AND ColumnName= '" & ColumnName.ToUpper & "'"
             Result = 2
         Else
             SQLStatement =
             "Insert into " & DatasetTable & " ( " &
             "DatasetID, " &
-            "SEQUENCE, " &
+            "Sequence, " &
             "Tablename, " &
             "ColumnName, " &
             "ColumnText, " &
             "ColumnType, " &
             "ColumnLength, " &
-            "ColumnDecimals," &
-            "ColumnID" &
+            "ColumnDecimals" &
             ")  " &
             "Values (" &
             DatasetID & "," &
-            "'" & DatasetName.ToUpper & "', " &
             Sequence & ", " &
             "'" & Tablename.ToUpper & "', " &
             "'" & ColumnName.ToUpper & "', " &
             "'" & ColumnText & "', " &
             "'" & ColumnType.ToUpper & "', " &
             ColumnLength & ", " &
-            ColumnDecimals & "," &
-            ColumnID &
+            ColumnDecimals & " " &
             ")"
             Result = 1
         End If
@@ -1238,7 +1237,7 @@ Public Class SQLBuilderDAL
             If DBVersion = "IBM" Then
                 dt.Columns.Add("Column ID", GetType(Integer))
                 Dim DatasetTable As String = "EBI7023T"
-                intLastColumnID = GetLastID(ConnectString, DatasetTable, "ColumnID")
+                'intLastColumnID = GetLastID(ConnectString, DatasetTable, "ColumnID")
             End If
 
             If IsNothing(fldNames) Then

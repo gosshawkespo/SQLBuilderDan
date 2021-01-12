@@ -1991,7 +1991,7 @@ Public Class ColumnSelect
             If int1 < Len(SQLStatement) - 4 Then
                 desc = Mid(SQLStatement, int1 + 1, 4)
             End If
-            If (wrkChar = " " And Not blnInsideBracket And Not blnInsideQuote) Or wrkChar = vbCr Or wrkChar = vbLf Or wrkChar = "," Then ' Blank, CR, LF or , encountered
+            If (wrkChar = " " And Not blnInsideBracket And Not blnInsideQuote) Or wrkChar = vbCr Or wrkChar = vbLf Or (wrkChar = "," And Not blnWhereInMode) Then ' Blank, CR, LF or , encountered
                 If Trim(Word) <> "" Then
                     If Word.ToUpper = "SELECT" Then ' SQL Clause, flag that we are SELECT Mode
                         blnSelectMode = True
@@ -2058,6 +2058,10 @@ Public Class ColumnSelect
                     ElseIf Word.ToUpper = "BETWEEN" And blnWhereMode Then
                         blnWhereBetweenMode = True
                         strWHERE = strWHERE & " " & Word
+                    ElseIf Word.ToUpper = "IN" And blnWhereMode Then
+                        blnWhereInMode = True
+                        strWHERE = strWHERE & " " & Word
+
                     ElseIf Word.ToUpper = "BETWEEN" And blnHavingMode Then
                         blnHavingBetweenMode = True
                         strHaving = strHaving & " " & Word
@@ -2094,6 +2098,9 @@ Public Class ColumnSelect
                             strWHERE = strWHERE & " " & Word
                             If blnWhereBetweenMode And Word.ToUpper = "AND" Then
                                 blnWhereBetweenMode = False ' OK, so if you are already in between mode and you find another "AND" thats it
+                            End If
+                            If blnWhereInMode And Not blnInsideBracket Then
+                                blnWhereInMode = False ' OK, so if you are in IN mode but outside brackets you are no longer in IN mode
                             End If
                         ElseIf blnHavingMode Then
                             If (Word.ToUpper = "AND" Or Word.ToUpper = "OR") And Not blnHavingBetweenMode Then

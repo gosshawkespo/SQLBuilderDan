@@ -49,7 +49,6 @@
         Cursor = Cursors.WaitCursor
         Dim myDAL As New SQLBuilderDAL
         Dim dt As DataTable
-        Dim Tablename As String
         Dim DatasetID As Integer
 
         Me.Text = "Data Set List"
@@ -60,7 +59,7 @@
             If DBVersion = "MYSQL" Then
                 dt = myDAL.GetHeaderListMYSQL(SQLBuilder.DataSetHeaderList.DBName, "", DatasetID)
             Else
-                dt = myDAL.GetHeaderList(GlobalSession.ConnectString, "", DatasetID, txtUser.Text, txtDataSet.Text)
+                dt = myDAL.GetHeaderList(GlobalSession.ConnectString, txtTableName.Text, DatasetID, txtUser.Text, txtDataSet.Text)
             End If
             If dt IsNot Nothing Then
                 If dt.Rows.Count > 0 Then
@@ -274,5 +273,11 @@
 
     Private Sub EditTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EditTableToolStripMenuItem.Click
         EditTable()
+    End Sub
+
+    Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
+        txtTableName.Text = ""
+        txtDataSet.Text = ""
+        txtUser.Text = ""
     End Sub
 End Class

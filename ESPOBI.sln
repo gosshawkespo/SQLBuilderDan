@@ -13,6 +13,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ESPOBIMDI", "ESPOBIMDI\ESPO
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ESPOBIParms", "BIParms\ESPOBIParms.vbproj", "{F460BC83-F08A-4C05-BBCA-2B6DD6D5389A}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ImportTable", "ImportTable\ImportTable.vbproj", "{DDEF7202-34D9-4D5D-9712-7055B9E846EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{F460BC83-F08A-4C05-BBCA-2B6DD6D5389A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F460BC83-F08A-4C05-BBCA-2B6DD6D5389A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F460BC83-F08A-4C05-BBCA-2B6DD6D5389A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDEF7202-34D9-4D5D-9712-7055B9E846EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDEF7202-34D9-4D5D-9712-7055B9E846EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDEF7202-34D9-4D5D-9712-7055B9E846EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDEF7202-34D9-4D5D-9712-7055B9E846EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

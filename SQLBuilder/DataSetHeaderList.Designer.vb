@@ -25,12 +25,15 @@ Partial Class DataSetHeaderList
         Me.components = New System.ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(DataSetHeaderList))
         Me.gbTOP = New System.Windows.Forms.GroupBox()
+        Me.btnClear = New System.Windows.Forms.Button()
+        Me.txtTableName = New System.Windows.Forms.TextBox()
+        Me.Label2 = New System.Windows.Forms.Label()
         Me.txtDataSet = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtUser = New System.Windows.Forms.TextBox()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.btnEditTable = New System.Windows.Forms.Button()
-        Me.btnAddTable = New System.Windows.Forms.Button()
+        Me.btnImportTable = New System.Windows.Forms.Button()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.btnRefresh = New System.Windows.Forms.Button()
         Me.dgvHeaderList = New System.Windows.Forms.DataGridView()
@@ -43,9 +46,6 @@ Partial Class DataSetHeaderList
         Me.RemoveTableToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.stsDataSetList = New System.Windows.Forms.StatusStrip()
         Me.stsDataSetListLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.txtTableName = New System.Windows.Forms.TextBox()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.btnClear = New System.Windows.Forms.Button()
         Me.gbTOP.SuspendLayout()
         CType(Me.dgvHeaderList, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.HeaderListCRUD.SuspendLayout()
@@ -64,7 +64,7 @@ Partial Class DataSetHeaderList
         Me.gbTOP.Controls.Add(Me.txtUser)
         Me.gbTOP.Controls.Add(Me.Label6)
         Me.gbTOP.Controls.Add(Me.btnEditTable)
-        Me.gbTOP.Controls.Add(Me.btnAddTable)
+        Me.gbTOP.Controls.Add(Me.btnImportTable)
         Me.gbTOP.Controls.Add(Me.btnClose)
         Me.gbTOP.Controls.Add(Me.btnRefresh)
         Me.gbTOP.Location = New System.Drawing.Point(3, 2)
@@ -72,6 +72,32 @@ Partial Class DataSetHeaderList
         Me.gbTOP.Size = New System.Drawing.Size(1032, 52)
         Me.gbTOP.TabIndex = 1
         Me.gbTOP.TabStop = False
+        '
+        'btnClear
+        '
+        Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnClear.Location = New System.Drawing.Point(714, 19)
+        Me.btnClear.Name = "btnClear"
+        Me.btnClear.Size = New System.Drawing.Size(80, 23)
+        Me.btnClear.TabIndex = 37
+        Me.btnClear.Text = "Clear"
+        Me.btnClear.UseVisualStyleBackColor = True
+        '
+        'txtTableName
+        '
+        Me.txtTableName.Location = New System.Drawing.Point(484, 20)
+        Me.txtTableName.Name = "txtTableName"
+        Me.txtTableName.Size = New System.Drawing.Size(70, 20)
+        Me.txtTableName.TabIndex = 1
+        '
+        'Label2
+        '
+        Me.Label2.AutoSize = True
+        Me.Label2.Location = New System.Drawing.Point(444, 24)
+        Me.Label2.Name = "Label2"
+        Me.Label2.Size = New System.Drawing.Size(34, 13)
+        Me.Label2.TabIndex = 36
+        Me.Label2.Text = "Table"
         '
         'txtDataSet
         '
@@ -114,14 +140,14 @@ Partial Class DataSetHeaderList
         Me.btnEditTable.Text = "Edit Table"
         Me.btnEditTable.UseVisualStyleBackColor = True
         '
-        'btnAddTable
+        'btnImportTable
         '
-        Me.btnAddTable.Location = New System.Drawing.Point(95, 19)
-        Me.btnAddTable.Name = "btnAddTable"
-        Me.btnAddTable.Size = New System.Drawing.Size(80, 23)
-        Me.btnAddTable.TabIndex = 29
-        Me.btnAddTable.Text = "Add Table"
-        Me.btnAddTable.UseVisualStyleBackColor = True
+        Me.btnImportTable.Location = New System.Drawing.Point(95, 19)
+        Me.btnImportTable.Name = "btnImportTable"
+        Me.btnImportTable.Size = New System.Drawing.Size(80, 23)
+        Me.btnImportTable.TabIndex = 29
+        Me.btnImportTable.Text = "Import Table"
+        Me.btnImportTable.UseVisualStyleBackColor = True
         '
         'btnClose
         '
@@ -208,32 +234,6 @@ Partial Class DataSetHeaderList
         Me.stsDataSetListLabel1.Name = "stsDataSetListLabel1"
         Me.stsDataSetListLabel1.Size = New System.Drawing.Size(0, 17)
         '
-        'txtTableName
-        '
-        Me.txtTableName.Location = New System.Drawing.Point(484, 20)
-        Me.txtTableName.Name = "txtTableName"
-        Me.txtTableName.Size = New System.Drawing.Size(70, 20)
-        Me.txtTableName.TabIndex = 1
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(444, 24)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(34, 13)
-        Me.Label2.TabIndex = 36
-        Me.Label2.Text = "Table"
-        '
-        'btnClear
-        '
-        Me.btnClear.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.btnClear.Location = New System.Drawing.Point(714, 19)
-        Me.btnClear.Name = "btnClear"
-        Me.btnClear.Size = New System.Drawing.Size(80, 23)
-        Me.btnClear.TabIndex = 37
-        Me.btnClear.Text = "Clear"
-        Me.btnClear.UseVisualStyleBackColor = True
-        '
         'DataSetHeaderList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -265,7 +265,7 @@ Partial Class DataSetHeaderList
     Friend WithEvents stsDataSetList As StatusStrip
     Friend WithEvents stsDataSetListLabel1 As ToolStripStatusLabel
     Friend WithEvents btnEditTable As Button
-    Friend WithEvents btnAddTable As Button
+    Friend WithEvents btnImportTable As Button
     Friend WithEvents ToolStripMenuItem1 As ToolStripSeparator
     Friend WithEvents RemoveTableToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AddTableToolStripMenuItem As ToolStripMenuItem

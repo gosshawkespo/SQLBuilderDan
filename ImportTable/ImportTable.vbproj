@@ -1,20 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{86D27397-DF7C-4631-B426-59B62C355F2A}</ProjectGuid>
+    <ProjectGuid>{DDEF7202-34D9-4D5D-9712-7055B9E846EB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <StartupObject>
     </StartupObject>
-    <RootNamespace>SQLBuilder</RootNamespace>
-    <AssemblyName>SQLBuilder</AssemblyName>
+    <RootNamespace>ImportTable</RootNamespace>
+    <AssemblyName>ImportTable</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -24,8 +23,9 @@
     <DefineDebug>true</DefineDebug>
     <DefineTrace>true</DefineTrace>
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>SQLBuilder.xml</DocumentationFile>
+    <DocumentationFile>ImportTable.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,8 +34,9 @@
     <DefineTrace>true</DefineTrace>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>SQLBuilder.xml</DocumentationFile>
+    <DocumentationFile>ImportTable.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <OptionExplicit>On</OptionExplicit>
@@ -50,31 +51,12 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ColumnAttributes">
-      <HintPath>..\ColumnAttributes\bin\Debug\ColumnAttributes.dll</HintPath>
-    </Reference>
-    <Reference Include="ESPOCommon1, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ESPOBIMDI\ESPOCommon1.dll</HintPath>
+    <Reference Include="ESPOCommon">
+      <HintPath>..\..\..\Common\ESPOCommon\ESPOCommon\bin\Debug\ESPOCommon.dll</HintPath>
     </Reference>
     <Reference Include="ESPOParms, Version=1.0.0.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ESPOBIMDI\ESPOParms.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data">
-      <HintPath>..\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data.Entity">
-      <HintPath>..\MySql.Data.Entity.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Data.Entity.EF6">
-      <HintPath>..\MySql.Data.Entity.EF6.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Fabric.Plugin">
-      <HintPath>..\MySql.Fabric.Plugin.dll</HintPath>
-    </Reference>
-    <Reference Include="MySql.Web">
-      <HintPath>..\MySql.Web.dll</HintPath>
+      <HintPath>..\..\..\Common\ESPOParms\bin\Debug\ESPOParms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -85,7 +67,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -101,17 +82,11 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="clsFieldDetails.vb" />
-    <Compile Include="DataSetHeaderList.Designer.vb">
-      <DependentUpon>DataSetHeaderList.vb</DependentUpon>
+    <Compile Include="ImportTableDAL.vb" />
+    <Compile Include="ImportTableDetail.Designer.vb">
+      <DependentUpon>ImportTableDetail.vb</DependentUpon>
     </Compile>
-    <Compile Include="DataSetHeaderList.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form_AddTable.Designer.vb">
-      <DependentUpon>Form_AddTable.vb</DependentUpon>
-    </Compile>
-    <Compile Include="Form_AddTable.vb">
+    <Compile Include="ImportTableDetail.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -130,39 +105,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ColumnSelect.Designer.vb">
-      <DependentUpon>ColumnSelect.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ColumnSelect.vb">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SQLBuilderDAL.vb" />
-    <Compile Include="ViewSQL.Designer.vb">
-      <DependentUpon>ViewSQL.vb</DependentUpon>
-    </Compile>
-    <Compile Include="ViewSQL.vb">
-      <SubType>Form</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="DataSetHeaderList.resx">
-      <DependentUpon>DataSetHeaderList.vb</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form_AddTable.resx">
-      <DependentUpon>Form_AddTable.vb</DependentUpon>
+    <EmbeddedResource Include="ImportTableDetail.resx">
+      <DependentUpon>ImportTableDetail.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ColumnSelect.resx">
-      <DependentUpon>ColumnSelect.vb</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewSQL.resx">
-      <DependentUpon>ViewSQL.vb</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -182,17 +134,13 @@
       <Project>{f460bc83-f08a-4c05-bbca-2b6dd6d5389a}</Project>
       <Name>ESPOBIParms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ImportTable\ImportTable.vbproj">
-      <Project>{ddef7202-34d9-4d5d-9712-7055b9e846eb}</Project>
-      <Name>ImportTable</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RunQuery\RunQuery.vbproj">
-      <Project>{7f5f6bee-c404-4235-8817-dc7dc865f962}</Project>
-      <Name>RunQuery</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="CLICK.WAV" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

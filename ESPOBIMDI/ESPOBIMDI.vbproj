@@ -251,6 +251,10 @@
       <Project>{7b0fbb75-1dfd-48e0-b9e1-131413ee662d}</Project>
       <Name>ColumnAttributes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ImportTable\ImportTable.vbproj">
+      <Project>{ddef7202-34d9-4d5d-9712-7055b9e846eb}</Project>
+      <Name>ImportTable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SQLBuilder\SQLBuilder.vbproj">
       <Project>{86d27397-df7c-4631-b426-59b62c355f2a}</Project>
       <Name>SQLBuilder</Name>

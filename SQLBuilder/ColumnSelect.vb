@@ -934,6 +934,7 @@ Public Class ColumnSelect
                     InStr(SelectedCondition, "MIN(") > 0 Or
                     InStr(SelectedCondition, "MAX(") > 0 Or
                     InStr(SelectedCondition, "AVG(") > 0 Or
+                    InStr(SelectedCondition, "HAVING") > 0 Or
                     InStr(SelectedCondition, "COUNT(") > 0 Then
                     'Aggregate function clause (Having):
                     ColumnSelect.FieldAttributes.lstHavings.Remove(SelectedCondition)

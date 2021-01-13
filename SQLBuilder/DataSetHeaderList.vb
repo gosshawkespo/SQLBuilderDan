@@ -197,8 +197,17 @@
         Cursor = Cursors.Default
     End Sub
 
-    Private Sub btnAddTable_Click(sender As Object, e As EventArgs) Handles btnAddTable.Click
-        AddNewTable()
+    Private Sub btnAddTable_Click(sender As Object, e As EventArgs) Handles btnImportTable.Click
+        'AddNewTable()
+        Cursor = Cursors.WaitCursor
+        Refresh()
+        Dim App As New ImportTable.ImportTableDetail
+        App.Visible = False
+        App.GetParms(GlobalSession, GlobalParms)
+        'App.PopulateForm()
+        App.Show()
+        Cursor = Cursors.Default
+        'PopulateForm()
     End Sub
 
     Sub EditTable()
@@ -261,9 +270,12 @@
             DeletedOK = myDAL.DeleteDatasetHeader(GlobalSession.ConnectString, 0, Tablename)
             DeletedOK2 = myDAL.DeleteDatasetColumns(GlobalSession.ConnectString, 0, Tablename)
             If DeletedOK And DeletedOK2 Then
-                MsgBox("OK Table: " & Tablename & " Has been removed.")
+                'MsgBox("OK Table: " & Tablename & " Has been removed.")
+            Else
+                MsgBox("Error: " & Tablename & " was not removed.")
             End If
         End If
+        PopulateForm()
     End Sub
 
     Private Sub AddTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddTableToolStripMenuItem.Click
@@ -279,5 +291,9 @@
         txtTableName.Text = ""
         txtDataSet.Text = ""
         txtUser.Text = ""
+    End Sub
+
+    Private Sub HeaderListCRUD_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles HeaderListCRUD.Opening
+
     End Sub
 End Class

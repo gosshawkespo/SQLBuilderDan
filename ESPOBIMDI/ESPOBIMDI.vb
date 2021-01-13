@@ -122,21 +122,21 @@
 
     End Sub
 
-    Private Sub ImportFromCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFromCSVToolStripMenuItem.Click
-        'Tools-> import from csv form:
-        Cursor = Cursors.Default
-        stsFW100Label1.Text = "Loading List......"
-        Cursor = Cursors.WaitCursor
-        Refresh()
-        Dim App As New SQLBuilder.ImportfromCSV
+    'Private Sub ImportFromCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFromCSVToolStripMenuItem.Click
+    'Tools-> import from csv form:
+    '   Cursor = Cursors.Default
+    '  stsFW100Label1.Text = "Loading List......"
+    ' Cursor = Cursors.WaitCursor
+    'Refresh()
+    'Dim App As New SQLBuilder.ImportfromCSV
 
-        App.Visible = False
-        'App.GetParms(GlobalSession, GlobalParms)
-        'App.PopulateForm()
-        App.Show()
-        stsFW100Label1.Text = ""
-        Cursor = Cursors.Default
-    End Sub
+    '   App.Visible = False
+    'App.GetParms(GlobalSession, GlobalParms)
+    'App.PopulateForm()
+    '  App.Show()
+    ' stsFW100Label1.Text = ""
+    'Cursor = Cursors.Default
+    'End Sub
 
     Private Sub NormalToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles NormalToolStripMenuItem.Click
         ColumnAttributes.ColumnAttributes.ThemeSelection = 0
@@ -160,5 +160,17 @@
         IBMToolStripMenuItem.Checked = False
     End Sub
 
-
+    Private Sub ImportFromCSVToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImportFromCSVToolStripMenuItem.Click
+        Cursor = Cursors.Default
+        stsFW100Label1.Text = "Loading List......"
+        Cursor = Cursors.WaitCursor
+        Refresh()
+        Dim App As New ImportTable.ImportTableDetail
+        App.Visible = False
+        App.GetParms(GlobalSession, GlobalParms)
+        'App.PopulateForm()
+        App.Show()
+        stsFW100Label1.Text = ""
+        Cursor = Cursors.Default
+    End Sub
 End Class

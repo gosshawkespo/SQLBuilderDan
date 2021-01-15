@@ -16,10 +16,46 @@ Public Class ImportTableDetail
             btnImport.Enabled = False
         End If
         MdiParent = FromHandle(GlobalSession.MDIParentHandle)
+        BuildCombos()
+
+        txtDataSetID.Text = GlobalParms.DataSetID
+        If txtDataSetID.Text > 0 Then
+            txtDataSetName.ReadOnly = True
+            txtTableName.ReadOnly = True
+            cboLibraryName.Enabled = False
+            txtDataSetHeaderText.Focus()
+        End If
+        populateForm()
+
     End Sub
 
+    Public Sub BuildCombos()
+        cboLibraryName.Items.Add("AULT1F3")
+        cboLibraryName.Items.Add("AULT2F3")
+        cboLibraryName.Items.Add("EPOUTILITY")
+        cboLibraryName.Items.Add("EPOCRMFLIV")
+        cboLibraryName.Items.Add("EPOSYSFLIV")
+        cboLibraryName.Items.Add("ISLRTGF")
+        cboLibraryName.SelectedText = "AULT2F3"
 
-    Public Sub populateForm(ConnectString As String, ID As Integer, EstablishmentID As Integer, FrameworkID As Integer, CustomerID As Integer, UpdateFlag As Integer)
+        cboTextColumnName.Items.Add("Alias")
+        cboTextColumnName.Items.Add("ColHdg")
+        cboTextColumnName.Items.Add("Name")
+        cboTextColumnName.Items.Add("Text")
+        cboTextColumnName.SelectedText = "Text"
+    End Sub
+    Public Sub populateForm()
+        Cursor = Cursors.WaitCursor
+        Dim dal As New ImportTableDAL
+        Dim dt As New DataTable
+        dt = dal.GetDatasetHeader(GlobalSession.ConnectString, GlobalParms.DataSetID)
+        If dt.Rows.Count > 0 Then
+            txtTableName.Text = dt.Rows(0)("TableName")
+            cboLibraryName.Text = dt.Rows(0)("LibraryName")
+            txtDataSetName.Text = dt.Rows(0)("DataSetName")
+            txtDataSetHeaderText.Text = dt.Rows(0)("DataSetHeaderText")
+            txtS21ApplicationCode.Text = dt.Rows(0)("S21ApplicationCode")
+        End If
         Me.Cursor = Cursors.Default
     End Sub
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
@@ -29,16 +65,57 @@ Public Class ImportTableDetail
 
     Private Sub btnUpdate_Click(sender As Object, e As EventArgs) Handles btnImport.Click
         Cursor = Cursors.Default
-        Dim dal As New ImportTableDAL
-        dal.InsertEBI7020T(
+        Dim ChgFlag As Boolean
+
+        If Trim(txtDataSetName.Text) = "" Then
+            txtDataSetName.Text = txtTableName.Text
+            ChgFlag = True
+        End If
+        If Trim(txtS21ApplicationCode.Text) = "" Then
+            txtS21ApplicationCode.Text = Mid(txtTableName.Text, 1, 2)
+            ChgFlag = True
+        End If
+        If Trim(txtDataSetHeaderText.Text) = "" Then
+            Dim TableName As String
+            Dim dal0 As New ImportTableDAL
+            Dim dt0 As New DataTable
+            TableName = dal0.GetTableName(
             GlobalSession.ConnectString,
-            txtDataSetName.Text,
-            txtDataSetHeaderText.Text,
             txtTableName.Text,
-            txtLibraryName.Text,
-            GlobalSession.CurrentUserShort,
-            txtTextColumnName.Text
+            cboLibraryName.Text
                             )
+            txtDataSetHeaderText.Text = TableName
+            ChgFlag = True
+        End If
+
+        If ChgFlag Then
+            Exit Sub
+        End If
+
+        Dim dal As New ImportTableDAL
+        Dim dt1 As New DataTable
+        If txtDataSetID.Text > 0 Then
+            dt1 = dal.UpdateEBI7020T(
+                GlobalSession.ConnectString,
+                txtDataSetID.Text,
+                txtDataSetHeaderText.Text,
+                txtS21ApplicationCode.Text,
+                GlobalSession.CurrentUserShort
+                               )
+        Else
+            dt1 = dal.InsertEBI7020T(
+                GlobalSession.ConnectString,
+                txtDataSetName.Text,
+                txtDataSetHeaderText.Text,
+                txtTableName.Text,
+                cboLibraryName.Text,
+                GlobalSession.CurrentUserShort,
+                cboTextColumnName.Text
+                                )
+            If dt1.Rows(0)("Records") <= 0 Then
+                MsgBox("Error: No Columns were added. Check Table name and Library")
+            End If
+        End If
         Me.Hide()
     End Sub
 

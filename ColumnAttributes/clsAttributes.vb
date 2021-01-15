@@ -538,6 +538,32 @@ Public Class ColumnAttributes
         _HavingConditions = ""
     End Sub
 
+    Public Function ChangeHavingList(SearchItem As String, ReplaceWith As String) As Boolean
+        Dim IDX As Integer
+        Dim Changed As Boolean = False
+
+        IDX = -1
+        IDX = lstHavings.IndexOf(SearchItem)
+        If IDX > -1 Then
+            lstHavings.Item(IDX) = ReplaceWith
+            Changed = True
+        End If
+        Return Changed
+    End Function
+
+    Public Function ChangeConditionList(SearchItem As String, ReplaceWith As String) As Boolean
+        Dim IDX As Integer
+        Dim Changed As Boolean = False
+
+        IDX = -1
+        IDX = lbConditions.IndexOf(SearchItem)
+        If IDX > -1 Then
+            lbConditions.Item(IDX) = ReplaceWith
+            Changed = True
+        End If
+        Return Changed
+    End Function
+
     Public Sub ClearConditionsList()
         If lbConditions IsNot Nothing Then
             lbConditions.Clear()
@@ -593,10 +619,11 @@ Public Class ColumnAttributes
         ClearAttributesList()
     End Sub
 
-    Public Function IsConditionInList(strItem As String) As Boolean
+    Public Function IsConditionInList(strItem As String, ByRef IDX As Integer) As Boolean
         IsConditionInList = False
         If lbConditions IsNot Nothing Then
             If lbConditions.Contains(strItem) Then
+                IDX = lbConditions.IndexOf(strItem)
                 Return True
             End If
         End If
@@ -610,10 +637,11 @@ Public Class ColumnAttributes
         End If
     End Function
 
-    Public Function IsHavingInList(strItem As String) As Boolean
+    Public Function IsHavingInList(strItem As String, ByRef IDX As Integer) As Boolean
         IsHavingInList = False
         If lstHavings IsNot Nothing Then
             If lstHavings.Contains(strItem) Then
+                IDX = lstHavings.IndexOf(strItem)
                 Return True
             End If
         End If

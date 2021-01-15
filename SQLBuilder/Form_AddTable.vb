@@ -159,7 +159,7 @@ Public Class Form_AddTable
             _IsTableUpdated = False
             pnlDatasetEntry.Visible = True
             'Get details:
-            dt = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename, DatasetID, "", "")
+            dt = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename, DatasetID, "", "", "", "", "")
             If Not IsNothing(dt) Then
                 strDatasetID = dt.Rows(0)("DatasetID")
                 strDatasetName = dt.Rows(0)("Dataset Name")
@@ -242,7 +242,7 @@ Public Class Form_AddTable
             End If
             'Need to insert the table if not already in EBI7020T ???
             'NO - just extract the fields for the GRID.
-            dtCheckHeader = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename.ToUpper, DatasetID, "", "")
+            dtCheckHeader = myDAL.GetHeaderList(GlobalSession.ConnectString, Tablename.ToUpper, DatasetID, "", "", "", "", "")
             If IsNothing(dtCheckHeader) Then
                 'INSERT NEW COLUMNS INTO HEADER:
                 'Status = myDAL.Update_DatasetHeader(GlobalSession.ConnectString, DatasetID, strDatasetName.ToUpper, strDatasetDesc,

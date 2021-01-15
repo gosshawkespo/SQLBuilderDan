@@ -1,13 +1,24 @@
-﻿Imports System.Data
+﻿Imports System.ComponentModel
+Imports System.Data
 Imports System.IO
 
 Public Class ColumnSelect
     Private _DataSetID As Integer
     Private _WhereConditions As String
     Private _WhereField As String
+    Private _EditingCondition As Boolean
     Dim GlobalParms As New ESPOBIParms.BIParms
     Dim GlobalSession As New ESPOParms.Session
     Dim dtWhere As DataTable
+
+    Property IsEditingCondition As Boolean
+        Get
+            Return _EditingCondition
+        End Get
+        Set(value As Boolean)
+            _EditingCondition = value
+        End Set
+    End Property
     'Public Shared myWhereConditions As New myGlobals
     Public Shared FieldAttributes As New ColumnAttributes.ColumnAttributes
 
@@ -42,7 +53,7 @@ Public Class ColumnSelect
         FieldAttributes.DeleteConditions()
         FieldAttributes.ClearConditionsList()
         FieldAttributes.LastOperator = ""
-
+        Me.IsEditingCondition = False
         'FieldAttributes.ClearSelectedAttributesList()
 
         For Each c As Control In Controls
@@ -168,7 +179,7 @@ Public Class ColumnSelect
             'IndexCol.ColumnName = "#"
             'IndexCol.Namespace = "#"
             'IndexCol.SetOrdinal(0)
-
+            Me.IsEditingCondition = False
             If DataSetHeaderList.DBVersion = "IBM" Then
                 dt = myDAL.GetColumns(GlobalSession.ConnectString, DataSetID, "", "")
             Else
@@ -773,7 +784,7 @@ Public Class ColumnSelect
                         End If
                     End If
                     strHaving += strWhereColumnText & " " & strOperator & " " & strValue
-                    If Not ColumnSelect.FieldAttributes.IsHavingInList(strHaving) Then
+                    If Not ColumnSelect.FieldAttributes.IsHavingInList(strHaving, 0) Then
                         ColumnSelect.FieldAttributes.lstHavings.Add(strJoinHavings & strHaving)
                     Else
                         MsgBox("Condition Already in List")
@@ -796,7 +807,7 @@ Public Class ColumnSelect
                         strCondition += strWhereField1 & " " & strOperator & " " & strValue
                     End If
 
-                    If Not ColumnSelect.FieldAttributes.IsConditionInList(strCondition) Then
+                    If Not ColumnSelect.FieldAttributes.IsConditionInList(strCondition, 0) Then
                         ColumnSelect.FieldAttributes.lbConditions.Add(strJoinConditions & strCondition)
                     Else
                         MsgBox("Condition Already in List")
@@ -966,6 +977,10 @@ Public Class ColumnSelect
     End Sub
 
     Private Sub SQLBuilder_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+        Dim IDX As Integer
+        Dim strSearchCondition As String
+        Dim strReplaceWith As String
+
         If e.KeyValue = Keys.F5 Then
             btnRefresh.PerformClick()
         ElseIf e.KeyValue = 27 Then 'ESC pressed
@@ -974,13 +989,28 @@ Public Class ColumnSelect
         ElseIf e.KeyValue = Keys.F7 Then
             UndockChild()
         ElseIf e.KeyValue = Keys.Return Or e.KeyValue = Keys.Enter Then
-            If txtOperator.Text.ToUpper <> "IN" And txtOperator.Text.ToUpper <> "NOT IN" Then
+            If Me.IsEditingCondition = False And txtOperator.Text.ToUpper <> "IN" And txtOperator.Text.ToUpper <> "NOT IN" Then
                 btnAddCondition.PerformClick()
             End If
+            If Me.IsEditingCondition Then
+                If txtEditCondition.Text <> "" Then
+                    IDX = lstConditions.SelectedIndex
+                    strSearchCondition = lstConditions.Items(IDX)
+                    strReplaceWith = txtEditCondition.Text
+                    lstConditions.Items.Clear()
+                    FieldAttributes.ChangeConditionList(strSearchCondition, strReplaceWith)
+                    FieldAttributes.ChangeHavingList(strSearchCondition, strReplaceWith)
+                    UpdateInternalConditionList()
+                    UpdateInternalHavingList()
+                    txtEditCondition.Text = ""
+                    txtEditCondition.Visible = False
+                    Me.IsEditingCondition = False
+                End If
+            End If
         ElseIf (e.Control AndAlso (e.KeyCode = Keys.S)) Then
-                btnShowSQLQuery.PerformClick()
-            ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
-                btnClose.PerformClick()
+            btnShowSQLQuery.PerformClick()
+        ElseIf (e.Control AndAlso (e.Shift) AndAlso (e.KeyCode = Keys.C)) Then
+            btnClose.PerformClick()
         End If
     End Sub
 
@@ -2427,9 +2457,6 @@ Public Class ColumnSelect
         ShowQueryForm()
     End Sub
 
-    Private Sub lstConditions_SelectedIndexChanged(sender As Object, e As EventArgs) Handles lstConditions.SelectedIndexChanged
-
-    End Sub
 
     Private Sub btnImportSQL_Click(sender As Object, e As EventArgs)
 
@@ -2451,4 +2478,27 @@ Public Class ColumnSelect
         GlobalParms.SQLStatement = BuildQueryFromSelection()
         MsgBox(GlobalParms.SQLStatement)
     End Sub
+
+    Private Sub btnEditCondition_Click(sender As Object, e As EventArgs) Handles btnEditCondition.Click
+        'Call separate form with textbox to edit...
+        Cursor = Cursors.WaitCursor
+        Refresh()
+        Dim strCondition As String
+        'Dim CE As New SQLBuilder.ConditionEditor
+        Dim SelectedConditions = (From i In lstConditions.SelectedItems).ToList
+        Dim IDX As Integer
+
+        IDX = lstConditions.SelectedIndex
+        If IDX > -1 Then
+            strCondition = lstConditions.Items(IDX)
+            txtEditCondition.Visible = True
+            Me.IsEditingCondition = True
+            txtEditCondition.Text = strCondition
+        Else
+            MsgBox("Please select a condition first")
+            Exit Sub
+        End If
+        Cursor = Cursors.Default
+    End Sub
+
 End Class

@@ -59,7 +59,15 @@
             If DBVersion = "MYSQL" Then
                 dt = myDAL.GetHeaderListMYSQL(SQLBuilder.DataSetHeaderList.DBName, "", DatasetID)
             Else
-                dt = myDAL.GetHeaderList(GlobalSession.ConnectString, txtTableName.Text, DatasetID, txtUser.Text, txtDataSet.Text)
+                dt = myDAL.GetHeaderList(
+                    GlobalSession.ConnectString,
+                    txtTableName.Text,
+                    DatasetID,
+                    txtUser.Text,
+                    txtDataSet.Text,
+                    txtDataSetHeaderText.Text,
+                    txtLibrary.Text,
+                    txtApplicationCode.Text)
             End If
             If dt IsNot Nothing Then
                 If dt.Rows.Count > 0 Then
@@ -198,7 +206,10 @@
     End Sub
 
     Private Sub btnAddTable_Click(sender As Object, e As EventArgs) Handles btnImportTable.Click
-        'AddNewTable()
+        GlobalParms.DataSetID = 0
+        EditTable2()
+    End Sub
+    Sub EditTable2()
         Cursor = Cursors.WaitCursor
         Refresh()
         Dim App As New ImportTable.ImportTableDetail
@@ -207,7 +218,17 @@
         'App.PopulateForm()
         App.Show()
         Cursor = Cursors.Default
-        'PopulateForm()
+    End Sub
+
+    Sub ViewDataset()
+        Cursor = Cursors.WaitCursor
+        Refresh()
+        Dim App As New ImportTable.DataSetDetail
+        App.Visible = False
+        App.GetParms(GlobalSession, GlobalParms)
+        'App.PopulateForm()
+        App.Show()
+        Cursor = Cursors.Default
     End Sub
 
     Sub EditTable()
@@ -240,8 +261,10 @@
         Cursor = Cursors.Default
     End Sub
 
-    Private Sub btnEditTable_Click(sender As Object, e As EventArgs) Handles btnEditTable.Click
-        EditTable()
+    Private Sub btnEditTable_Click(sender As Object, e As EventArgs)
+        'EditTable()
+        GlobalParms.DataSetID = dgvHeaderList.CurrentRow.Cells("DataSetID").Value
+        EditTable2()
     End Sub
 
     Private Sub RemoveTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RemoveTableToolStripMenuItem.Click
@@ -280,20 +303,45 @@
 
     Private Sub AddTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddTableToolStripMenuItem.Click
         'CALL ADD TABLE procedure:
-        AddNewTable()
+        'AddNewTable()
+        GlobalParms.DataSetID = 0
+        EditTable2()
     End Sub
 
     Private Sub EditTableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EditTableToolStripMenuItem.Click
-        EditTable()
+        'EditTable()
+        GlobalParms.DataSetID = dgvHeaderList.CurrentRow.Cells("DataSetID").Value
+        EditTable2()
     End Sub
 
     Private Sub btnClear_Click(sender As Object, e As EventArgs) Handles btnClear.Click
         txtTableName.Text = ""
+        txtLibrary.Text = ""
         txtDataSet.Text = ""
+        txtDataSetHeaderText.Text = ""
         txtUser.Text = ""
+        txtApplicationCode.Text = ""
     End Sub
 
     Private Sub HeaderListCRUD_Opening(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles HeaderListCRUD.Opening
 
+    End Sub
+
+    Private Sub RefreshColumnsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RefreshColumnsToolStripMenuItem.Click
+        Cursor = Cursors.Default
+        Dim dal As New ImportTable.ImportTableDAL
+        Dim dt As DataTable
+        dt = dal.InsertEBI7023T(
+            GlobalSession.ConnectString,
+            dgvHeaderList.CurrentRow.Cells("TableName").Value,
+            dgvHeaderList.CurrentRow.Cells("Library").Value,
+            dgvHeaderList.CurrentRow.Cells("DataSet Name").Value,
+            "Text")
+        stsDataSetListLabel1.Text = dt.Rows(0)("Records") & " Columns were replaced"
+    End Sub
+
+    Private Sub ViewDatasetToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewDatasetToolStripMenuItem.Click
+        GlobalParms.DataSetID = dgvHeaderList.CurrentRow.Cells("DataSetID").Value
+        ViewDataSet()
     End Sub
 End Class

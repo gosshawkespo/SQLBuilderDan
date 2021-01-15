@@ -55,6 +55,7 @@ Partial Class ColumnSelect
         Me.cboOperators = New System.Windows.Forms.ComboBox()
         Me.btnClose = New System.Windows.Forms.Button()
         Me.gbFilterRecords = New System.Windows.Forms.GroupBox()
+        Me.btnEditCondition = New System.Windows.Forms.Button()
         Me.txtINvalues = New System.Windows.Forms.TextBox()
         Me.rbOR = New System.Windows.Forms.RadioButton()
         Me.lstConditions = New System.Windows.Forms.ListBox()
@@ -95,6 +96,7 @@ Partial Class ColumnSelect
         Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label1 = New System.Windows.Forms.Label()
+        Me.txtEditCondition = New System.Windows.Forms.TextBox()
         CType(Me.dgvFieldSelection, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.stsQueryBuilder.SuspendLayout()
         Me.gbFilterRecords.SuspendLayout()
@@ -121,6 +123,7 @@ Partial Class ColumnSelect
         '
         Me.txtTablename.Location = New System.Drawing.Point(308, 13)
         Me.txtTablename.Name = "txtTablename"
+        Me.txtTablename.ReadOnly = True
         Me.txtTablename.Size = New System.Drawing.Size(169, 20)
         Me.txtTablename.TabIndex = 2
         Me.txtTablename.Text = "ECM4120V20"
@@ -328,7 +331,7 @@ Partial Class ColumnSelect
         '
         Me.dtp2.CustomFormat = "yyyy-MM-dd"
         Me.dtp2.Format = System.Windows.Forms.DateTimePickerFormat.Custom
-        Me.dtp2.Location = New System.Drawing.Point(324, 113)
+        Me.dtp2.Location = New System.Drawing.Point(174, 219)
         Me.dtp2.MinDate = New Date(1900, 1, 1, 0, 0, 0, 0)
         Me.dtp2.Name = "dtp2"
         Me.dtp2.Size = New System.Drawing.Size(140, 20)
@@ -349,7 +352,7 @@ Partial Class ColumnSelect
         '
         'txtValue2
         '
-        Me.txtValue2.Location = New System.Drawing.Point(324, 112)
+        Me.txtValue2.Location = New System.Drawing.Point(174, 219)
         Me.txtValue2.Name = "txtValue2"
         Me.txtValue2.Size = New System.Drawing.Size(140, 20)
         Me.txtValue2.TabIndex = 21
@@ -417,6 +420,8 @@ Partial Class ColumnSelect
         '
         'gbFilterRecords
         '
+        Me.gbFilterRecords.Controls.Add(Me.txtEditCondition)
+        Me.gbFilterRecords.Controls.Add(Me.btnEditCondition)
         Me.gbFilterRecords.Controls.Add(Me.txtINvalues)
         Me.gbFilterRecords.Controls.Add(Me.rbOR)
         Me.gbFilterRecords.Controls.Add(Me.lstConditions)
@@ -442,12 +447,21 @@ Partial Class ColumnSelect
         Me.gbFilterRecords.TabIndex = 20
         Me.gbFilterRecords.TabStop = False
         '
+        'btnEditCondition
+        '
+        Me.btnEditCondition.Location = New System.Drawing.Point(473, 113)
+        Me.btnEditCondition.Name = "btnEditCondition"
+        Me.btnEditCondition.Size = New System.Drawing.Size(120, 24)
+        Me.btnEditCondition.TabIndex = 27
+        Me.btnEditCondition.Text = "Edit Condition"
+        Me.btnEditCondition.UseVisualStyleBackColor = True
+        '
         'txtINvalues
         '
         Me.txtINvalues.Location = New System.Drawing.Point(174, 112)
         Me.txtINvalues.Multiline = True
         Me.txtINvalues.Name = "txtINvalues"
-        Me.txtINvalues.Size = New System.Drawing.Size(140, 95)
+        Me.txtINvalues.Size = New System.Drawing.Size(140, 70)
         Me.txtINvalues.TabIndex = 25
         Me.txtINvalues.Visible = False
         '
@@ -467,7 +481,7 @@ Partial Class ColumnSelect
         Me.lstConditions.Location = New System.Drawing.Point(324, 144)
         Me.lstConditions.Name = "lstConditions"
         Me.lstConditions.SelectionMode = System.Windows.Forms.SelectionMode.MultiSimple
-        Me.lstConditions.Size = New System.Drawing.Size(443, 95)
+        Me.lstConditions.Size = New System.Drawing.Size(419, 95)
         Me.lstConditions.TabIndex = 26
         '
         'cbIgnoreCase
@@ -509,7 +523,7 @@ Partial Class ColumnSelect
         'lblValue2
         '
         Me.lblValue2.AutoSize = True
-        Me.lblValue2.Location = New System.Drawing.Point(323, 91)
+        Me.lblValue2.Location = New System.Drawing.Point(111, 222)
         Me.lblValue2.Name = "lblValue2"
         Me.lblValue2.Size = New System.Drawing.Size(43, 13)
         Me.lblValue2.TabIndex = 8
@@ -518,7 +532,7 @@ Partial Class ColumnSelect
         '
         'btnAddCondition
         '
-        Me.btnAddCondition.Location = New System.Drawing.Point(483, 110)
+        Me.btnAddCondition.Location = New System.Drawing.Point(324, 113)
         Me.btnAddCondition.Name = "btnAddCondition"
         Me.btnAddCondition.Size = New System.Drawing.Size(120, 24)
         Me.btnAddCondition.TabIndex = 22
@@ -527,7 +541,7 @@ Partial Class ColumnSelect
         '
         'btnRemoveCondition
         '
-        Me.btnRemoveCondition.Location = New System.Drawing.Point(623, 108)
+        Me.btnRemoveCondition.Location = New System.Drawing.Point(623, 113)
         Me.btnRemoveCondition.Name = "btnRemoveCondition"
         Me.btnRemoveCondition.Size = New System.Drawing.Size(120, 24)
         Me.btnRemoveCondition.TabIndex = 23
@@ -830,7 +844,7 @@ Partial Class ColumnSelect
         Me.txtFilePath.Location = New System.Drawing.Point(45, 48)
         Me.txtFilePath.Name = "txtFilePath"
         Me.txtFilePath.ReadOnly = True
-        Me.txtFilePath.Size = New System.Drawing.Size(673, 20)
+        Me.txtFilePath.Size = New System.Drawing.Size(663, 20)
         Me.txtFilePath.TabIndex = 34
         '
         'SplitContainer1
@@ -899,6 +913,14 @@ Partial Class ColumnSelect
         Me.Label1.Size = New System.Drawing.Size(83, 13)
         Me.Label1.TabIndex = 9
         Me.Label1.Text = "Save Options"
+        '
+        'txtEditCondition
+        '
+        Me.txtEditCondition.Location = New System.Drawing.Point(14, 191)
+        Me.txtEditCondition.Name = "txtEditCondition"
+        Me.txtEditCondition.Size = New System.Drawing.Size(300, 20)
+        Me.txtEditCondition.TabIndex = 28
+        Me.txtEditCondition.Visible = False
         '
         'ColumnSelect
         '
@@ -1008,4 +1030,6 @@ Partial Class ColumnSelect
     Friend WithEvents radDisplay As RadioButton
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents btnEditCondition As Button
+    Friend WithEvents txtEditCondition As TextBox
 End Class

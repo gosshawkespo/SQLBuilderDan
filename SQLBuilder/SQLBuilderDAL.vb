@@ -6,7 +6,17 @@ Imports MySql.Data
 Imports MySql.Data.MySqlClient
 Public Class SQLBuilderDAL
 
-    Function GetHeaderList(ConnectString As String, Tablename As String, ByRef DatasetID As Integer, UserID As String, DataSet As String) As DataTable
+    Function GetHeaderList(
+             ConnectString As String,
+             Tablename As String,
+             ByRef DatasetID As Integer,
+             UserID As String,
+             DataSet As String,
+             DatasetHeaderText As String,
+             LibraryName As String,
+             ApplicationCode As String
+                            ) As DataTable
+
         Dim cn As New OdbcConnection(ConnectString)
         Dim SQLStatement As String
         Dim SQLWhere As String = ""
@@ -14,6 +24,15 @@ Public Class SQLBuilderDAL
 
         If Tablename <> "" Then
             SQLWhere = " WHERE upper(Tablename) like '" & Trim(Tablename.ToUpper) & "%' "
+        End If
+
+        If LibraryName <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " upper(LibraryName) like'" & LibraryName.ToUpper & "%' "
         End If
 
         If UserID <> "" Then
@@ -31,6 +50,22 @@ Public Class SQLBuilderDAL
                 SQLWhere += "And "
             End If
             SQLWhere += " upper(DataSetName) like '" & DataSet.ToUpper & "%' "
+        End If
+        If DatasetHeaderText <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " upper(DataSetHeaderText) like '%" & DatasetHeaderText.ToUpper & "%' "
+        End If
+        If ApplicationCode <> "" Then
+            If SQLWhere = "" Then
+                SQLWhere = "where "
+            Else
+                SQLWhere += "And "
+            End If
+            SQLWhere += " upper(S21ApplicationCode) like '" & ApplicationCode.ToUpper & "%' "
         End If
 
         GetHeaderList = Nothing

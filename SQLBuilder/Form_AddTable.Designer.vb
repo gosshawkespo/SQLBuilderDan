@@ -141,7 +141,7 @@ Partial Class Form_AddTable
         Me.pnlGrid.Controls.Add(Me.dgvTableDetails)
         Me.pnlGrid.Location = New System.Drawing.Point(4, 5)
         Me.pnlGrid.Name = "pnlGrid"
-        Me.pnlGrid.Size = New System.Drawing.Size(877, 242)
+        Me.pnlGrid.Size = New System.Drawing.Size(911, 249)
         Me.pnlGrid.TabIndex = 8
         Me.pnlGrid.Visible = False
         '
@@ -187,7 +187,7 @@ Partial Class Form_AddTable
         Me.dgvTableDetails.Location = New System.Drawing.Point(4, 49)
         Me.dgvTableDetails.Name = "dgvTableDetails"
         Me.dgvTableDetails.RowHeadersWidth = 62
-        Me.dgvTableDetails.Size = New System.Drawing.Size(862, 174)
+        Me.dgvTableDetails.Size = New System.Drawing.Size(896, 181)
         Me.dgvTableDetails.TabIndex = 0
         '
         'lblAuthority
@@ -300,9 +300,9 @@ Partial Class Form_AddTable
         '
         Me.stsTableDetails.ImageScalingSize = New System.Drawing.Size(24, 24)
         Me.stsTableDetails.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsTableDetailsLabel1, Me.stsTableDetailsLabel2})
-        Me.stsTableDetails.Location = New System.Drawing.Point(0, 462)
+        Me.stsTableDetails.Location = New System.Drawing.Point(0, 476)
         Me.stsTableDetails.Name = "stsTableDetails"
-        Me.stsTableDetails.Size = New System.Drawing.Size(912, 22)
+        Me.stsTableDetails.Size = New System.Drawing.Size(946, 22)
         Me.stsTableDetails.TabIndex = 14
         '
         'stsTableDetailsLabel1
@@ -357,7 +357,7 @@ Partial Class Form_AddTable
             Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.SCAddNewTable.Location = New System.Drawing.Point(8, 8)
-        Me.SCAddNewTable.Margin = New System.Windows.Forms.Padding(2, 2, 2, 2)
+        Me.SCAddNewTable.Margin = New System.Windows.Forms.Padding(2)
         Me.SCAddNewTable.Name = "SCAddNewTable"
         Me.SCAddNewTable.Orientation = System.Windows.Forms.Orientation.Horizontal
         '
@@ -372,8 +372,8 @@ Partial Class Form_AddTable
         Me.SCAddNewTable.Panel2.AutoScroll = True
         Me.SCAddNewTable.Panel2.BackColor = System.Drawing.Color.Silver
         Me.SCAddNewTable.Panel2.Controls.Add(Me.pnlGrid)
-        Me.SCAddNewTable.Size = New System.Drawing.Size(900, 455)
-        Me.SCAddNewTable.SplitterDistance = 193
+        Me.SCAddNewTable.Size = New System.Drawing.Size(934, 469)
+        Me.SCAddNewTable.SplitterDistance = 198
         Me.SCAddNewTable.SplitterWidth = 6
         Me.SCAddNewTable.TabIndex = 17
         '
@@ -383,7 +383,7 @@ Partial Class Form_AddTable
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.AutoScroll = True
         Me.BackColor = System.Drawing.Color.Gray
-        Me.ClientSize = New System.Drawing.Size(912, 484)
+        Me.ClientSize = New System.Drawing.Size(946, 498)
         Me.Controls.Add(Me.SCAddNewTable)
         Me.Controls.Add(Me.stsTableDetails)
         Me.MinimumSize = New System.Drawing.Size(418, 434)

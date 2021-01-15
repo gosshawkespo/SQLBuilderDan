@@ -102,6 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clsFieldDetails.vb" />
+    <Compile Include="ConditionEditor.Designer.vb">
+      <DependentUpon>ConditionEditor.vb</DependentUpon>
+    </Compile>
+    <Compile Include="ConditionEditor.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="DataSetHeaderList.Designer.vb">
       <DependentUpon>DataSetHeaderList.vb</DependentUpon>
     </Compile>
@@ -145,6 +151,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ConditionEditor.resx">
+      <DependentUpon>ConditionEditor.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DataSetHeaderList.resx">
       <DependentUpon>DataSetHeaderList.vb</DependentUpon>
     </EmbeddedResource>

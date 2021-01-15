@@ -82,6 +82,12 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSetDetail.Designer.vb">
+      <DependentUpon>DataSetDetail.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataSetDetail.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ImportTableDAL.vb" />
     <Compile Include="ImportTableDetail.Designer.vb">
       <DependentUpon>ImportTableDetail.vb</DependentUpon>
@@ -107,6 +113,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DataSetDetail.resx">
+      <DependentUpon>DataSetDetail.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ImportTableDetail.resx">
       <DependentUpon>ImportTableDetail.vb</DependentUpon>
     </EmbeddedResource>

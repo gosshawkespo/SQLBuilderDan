@@ -92,8 +92,8 @@ Partial Class ESPOBIMDI
         'SQLBuilderToolStripMenuItem
         '
         Me.SQLBuilderToolStripMenuItem.Name = "SQLBuilderToolStripMenuItem"
-        Me.SQLBuilderToolStripMenuItem.Size = New System.Drawing.Size(135, 22)
-        Me.SQLBuilderToolStripMenuItem.Text = "SQL Builder"
+        Me.SQLBuilderToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.SQLBuilderToolStripMenuItem.Text = "Data Sets"
         '
         'WindowToolStripMenuItem
         '

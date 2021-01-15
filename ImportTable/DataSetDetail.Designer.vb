@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class ImportTableDetail
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+Partial Class DataSetDetail
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()>
+    <System.Diagnostics.DebuggerNonUserCode()> _
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,13 +20,8 @@ Partial Class ImportTableDetail
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()>
+    <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.btnImport = New System.Windows.Forms.Button()
-        Me.btnCancel = New System.Windows.Forms.Button()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.txtTableName = New System.Windows.Forms.TextBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.txtDataSetID = New System.Windows.Forms.TextBox()
@@ -39,62 +34,13 @@ Partial Class ImportTableDetail
         Me.txtDataSetHeaderText = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.txtDataSetName = New System.Windows.Forms.TextBox()
+        Me.btnImport = New System.Windows.Forms.Button()
+        Me.btnCancel = New System.Windows.Forms.Button()
         Me.lblESID = New System.Windows.Forms.Label()
-        Me.StatusStrip1 = New System.Windows.Forms.StatusStrip()
-        Me.stsLabel1 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.txtTableName = New System.Windows.Forms.TextBox()
         Me.GroupBox3.SuspendLayout()
-        Me.StatusStrip1.SuspendLayout()
         Me.SuspendLayout()
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label6.Location = New System.Drawing.Point(-40, 213)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(39, 14)
-        Me.Label6.TabIndex = 8
-        Me.Label6.Text = "Name"
-        '
-        'btnImport
-        '
-        Me.btnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnImport.Enabled = False
-        Me.btnImport.Location = New System.Drawing.Point(22, 224)
-        Me.btnImport.Name = "btnImport"
-        Me.btnImport.Size = New System.Drawing.Size(75, 23)
-        Me.btnImport.TabIndex = 6
-        Me.btnImport.Text = "Update"
-        Me.btnImport.UseVisualStyleBackColor = True
-        '
-        'btnCancel
-        '
-        Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.btnCancel.Location = New System.Drawing.Point(166, 224)
-        Me.btnCancel.Name = "btnCancel"
-        Me.btnCancel.Size = New System.Drawing.Size(75, 23)
-        Me.btnCancel.TabIndex = 7
-        Me.btnCancel.Text = "Cancel"
-        Me.btnCancel.UseVisualStyleBackColor = True
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(62, 23)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(72, 14)
-        Me.Label5.TabIndex = 26
-        Me.Label5.Text = "Table Name"
-        '
-        'txtTableName
-        '
-        Me.txtTableName.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
-        Me.txtTableName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtTableName.Location = New System.Drawing.Point(140, 19)
-        Me.txtTableName.Name = "txtTableName"
-        Me.txtTableName.Size = New System.Drawing.Size(101, 20)
-        Me.txtTableName.TabIndex = 0
         '
         'GroupBox3
         '
@@ -114,10 +60,10 @@ Partial Class ImportTableDetail
         Me.GroupBox3.Controls.Add(Me.lblESID)
         Me.GroupBox3.Controls.Add(Me.Label5)
         Me.GroupBox3.Controls.Add(Me.txtTableName)
-        Me.GroupBox3.Location = New System.Drawing.Point(12, 12)
+        Me.GroupBox3.Location = New System.Drawing.Point(49, 30)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(530, 262)
-        Me.GroupBox3.TabIndex = 28
+        Me.GroupBox3.Size = New System.Drawing.Size(514, 262)
+        Me.GroupBox3.TabIndex = 29
         Me.GroupBox3.TabStop = False
         '
         'Label7
@@ -223,6 +169,27 @@ Partial Class ImportTableDetail
         Me.txtDataSetName.Size = New System.Drawing.Size(101, 20)
         Me.txtDataSetName.TabIndex = 2
         '
+        'btnImport
+        '
+        Me.btnImport.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnImport.Enabled = False
+        Me.btnImport.Location = New System.Drawing.Point(22, 224)
+        Me.btnImport.Name = "btnImport"
+        Me.btnImport.Size = New System.Drawing.Size(75, 23)
+        Me.btnImport.TabIndex = 5
+        Me.btnImport.Text = "Import"
+        Me.btnImport.UseVisualStyleBackColor = True
+        '
+        'btnCancel
+        '
+        Me.btnCancel.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.btnCancel.Location = New System.Drawing.Point(166, 224)
+        Me.btnCancel.Name = "btnCancel"
+        Me.btnCancel.Size = New System.Drawing.Size(75, 23)
+        Me.btnCancel.TabIndex = 6
+        Me.btnCancel.Text = "Cancel"
+        Me.btnCancel.UseVisualStyleBackColor = True
+        '
         'lblESID
         '
         Me.lblESID.AutoSize = True
@@ -233,57 +200,54 @@ Partial Class ImportTableDetail
         Me.lblESID.TabIndex = 28
         Me.lblESID.Text = "Library"
         '
-        'StatusStrip1
+        'Label5
         '
-        Me.StatusStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.stsLabel1})
-        Me.StatusStrip1.Location = New System.Drawing.Point(0, 292)
-        Me.StatusStrip1.Name = "StatusStrip1"
-        Me.StatusStrip1.Size = New System.Drawing.Size(554, 22)
-        Me.StatusStrip1.TabIndex = 29
-        Me.StatusStrip1.Text = "StatusStrip1"
+        Me.Label5.AutoSize = True
+        Me.Label5.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.Location = New System.Drawing.Point(62, 23)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(72, 14)
+        Me.Label5.TabIndex = 26
+        Me.Label5.Text = "Table Name"
         '
-        'stsLabel1
+        'txtTableName
         '
-        Me.stsLabel1.Name = "stsLabel1"
-        Me.stsLabel1.Size = New System.Drawing.Size(0, 17)
+        Me.txtTableName.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
+        Me.txtTableName.Font = New System.Drawing.Font("Microsoft Sans Serif", 8.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtTableName.Location = New System.Drawing.Point(140, 19)
+        Me.txtTableName.Name = "txtTableName"
+        Me.txtTableName.Size = New System.Drawing.Size(101, 20)
+        Me.txtTableName.TabIndex = 0
         '
-        'ImportTableDetail
+        'DataSetDetail
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(554, 314)
-        Me.Controls.Add(Me.StatusStrip1)
+        Me.ClientSize = New System.Drawing.Size(800, 450)
         Me.Controls.Add(Me.GroupBox3)
-        Me.Controls.Add(Me.Label6)
-        Me.Name = "ImportTableDetail"
-        Me.Text = "Import Table Definition"
+        Me.Name = "DataSetDetail"
+        Me.Text = "Dataset Details"
         Me.GroupBox3.ResumeLayout(False)
         Me.GroupBox3.PerformLayout()
-        Me.StatusStrip1.ResumeLayout(False)
-        Me.StatusStrip1.PerformLayout()
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
 
-    Friend WithEvents Label6 As Label
-    Friend WithEvents btnImport As Button
-    Friend WithEvents btnCancel As Button
-    Friend WithEvents Label5 As Label
-    Friend WithEvents txtTableName As TextBox
     Friend WithEvents GroupBox3 As GroupBox
-    Friend WithEvents lblESID As Label
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents stsLabel1 As ToolStripStatusLabel
-    Friend WithEvents Label1 As Label
-    Friend WithEvents txtDataSetName As TextBox
-    Friend WithEvents Label2 As Label
-    Friend WithEvents txtDataSetHeaderText As TextBox
-    Friend WithEvents Label3 As Label
-    Friend WithEvents cboLibraryName As ComboBox
+    Friend WithEvents Label7 As Label
+    Friend WithEvents txtDataSetID As TextBox
     Friend WithEvents cboTextColumnName As ComboBox
     Friend WithEvents Label4 As Label
     Friend WithEvents txtS21ApplicationCode As TextBox
-    Friend WithEvents Label7 As Label
-    Friend WithEvents txtDataSetID As TextBox
+    Friend WithEvents cboLibraryName As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents txtDataSetHeaderText As TextBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents txtDataSetName As TextBox
+    Friend WithEvents btnImport As Button
+    Friend WithEvents btnCancel As Button
+    Friend WithEvents lblESID As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents txtTableName As TextBox
 End Class
